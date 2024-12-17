@@ -1,6 +1,8 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import RootLayout from "./router/rootLayout";
 import MainPage from "./pages/mainPage";
+import ListPage from "./pages/listPage";
+import GlobalStyle from "./assets/image/style/GlobalStyle";
 
 const router = createBrowserRouter([
   {
@@ -11,6 +13,10 @@ const router = createBrowserRouter([
         index: true,
         element: <MainPage />,
       },
+      {
+        path: "list",
+        element: <ListPage />,
+      },
     ],
   },
 ]);
@@ -18,6 +24,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <>
+      <GlobalStyle />
       <RouterProvider router={router} />
     </>
   );
