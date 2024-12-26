@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, Image } from "@chakra-ui/react";
+import { Avatar, Image, useDisclosure } from "@chakra-ui/react";
+import CreateModal from "./createModal";
 
 export default function Header() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -20,6 +21,14 @@ export default function Header() {
   const existingPath = excludedPaths.includes(location.pathname);
   const existingDetailpath = detailPagePath === location.pathname;
 
+  const [selectedArticle, setSelectedArticle] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleOpenModal = () => {
+    setSelectedArticle(true);
+    onOpen();
+  };
+
   if (isMobile && !existingPath) {
     return null;
   }
@@ -28,7 +37,7 @@ export default function Header() {
     <HeaderContainer>
       <Navigation>
         <UserWrapper>
-          <Avatar name="Oshigaki Kisame" src="https://bit.ly/broken-link" />
+          <Avatar name="Oshigaki Kisame" src="" />
 
           <UserName>@injae</UserName>
         </UserWrapper>
@@ -38,20 +47,21 @@ export default function Header() {
           </Link>
         </div>
         <RouterWrapper>
-          <CreateButton>
+          <CreateButton onClick={() => handleOpenModal()}>
             <Image src="/icon/create.svg" alt="create" />
             CREATE
           </CreateButton>
-          <RouterButton>
+          <RouterButton to="/list">
             <Image src="/icon/article.svg" alt="article" />
             게시물
           </RouterButton>
-          <RouterButton>
+          <RouterButton to="/">
             <Image src="/icon/ranking.svg" alt="ranking" />
             랭킹
           </RouterButton>
         </RouterWrapper>
       </Navigation>
+      {selectedArticle && <CreateModal isOpen={isOpen} onClose={onClose} />}
     </HeaderContainer>
   );
 }
@@ -99,7 +109,7 @@ const RouterWrapper = styled.div`
   gap: 20px;
 `;
 
-const RouterButton = styled.button`
+const RouterButton = styled(Link)`
   display: flex;
   align-items: center;
   gap: 5px;

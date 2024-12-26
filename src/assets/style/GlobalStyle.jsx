@@ -63,6 +63,7 @@ input::-webkit-inner-spin-button {
   --error: #dc3a3a;
   --surface: #f6f8ff;
 
+  --pink10: rgba(247, 123, 154, 0.18);
   --pink100:#F76388;
   --pink200:#d44f70;
   --pink300: #ad2c4d;
@@ -96,6 +97,7 @@ input::-webkit-inner-spin-button {
   --green400: #60cf37;
   --green500: #2ba600;
 
+  --gray10: rgba(23, 23, 23, 0.25); 
   --gray100: #f6f6f6;
   --gray200: #eeeeee;
   --gray300: #cccccc;
@@ -103,8 +105,8 @@ input::-webkit-inner-spin-button {
   --gray500: #555555;
   --gray600: #4a4a4a;
   --gray700: #333333;
-  --gray800: #2b2b2b;
-  --gray900: #181818;
+  --gray800: #262626;
+  --gray900: #1B1B1B;
 }
 `;
 

@@ -10,7 +10,7 @@ export default function ListPage() {
     <Container>
       <Navigation>
         <UserWrapper>
-          <Avatar name="Oshigaki Kisame" src="https://bit.ly/broken-link" />
+          <Avatar name="Oshigaki Kisame" src="" />
           <UserInfo>
             <UserName>@injae</UserName>
             <UserDetail>175cm 70kg post 12</UserDetail>
