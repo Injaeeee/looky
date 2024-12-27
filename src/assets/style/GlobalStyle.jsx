@@ -2,6 +2,13 @@ import { createGlobalStyle } from "styled-components";
 
 const GlobalStyle = createGlobalStyle`
 
+@font-face {
+    font-family: 'Poppins';
+    src: url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap');
+    font-weight: 300;
+    font-style: italic;
+}
+
 
 * {
   box-sizing: border-box;
@@ -9,9 +16,7 @@ const GlobalStyle = createGlobalStyle`
   padding: 0;
   list-style: none;
   text-decoration: none;
-  font-family: Pretendard, 'Apple SD Gothic Neo', '나눔손글씨 손편지체', 나눔명조, Roboto, 'Noto Sans',
-    NanumGothic, 'Malgun Gothic', 'Segoe UI', 'Apple SD Gothic Neo',
-    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif;
+  font-family:'Poppins', sans-serif;
 }
 
 html {
@@ -59,9 +64,9 @@ input::-webkit-inner-spin-button {
 
 :root {
   --white: #ffffff;
+  --white10: #d9d9d9;
   --black: #000000;
   --error: #dc3a3a;
-  --surface: #f6f8ff;
 
   --pink10: rgba(247, 123, 154, 0.18);
   --pink100:#F76388;
