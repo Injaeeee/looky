@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Image } from "@chakra-ui/react";
 import { BlurTag } from "../components/tag";
+import MainRanking from "../components/mainRanking";
 
 export default function MainPage() {
   return (
@@ -49,6 +50,7 @@ export default function MainPage() {
             <MainTitle>LOOKY STYLE SHARE</MainTitle>
             <SubTitle>LOOKY와 함께 나만의 스타일을 공유해보세요</SubTitle>
           </TitleWrapper>
+          <MainRanking />
         </ShareContent>
         <InfoContent>
           <InfoMessage>
@@ -79,6 +81,10 @@ export default function MainPage() {
             height="500px"
             objectFit="contain"
           />
+          <LeftButton>
+            <Image src="/icon/pinkCreate.svg" alt="create" />
+            CREATE
+          </LeftButton>
         </InfoContent>
         <InfoContent>
           <Image
@@ -92,6 +98,10 @@ export default function MainPage() {
             스타일 게시물을 만들고 <br />
             다른 사람과 공유해보세요.
           </InfoLabel>
+          <RightButton>
+            <Image src="/icon/article.svg" alt="article" />
+            게시판 바로가기
+          </RightButton>
         </InfoContent>
       </Content>
       <Footer>
@@ -182,6 +192,7 @@ const MainContent = styled.div`
 const ShareContent = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 30px;
 `;
 
 const InfoContent = styled.div`
@@ -189,6 +200,7 @@ const InfoContent = styled.div`
   gap: 100px;
   justify-content: center;
   align-items: center;
+  position: relative;
 `;
 
 const InfoMessage = styled.div`
@@ -231,7 +243,6 @@ const TitleWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
 `;
 
 const MainTitle = styled.p`
@@ -285,4 +296,16 @@ const FooterPinkLabel = styled.p`
   font-size: 12px;
   font-weight: 400;
   color: var(--pink100);
+`;
+
+const LeftButton = styled(Button)`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+`;
+
+const RightButton = styled(Button)`
+  position: absolute;
+  bottom: 0;
+  right: 0;
 `;

@@ -38,14 +38,11 @@ export default function Header() {
       <Navigation>
         <UserWrapper>
           <Avatar name="Oshigaki Kisame" src="" />
-
           <UserName>@injae</UserName>
         </UserWrapper>
-        <div>
-          <Link to="/">
-            <Image src="/image/logo.png" alt="logo" />
-          </Link>
-        </div>
+        <Link to="/">
+          <Image src="/image/logo.png" alt="logo" />
+        </Link>
         <RouterWrapper>
           <CreateButton onClick={() => handleOpenModal()}>
             <Image src="/icon/create.svg" alt="create" />
@@ -74,7 +71,7 @@ const HeaderContainer = styled.header`
   width: 100%;
   border-bottom: 1px solid var(--pink100);
   background: #0f0f0f;
-  z-index: 10;
+  z-index: 5;
 `;
 
 const Navigation = styled.nav`
