@@ -5,6 +5,12 @@ interface TagProps {
   label: string;
 }
 
+interface PostTagProps {
+  category: string;
+  price: number;
+  name: string;
+}
+
 export function PinkTag({ label }: TagProps) {
   return (
     <ChakraTag
@@ -38,21 +44,30 @@ export function PinkBlurTag({ label }: TagProps) {
     </ChakraTag>
   );
 }
-export function BlurTag({ label }: TagProps) {
+export function BlurTag({ category, price, name }: PostTagProps) {
   return (
     <ChakraTag
       sx={{
         border: "1px solid",
         borderColor: "var(--gray500)",
         background: "var(--gray10)",
-        borderRadius: "2px",
-        padding: "8px",
+        borderRadius: "4px",
+        padding: "9px",
+        position: "relative",
       }}
     >
+      <TagCloseButton
+        sx={{
+          position: "absolute",
+          top: "4px",
+          right: "5px",
+          color: "white",
+        }}
+      />
       <LabelWrapper>
-        <GrayLabel>{label}</GrayLabel>
-        <GrayLabel>asddas</GrayLabel>
-        <PinkLabel>asas</PinkLabel>
+        <GrayLabel>{category}</GrayLabel>
+        <GrayLabel>₩ {price}</GrayLabel>
+        <PinkLabel>{name}</PinkLabel>
       </LabelWrapper>
     </ChakraTag>
   );
@@ -61,6 +76,7 @@ export function BlurTag({ label }: TagProps) {
 const LabelWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 5px;
 `;
 
 const PinkLabel = styled(TagLabel)`

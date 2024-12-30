@@ -2,7 +2,8 @@ import { extendTheme } from "@chakra-ui/react";
 
 const theme = extendTheme({
   fonts: {
-    body: "Pretendard, 'Apple SD Gothic Neo', '나눔손글씨 손편지체', 나눔명조, Roboto, 'Noto Sans', NanumGothic, 'Malgun Gothic', 'Segoe UI', 'Apple SD Gothic Neo', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif",
+    heading: "'Poppins', sans-serif",
+    body: "'Poppins', sans-serif",
   },
   fontSizes: {
     base: "62.5%", // 16px = 1.6rem
@@ -64,6 +65,7 @@ const theme = extendTheme({
       body: {
         bg: "#0f0f0f",
         color: "white",
+        fontFamily: "'Poppins', sans-serif",
       },
       "*": {
         boxSizing: "border-box",
@@ -71,8 +73,6 @@ const theme = extendTheme({
         padding: 0,
         listStyle: "none",
         textDecoration: "none",
-        fontFamily:
-          "Pretendard, 'Apple SD Gothic Neo', '나눔손글씨 손편지체', 나눔명조, Roboto, 'Noto Sans', NanumGothic, 'Malgun Gothic', 'Segoe UI', 'Apple SD Gothic Neo', 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', sans-serif",
       },
       a: {
         color: "#222",
