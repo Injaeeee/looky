@@ -5,6 +5,7 @@ import ListPage from "./pages/listPage";
 import GlobalStyle from "./assets/style/GlobalStyle";
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./assets/style/theme";
+import RankingPage from "./pages/rankingPage";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
       {
         path: "list",
         element: <ListPage />,
+      },
+      {
+        path: "ranking",
+        element: <RankingPage />,
       },
     ],
   },

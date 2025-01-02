@@ -52,7 +52,7 @@ export default function Header() {
             <Image src="/icon/article.svg" alt="article" />
             게시물
           </RouterButton>
-          <RouterButton to="/">
+          <RouterButton to="/ranking">
             <Image src="/icon/ranking.svg" alt="ranking" />
             랭킹
           </RouterButton>
