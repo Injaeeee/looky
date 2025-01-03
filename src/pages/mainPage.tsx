@@ -134,7 +134,6 @@ const FrontImage = styled(Image)`
   position: absolute;
   width: 300px;
   height: auto;
-  z-index: 10;
 `;
 
 const BackgroundImage = styled(Image)`

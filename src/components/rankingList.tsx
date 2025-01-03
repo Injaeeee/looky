@@ -127,7 +127,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 48px;
-  padding: 0 16px;
+  margin: 150px auto 0;
 `;
 
 const RankingInfo = styled.div`
@@ -136,10 +136,9 @@ const RankingInfo = styled.div`
   justify-content: center;
   align-items: center;
   gap: 30px;
-  width: 265px;
-  height: 330px;
+  border: solid 2px var(--gray900);
   border-radius: 5px;
-  background: var(--gray10);
+  background: var(--black10);
 `;
 
 const InfoTitle = styled.p`
@@ -206,7 +205,6 @@ const CardContent = styled.div`
 const HighlightedWrapper = styled.div`
   display: flex;
   gap: 10px;
-
   align-items: center;
   position: absolute;
   top: -65px;
