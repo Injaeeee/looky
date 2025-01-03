@@ -88,12 +88,11 @@ export default function MainPage() {
         </InfoContent>
         <InfoContent>
           <Image
-            src="/image/info1.png"
+            src="/image/info2.png"
             alt="info"
             height="500px"
             objectFit="contain"
           />
-
           <InfoLabel>
             스타일 게시물을 만들고 <br />
             다른 사람과 공유해보세요.
@@ -146,7 +145,7 @@ const Content = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 100px;
+  gap: 180px;
   margin: 0 auto 200px;
 `;
 
