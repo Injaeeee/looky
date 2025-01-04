@@ -66,6 +66,7 @@ input::-webkit-inner-spin-button {
   --white: #ffffff;
   --white10: #d9d9d9;
   --black: #000000;
+  --black10: #0f0f0f;
   --error: #dc3a3a;
 
   --pink10: rgba(247, 123, 154, 0.18);

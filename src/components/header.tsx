@@ -6,7 +6,8 @@ import CreateModal from "./createModal";
 
 export default function Header() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const { postId } = useParams();
+  const [isScrolled, setIsScrolled] = useState(false);
+
   const location = useLocation();
 
   useEffect(() => {
@@ -15,11 +16,11 @@ export default function Header() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const excludedPaths = ["/", "/list"];
-  const detailPagePath = `/post/${postId}`;
-
-  const existingPath = excludedPaths.includes(location.pathname);
-  const existingDetailpath = detailPagePath === location.pathname;
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 0);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const [selectedArticle, setSelectedArticle] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -29,12 +30,12 @@ export default function Header() {
     onOpen();
   };
 
-  if (isMobile && !existingPath) {
+  if (isMobile) {
     return null;
   }
 
   return (
-    <HeaderContainer>
+    <HeaderContainer isScrolled={isScrolled}>
       <Navigation>
         <UserWrapper to="/mypage">
           <Avatar name="Oshigaki Kisame" src="" />
@@ -52,7 +53,7 @@ export default function Header() {
             <Image src="/icon/article.svg" alt="article" />
             게시물
           </RouterButton>
-          <RouterButton to="/">
+          <RouterButton to="/ranking">
             <Image src="/icon/ranking.svg" alt="ranking" />
             랭킹
           </RouterButton>
@@ -63,14 +64,15 @@ export default function Header() {
   );
 }
 
-const HeaderContainer = styled.header`
+const HeaderContainer = styled.header<{ isScrolled: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   width: 100%;
   border-bottom: 1px solid var(--pink100);
-  background: #0f0f0f;
+  background: ${({ isScrolled }) =>
+    isScrolled ? "var(--black10)" : "transparent"};
   z-index: 5;
 `;
 
