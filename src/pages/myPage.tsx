@@ -1,10 +1,16 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { Avatar } from "@chakra-ui/react";
-import ArticleList from "../components/articleList";
+import { Avatar, useDisclosure } from "@chakra-ui/react";
+import MyArticles from "../components/myPage/myArticles";
+import EditProfileModal from "../components/myPage/editProfileModal";
 
 export default function MyPage() {
   const [activeButton, setActiveButton] = useState<string>("shots");
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleOpenModal = () => {
+    onOpen();
+  };
 
   const handleButtonClick = (buttonName: string) => {
     setActiveButton(buttonName);
@@ -16,7 +22,9 @@ export default function MyPage() {
         <Avatar name="Oshigaki Kisame" src="" boxSize="104px" />
         <UserInfo>
           <UserName>@injae </UserName>
-          <EditButton>edit profile</EditButton>
+          <EditButton onClick={() => handleOpenModal()}>
+            edit profile
+          </EditButton>
         </UserInfo>
       </UserWrapper>
       <ButtonWrapper>
@@ -39,6 +47,9 @@ export default function MyPage() {
           like
         </Button>
       </ButtonWrapper>
+      <MyArticles />
+
+      <EditProfileModal isOpen={isOpen} onClose={onClose} />
     </Container>
   );
 }
@@ -46,7 +57,7 @@ export default function MyPage() {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 80px;
+  gap: 70px;
   align-items: center;
   margin: 150px auto 0;
 `;

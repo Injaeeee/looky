@@ -1,8 +1,7 @@
 import ArticleList from "../components/articleList";
 import styled from "styled-components";
 import { Avatar, Button, Card, Image, Text } from "@chakra-ui/react";
-
-import Input from "../components/input";
+import { SearchInput } from "../components/input";
 import BestRanking from "../components/bestRanking";
 
 export default function ListPage() {
@@ -18,7 +17,7 @@ export default function ListPage() {
         </UserWrapper>
         <ProductSearchWrapper>
           <ProductTitle>상품명</ProductTitle>
-          <Input />
+          <SearchInput />
         </ProductSearchWrapper>
         <RankingWrapper>
           <RankingTitle>
