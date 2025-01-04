@@ -37,7 +37,7 @@ export default function Header() {
   return (
     <HeaderContainer isScrolled={isScrolled}>
       <Navigation>
-        <UserWrapper>
+        <UserWrapper to="/mypage">
           <Avatar name="Oshigaki Kisame" src="" />
           <UserName>@injae</UserName>
         </UserWrapper>
@@ -92,7 +92,7 @@ const Navigation = styled.nav`
   }
 `;
 
-const UserWrapper = styled.div`
+const UserWrapper = styled(Link)`
   display: flex;
   align-items: center;
   gap: 10px;
@@ -101,6 +101,7 @@ const UserWrapper = styled.div`
 const UserName = styled.p`
   font-size: 12px;
   font-weight: 600;
+  color: white;
 `;
 
 const RouterWrapper = styled.div`

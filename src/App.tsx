@@ -6,6 +6,7 @@ import GlobalStyle from "./assets/style/GlobalStyle";
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./assets/style/theme";
 import RankingPage from "./pages/rankingPage";
+import MyPage from "./pages/myPage";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,9 @@ const router = createBrowserRouter([
       {
         path: "ranking",
         element: <RankingPage />,
+
+        path: "mypage",
+        element: <MyPage />,
       },
     ],
   },

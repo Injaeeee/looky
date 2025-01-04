@@ -5,7 +5,7 @@ import {
   InputRightElement,
 } from "@chakra-ui/react";
 
-export default function Input() {
+export function SearchInput() {
   return (
     <InputGroup>
       <ChakraInput
