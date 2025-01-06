@@ -3,8 +3,10 @@ import styled from "styled-components";
 
 export default function TagContent({
   goToNextStep,
+  handleAddTag,
 }: {
   goToNextStep: () => void;
+  handleAddTag: () => void;
 }) {
   return (
     <ArticleContent>
@@ -58,7 +60,7 @@ export default function TagContent({
           placeholder="브랜드명을 입력해주세요."
         />
       </InputWrapper>
-      <MakeTagButton>
+      <MakeTagButton onClick={handleAddTag}>
         MAKE TAG
         <Image src="/icon/tag.svg" alt="tag" />
       </MakeTagButton>
