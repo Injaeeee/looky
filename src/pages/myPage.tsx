@@ -29,19 +29,19 @@ export default function MyPage() {
       </UserWrapper>
       <ButtonWrapper>
         <Button
-          isActive={activeButton === "shots"}
+          $isActive={activeButton === "shots"}
           onClick={() => handleButtonClick("shots")}
         >
           shots
         </Button>
         <Button
-          isActive={activeButton === "collection"}
+          $isActive={activeButton === "collection"}
           onClick={() => handleButtonClick("collection")}
         >
           collection
         </Button>
         <Button
-          isActive={activeButton === "like"}
+          $isActive={activeButton === "like"}
           onClick={() => handleButtonClick("like")}
         >
           like
@@ -96,17 +96,17 @@ const ButtonWrapper = styled.div`
   gap: 5px;
 `;
 
-const Button = styled.button<{ isActive: boolean }>`
+const Button = styled.button<{ $isActive: boolean }>`
   color: var(--gray600);
   font-size: 16px;
   font-weight: 500;
   padding: 12px 20px;
   border-radius: 50px;
-  background-color: ${({ isActive }) =>
-    isActive ? "var(--gray700)" : "transparent"};
-  color: ${({ isActive }) => (isActive ? "white" : "var(--gray600)")};
+  background-color: ${({ $isActive }) =>
+    $isActive ? "var(--gray700)" : "transparent"};
+  color: ${({ $isActive }) => ($isActive ? "white" : "var(--gray600)")};
 
   &:hover {
-    background-color: ${({ isActive }) => !isActive && "var(--gray700)"};
+    background-color: ${({ $isActive }) => !$isActive && "var(--gray700)"};
   }
 `;

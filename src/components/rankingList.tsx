@@ -72,7 +72,7 @@ export default function RankingList() {
         {taskLists.map((task, index) => (
           <ArticleContainer
             key={index}
-            isHighlighted={index < 3}
+            $isHighlighted={index < 3}
             onClick={() => handleOpenModal(task.title, task.description)}
           >
             {index < 3 && (
@@ -91,20 +91,15 @@ export default function RankingList() {
               alt="Background Image"
             />
             <CardContent>
-              <Stack spacing="1">
-                <Header size="md" color="white">
-                  <Avatar
-                    name="Dan Abrahmov"
-                    src="https://bit.ly/dan-abramov"
-                  />
-                  {task.title}
-                </Header>
-                <Text color="white">{task.description}</Text>
-                <Stack direction="row" spacing="2">
-                  {task.tags.map((tag, idx) => (
-                    <PinkTag key={idx} label={tag} />
-                  ))}
-                </Stack>
+              <Header size="md" color="white">
+                <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
+                {task.title}
+              </Header>
+              <Text color="white">{task.description}</Text>
+              <Stack direction="row" spacing="2">
+                {task.tags.map((tag, idx) => (
+                  <PinkTag key={idx} label={tag} />
+                ))}
               </Stack>
             </CardContent>
           </ArticleContainer>
@@ -141,7 +136,7 @@ const RankingInfo = styled.div`
   background: var(--black10);
 `;
 
-const InfoTitle = styled.p`
+const InfoTitle = styled.div`
   color: var(--pink100);
   display: flex;
   flex-direction: column;
@@ -151,7 +146,7 @@ const InfoTitle = styled.p`
   line-height: 48px;
 `;
 
-const InfoLabel = styled.p`
+const InfoLabel = styled.div`
   color: var(--pink100);
   display: flex;
   flex-direction: column;
@@ -167,15 +162,16 @@ const ArticleListContainer = styled.div`
   gap: 48px;
 `;
 
-const ArticleContainer = styled.div<{ isHighlighted: boolean }>`
+const ArticleContainer = styled.div<{ $isHighlighted: boolean }>`
   position: relative;
   width: 265px;
   height: 330px;
   border-radius: 5px;
   cursor: pointer;
   border: ${(props) =>
-    props.isHighlighted ? "2px solid var(--pink100)" : "none"};
+    props.$isHighlighted ? "2px solid var(--pink100)" : "none"};
 `;
+
 const CardImage = styled.img`
   width: 100%;
   height: 100%;
@@ -220,7 +216,7 @@ const HighlightedRank = styled.p`
   color: var(--pink100);
 `;
 
-const HighlightedUser = styled.p`
+const HighlightedUser = styled.div`
   display: flex;
   flex-direction: column;
   font-size: 12px;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { Avatar, Image, useDisclosure } from "@chakra-ui/react";
 import CreateModal from "./createModal";
@@ -35,7 +35,7 @@ export default function Header() {
   }
 
   return (
-    <HeaderContainer isScrolled={isScrolled}>
+    <HeaderContainer $isScrolled={isScrolled}>
       <Navigation>
         <UserWrapper to="/mypage">
           <Avatar name="Oshigaki Kisame" src="" />
@@ -64,15 +64,15 @@ export default function Header() {
   );
 }
 
-const HeaderContainer = styled.header<{ isScrolled: boolean }>`
+const HeaderContainer = styled.header<{ $isScrolled: boolean }>`
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   width: 100%;
   border-bottom: 1px solid var(--pink100);
-  background: ${({ isScrolled }) =>
-    isScrolled ? "var(--black10)" : "transparent"};
+  background: ${({ $isScrolled }) =>
+    $isScrolled ? "var(--black10)" : "transparent"};
   z-index: 5;
 `;
 
