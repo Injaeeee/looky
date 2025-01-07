@@ -1,5 +1,14 @@
-import { Input, Select, Image } from "@chakra-ui/react";
+import {
+  Input,
+  Select,
+  Image,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+} from "@chakra-ui/react";
 import styled from "styled-components";
+import { Category } from "../../types/tag.types";
 
 export default function TagContent({
   goToNextStep,
@@ -9,7 +18,7 @@ export default function TagContent({
 }: {
   goToNextStep: () => void;
   handleAddTag: () => void;
-  tagInfo: { category: string; price: number; productName: string };
+  tagInfo: { category: Category; price: number; productName: string };
   handleTagInfoChange: (field: keyof typeof tagInfo, value: string) => void;
 }) {
   return (
@@ -18,16 +27,7 @@ export default function TagContent({
         <UserName>@injae</UserName>
         <UserDetail>175cm 70kg</UserDetail>
       </UserSpec>
-      <InputWrapper>
-        <Title>
-          제목<span>*</span>
-        </Title>
-        <Input
-          focusBorderColor="pink.100"
-          size="lg"
-          placeholder="댓글을 입력해주세요."
-        />
-      </InputWrapper>
+
       <Explanation>태그 생성을 위한 필수 정보를 입력해주세요</Explanation>
       <InputWrapper>
         <Title>
@@ -35,33 +35,34 @@ export default function TagContent({
         </Title>
         <Select
           width="auto"
-          placeholder="옵션"
           borderColor="white"
           focusBorderColor="pink.100"
           size="lg"
           _hover={{ borderColor: "pink.200" }}
           value={tagInfo.category}
-          onChange={(e) => handleTagInfoChange("category", e.target.value)}
+          onChange={(e) =>
+            handleTagInfoChange("category", e.target.value as Category)
+          }
         >
-          <option>123</option>
+          {Object.values(Category).map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
         </Select>
       </InputWrapper>
       <InputWrapper>
-        <Title>
-          가격<span>*</span>
-        </Title>
+        <Title>가격</Title>
         <Input
           focusBorderColor="pink.100"
           size="lg"
           placeholder="가격을 입력해주세요."
-          value={tagInfo.price}
+          value={tagInfo.price === 0 ? "" : tagInfo.price}
           onChange={(e) => handleTagInfoChange("price", e.target.value)}
         />
       </InputWrapper>
       <InputWrapper>
-        <Title>
-          브랜드<span>*</span>
-        </Title>
+        <Title>브랜드</Title>
         <Input
           focusBorderColor="pink.100"
           size="lg"
@@ -150,4 +151,8 @@ const NextButton = styled.button`
   font-weight: 600;
   border-radius: 6px;
   padding: 7px 12px;
+`;
+
+const Option = styled.option`
+  background-color: var(--pink100);
 `;

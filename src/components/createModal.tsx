@@ -15,6 +15,9 @@ import EtcContent from "./createContent/etcContent";
 import { DndProvider, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import { Tag } from "@/types/tag.types";
+import { Category } from "../types/tag.types";
+import { Season, TPO } from "../types/article.types";
+import { Mood } from "../types/user.types";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -27,10 +30,28 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [tags, setTags] = useState<Tag[]>([]);
   const [tagInfo, setTagInfo] = useState({
-    category: "",
+    category: Category.OUTER,
     price: 0,
     productName: "",
   });
+
+  const [articleInfo, setArticleInfo] = useState({
+    title: "",
+    tpo: TPO.바다,
+    mood: Mood.미니멀,
+    season: Season.Spring,
+    intro: "",
+  });
+
+  const handleArticleInfoChange = (
+    field: keyof typeof articleInfo,
+    value: string,
+  ) => {
+    setArticleInfo((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   const containerRef = useRef<HTMLDivElement | null>(null);
 
@@ -47,6 +68,10 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
       const imageUrl = URL.createObjectURL(file);
       setImageSrc(imageUrl);
     }
+  };
+
+  const handleShare = () => {
+    console.log(articleInfo, tags);
   };
 
   const goToNextStep = () => {
@@ -83,12 +108,12 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
       const newTag: Tag = {
         id: Date.now(),
         category: tagInfo.category,
-        price:tagInfo.price,
+        price: tagInfo.price,
         productName: tagInfo.productName,
         coordinates: { x: randomX, y: randomY },
       };
       setTags((prevTags) => [...prevTags, newTag]);
-      setTagInfo({ category: "", price: 0, productName: "" });
+      setTagInfo({ category: Category.OUTER, price: 0, productName: "" });
     }
   };
 
@@ -180,7 +205,12 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
             />
           )}
           {currentStep === 2 && (
-            <EtcContent goToPreviousStep={goToPreviousStep} />
+            <EtcContent
+              goToPreviousStep={goToPreviousStep}
+              articleInfo={articleInfo}
+              handleArticleInfoChange={handleArticleInfoChange}
+              onShare={handleShare}
+            />
           )}
         </ArticleBody>
       </ModalContent>
