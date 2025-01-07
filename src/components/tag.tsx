@@ -9,6 +9,7 @@ interface PostTagProps {
   category: string;
   price: number;
   name: string;
+  onDelete: () => void;
 }
 
 export function PinkTag({ label }: TagProps) {
@@ -44,7 +45,7 @@ export function PinkBlurTag({ label }: TagProps) {
     </ChakraTag>
   );
 }
-export function BlurTag({ category, price, name }: PostTagProps) {
+export function BlurTag({ category, price, name, onDelete }: PostTagProps) {
   return (
     <ChakraTag
       sx={{
@@ -63,6 +64,7 @@ export function BlurTag({ category, price, name }: PostTagProps) {
           right: "5px",
           color: "white",
         }}
+        onClick={onDelete}
       />
       <LabelWrapper>
         <GrayLabel>{category}</GrayLabel>
@@ -77,6 +79,7 @@ const LabelWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
+  margin-right: 10px;
 `;
 
 const PinkLabel = styled(TagLabel)`

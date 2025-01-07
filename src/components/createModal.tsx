@@ -3,32 +3,18 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Button,
-  Stack,
   Image,
-  Input,
-  InputRightElement,
-  InputGroup,
-  Menu,
-  MenuButton,
-  MenuDivider,
-  MenuItem,
-  MenuList,
-  Select,
 } from "@chakra-ui/react";
 import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { BlurTag, PinkBlurTag } from "./tag";
-import CommentList from "./commentList";
-import { ChevronDownIcon } from "@chakra-ui/icons";
 import TagContent from "./createContent/tagContent";
 import EtcContent from "./createContent/etcContent";
 import { DndProvider, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { Tag, Coordinates } from "@/types/tag.types";
+import { Tag } from "@/types/tag.types";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -40,7 +26,20 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [tags, setTags] = useState<Tag[]>([]);
+  const [tagInfo, setTagInfo] = useState({
+    category: "",
+    price: 0,
+    productName: "",
+  });
+
   const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const handleTagInfoChange = (field: keyof typeof tagInfo, value: string) => {
+    setTagInfo((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -72,27 +71,32 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    console.log(tags);
+  }, [tags]);
+
   const handleAddTag = () => {
     if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
-      const randomX = Math.random() * rect.width;
-      const randomY = Math.random() * rect.height;
+      const randomX = Math.min(Math.random() * rect.width, rect.width - 100);
+      const randomY = Math.min(Math.random() * rect.height, rect.width - 100);
       const newTag: Tag = {
         id: Date.now(),
-        category: "Sample Category",
-        price: Math.floor(Math.random() * 100),
-        productName: `Product ${tags.length + 1}`,
+        category: tagInfo.category,
+        price:tagInfo.price,
+        productName: tagInfo.productName,
         coordinates: { x: randomX, y: randomY },
       };
       setTags((prevTags) => [...prevTags, newTag]);
+      setTagInfo({ category: "", price: 0, productName: "" });
     }
   };
 
   const handleMoveTag = (id: number, x: number, y: number) => {
     if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
-      const adjustedX = Math.min(Math.max(x - rect.left, 0), rect.width - 100); // 태그 크기를 고려하여 최대값을 컨테이너 너비로 설정
-      const adjustedY = Math.min(Math.max(y - rect.top, 0), rect.height - 30); // 태그 크기를 고려하여 최대값을 컨테이너 높이로 설정
+      const adjustedX = Math.min(Math.max(x - rect.left, 0), rect.width - 100);
+      const adjustedY = Math.min(Math.max(y - rect.top, 0), rect.height - 30);
 
       setTags((prevTags) =>
         prevTags.map((tag) =>
@@ -102,6 +106,10 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
         ),
       );
     }
+  };
+
+  const handleDeleteTag = (id: number) => {
+    setTags((prevTags) => prevTags.filter((tag) => tag.id !== id));
   };
 
   return (
@@ -158,6 +166,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
                   key={tag.id}
                   tag={tag}
                   onMoveTag={handleMoveTag}
+                  onDeleteTag={handleDeleteTag}
                 />
               ))}
             </PictureContainer>
@@ -166,6 +175,8 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
             <TagContent
               goToNextStep={goToNextStep}
               handleAddTag={handleAddTag}
+              tagInfo={tagInfo}
+              handleTagInfoChange={handleTagInfoChange}
             />
           )}
           {currentStep === 2 && (
@@ -231,7 +242,8 @@ const DeleteButton = styled.button`
 const DraggableTag: React.FC<{
   tag: Tag;
   onMoveTag: (id: number, x: number, y: number) => void;
-}> = ({ tag, onMoveTag }) => {
+  onDeleteTag: (id: number) => void;
+}> = ({ tag, onMoveTag, onDeleteTag }) => {
   const ref = useRef<HTMLDivElement | null>(null);
 
   const [, drag] = useDrag(() => ({
@@ -248,20 +260,21 @@ const DraggableTag: React.FC<{
   drag(ref);
 
   return (
-    <div
+    <TagWrapper
       ref={ref}
-      style={{
-        position: "absolute",
-        top: tag.coordinates.y,
-        left: tag.coordinates.x,
-        padding: "5px 10px",
-        backgroundColor: "white",
-        border: "1px solid black",
-        cursor: "move",
-        borderRadius: "4px",
-      }}
+      style={{ top: tag.coordinates.y, left: tag.coordinates.x }}
     >
-      {tag.productName} - ${tag.price}
-    </div>
+      <BlurTag
+        category={tag.category}
+        price={tag.price}
+        name={tag.productName}
+        onDelete={() => onDeleteTag(tag.id)}
+      />
+    </TagWrapper>
   );
 };
+
+const TagWrapper = styled.div`
+  position: absolute;
+  cursor: move;
+`;

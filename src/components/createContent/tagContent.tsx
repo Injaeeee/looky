@@ -4,9 +4,13 @@ import styled from "styled-components";
 export default function TagContent({
   goToNextStep,
   handleAddTag,
+  tagInfo,
+  handleTagInfoChange,
 }: {
   goToNextStep: () => void;
   handleAddTag: () => void;
+  tagInfo: { category: string; price: number; productName: string };
+  handleTagInfoChange: (field: keyof typeof tagInfo, value: string) => void;
 }) {
   return (
     <ArticleContent>
@@ -36,6 +40,8 @@ export default function TagContent({
           focusBorderColor="pink.100"
           size="lg"
           _hover={{ borderColor: "pink.200" }}
+          value={tagInfo.category}
+          onChange={(e) => handleTagInfoChange("category", e.target.value)}
         >
           <option>123</option>
         </Select>
@@ -48,6 +54,8 @@ export default function TagContent({
           focusBorderColor="pink.100"
           size="lg"
           placeholder="가격을 입력해주세요."
+          value={tagInfo.price}
+          onChange={(e) => handleTagInfoChange("price", e.target.value)}
         />
       </InputWrapper>
       <InputWrapper>
@@ -58,6 +66,8 @@ export default function TagContent({
           focusBorderColor="pink.100"
           size="lg"
           placeholder="브랜드명을 입력해주세요."
+          value={tagInfo.productName}
+          onChange={(e) => handleTagInfoChange("productName", e.target.value)}
         />
       </InputWrapper>
       <MakeTagButton onClick={handleAddTag}>
