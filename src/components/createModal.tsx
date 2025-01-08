@@ -18,6 +18,8 @@ import { Tag } from "@/types/tag.types";
 import { Category } from "../types/tag.types";
 import { Season, TPO } from "../types/article.types";
 import { Mood } from "../types/user.types";
+import { postArticle } from "../util/article.api";
+import { uploadImage } from "../util/image.api";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -28,6 +30,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
   const [liked, setLiked] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const [tags, setTags] = useState<Tag[]>([]);
   const [tagInfo, setTagInfo] = useState({
     category: Category.OUTER,
@@ -40,7 +43,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     tpo: TPO.바다,
     mood: Mood.미니멀,
     season: Season.Spring,
-    intro: "",
+    content: "",
   });
 
   const handleArticleInfoChange = (
@@ -67,11 +70,24 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     if (file) {
       const imageUrl = URL.createObjectURL(file);
       setImageSrc(imageUrl);
+      setFile(file);
     }
   };
 
-  const handleShare = () => {
-    console.log(articleInfo, tags);
+  const handleShare = async () => {
+    const createdAt = new Date().toISOString();
+    if (file) {
+      const imageURL = await uploadImage(file);
+      console.log(articleInfo, tags, createdAt, imageURL);
+      postArticle()
+        .then(() => {
+          console.log("게시물 공유 완료");
+          onClose();
+        })
+        .catch((error) => {
+          console.error("게시물 공유 중 오류 발생:", error);
+        });
+    }
   };
 
   const goToNextStep = () => {
@@ -163,7 +179,12 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
               {imageSrc ? (
                 <>
                   <ImagePreview src={imageSrc} alt="Selected" />
-                  <DeleteButton onClick={() => setImageSrc(null)}>
+                  <DeleteButton
+                    onClick={() => {
+                      setImageSrc(null);
+                      setFile(null);
+                    }}
+                  >
                     삭제
                   </DeleteButton>
                 </>

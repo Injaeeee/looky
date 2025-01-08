@@ -15,7 +15,7 @@ export default function EtcContent({
     mood: Mood;
     tpo: TPO;
     season: Season;
-    intro: string;
+    content: string;
   };
   handleArticleInfoChange: (
     field: keyof typeof articleInfo,
@@ -66,8 +66,8 @@ export default function EtcContent({
           size="lg"
           placeholder="소개글을 입력해주세요."
           rows={5}
-          value={articleInfo.intro}
-          onChange={(e) => handleArticleInfoChange("intro", e.target.value)}
+          value={articleInfo.content}
+          onChange={(e) => handleArticleInfoChange("content", e.target.value)}
         />
       </InputWrapper>
       <InputWrapper>
