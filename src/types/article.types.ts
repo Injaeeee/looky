@@ -1,4 +1,5 @@
 import { Mood } from "./user.types";
+import { Tag } from "./tag.types";
 
 export enum TPO {
   바다 = "바다",
@@ -24,24 +25,21 @@ export type Writer = {
   id: number;
 };
 
-export type Article = {
-  id: number;
-  tag: string;
-  commentCount: number;
-  createdAt: string;
-  updatedAt: string;
+export type ArticleInfo = {
   title: string;
-  image: string;
-  writer: Writer;
-  likeCount: number;
   mood: Mood;
-  TPO: TPO;
-  Season: Season;
+  tpo: TPO;
+  season: Season;
   content: string;
 };
 
-export type ArticleValue = {
-  title: string;
-  content: string;
-  image: File | null;
+export type PostArticle = ArticleInfo & {
+  // id: number;
+  tags: Tag[];
+  createdAt: string;
+  updatedAt: string;
+  imageURL: string | undefined;
+  // commentCount: number;
+  // writer: Writer;
+  // likeCount: number;
 };

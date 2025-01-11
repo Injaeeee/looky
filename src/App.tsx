@@ -7,6 +7,7 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./assets/style/theme";
 import RankingPage from "./pages/rankingPage";
 import MyPage from "./pages/myPage";
+import TestPage from "./pages/testPage";
 
 const router = createBrowserRouter([
   {

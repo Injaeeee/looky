@@ -1,3 +1,4 @@
+import { PostArticle } from "../types/article.types";
 import { db } from "../firebase";
 import {
   collection,
@@ -15,15 +16,8 @@ export async function getArticles() {
 
   return queryCategory.docs;
 }
-export async function postArticle() {
-  const productRef = collection(db, "articles"); // 컬렉션 참조
-  const newArticle = {
-    title: "New Article",
-    content: "This is the content of the new article.",
-    createdAt: new Date().toISOString(), // 생성 시각
-    tags: ["firebase", "javascript"], // 예시 태그
-  };
-
-  const docRef = await addDoc(productRef, newArticle); // 문서 추가 및 자동 ID 생성
-  console.log("생성된 문서 ID: ", docRef.id); // 새로 생성된 문서의 ID 출력
+export async function postArticle(newArticle: PostArticle) {
+  const productRef = collection(db, "articles");
+  const docRef = await addDoc(productRef, newArticle);
+  console.log("생성된 문서 ID: ", docRef.id);
 }

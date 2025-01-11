@@ -14,12 +14,32 @@ import TagContent from "./createContent/tagContent";
 import EtcContent from "./createContent/etcContent";
 import { DndProvider, useDrag } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { Tag } from "@/types/tag.types";
+import { Tag } from "../types/tag.types";
 import { Category } from "../types/tag.types";
-import { Season, TPO } from "../types/article.types";
+import { PostArticle, ArticleInfo, Season, TPO } from "../types/article.types";
 import { Mood } from "../types/user.types";
-import { postArticle } from "../util/article.api";
 import { uploadImage } from "../util/image.api";
+import { postArticle } from "../util/article.api";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, Controller } from "react-hook-form";
+
+const articleSchema = z.object({
+  title: z
+    .string()
+    .min(1, "제목은 최소 1자 이상이어야 합니다.")
+    .max(10, "제목은 최대 10자 이하로 입력해주세요."),
+  content: z.string().max(30, "소개글은 최대 30자 이하로 입력해주세요."),
+  tags: z
+    .array(
+      z.object({
+        category: z.string(),
+        price: z.number().min(0, "가격은 0 이상이어야 합니다."),
+        productName: z.string().min(1, "제품명을 입력해주세요."),
+      }),
+    )
+    .max(5, "태그는 최대 5개까지 추가할 수 있습니다."),
+});
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -27,6 +47,22 @@ interface ArticleModalProps {
 }
 
 export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
+  // const {
+  //   control,
+  //   handleSubmit,
+  //   register,
+  //   formState: { errors },
+  // } = useForm<PostArticle>({
+  //   resolver: zodResolver(articleSchema),
+  //   defaultValues: {
+  //     title: "",
+  //     content: "",
+  //     mood: Mood.미니멀,
+  //     tpo: TPO.바다,
+  //     season: Season.Spring,
+  //   },
+  // });
+
   const [liked, setLiked] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -38,7 +74,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     productName: "",
   });
 
-  const [articleInfo, setArticleInfo] = useState({
+  const [articleInfo, setArticleInfo] = useState<ArticleInfo>({
     title: "",
     tpo: TPO.바다,
     mood: Mood.미니멀,
@@ -79,15 +115,42 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     if (file) {
       const imageURL = await uploadImage(file);
       console.log(articleInfo, tags, createdAt, imageURL);
-      postArticle()
+
+      const newArticle: PostArticle = {
+        title: articleInfo.title,
+        content: articleInfo.content,
+        mood: articleInfo.mood,
+        tpo: articleInfo.tpo,
+        season: articleInfo.season,
+        tags,
+        createdAt,
+        imageURL,
+        updatedAt: new Date().toISOString(),
+      };
+
+      postArticle(newArticle)
         .then(() => {
           console.log("게시물 공유 완료");
+          setArticleInfo({
+            title: "",
+            content: "",
+            mood: Mood.미니멀,
+            tpo: TPO.바다,
+            season: Season.Spring,
+          });
+          setTags([]);
+          setFile(null);
+          setImageSrc(null);
           onClose();
         })
-        .catch((error) => {
+        .catch((error: any) => {
           console.error("게시물 공유 중 오류 발생:", error);
         });
     }
+  };
+
+  const handleError = (errors: any) => {
+    console.error("유효성 검사 에러:", errors);
   };
 
   const goToNextStep = () => {
