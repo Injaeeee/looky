@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import { BlurTag, PinkBlurTag } from "./tag";
+import { BlurTag } from "./tag";
 import TagContent from "./createContent/tagContent";
 import EtcContent from "./createContent/etcContent";
 import { DndProvider, useDrag } from "react-dnd";
@@ -22,7 +22,7 @@ import { uploadImage } from "../util/image.api";
 import { postArticle } from "../util/article.api";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 
 const articleSchema = z.object({
   title: z
@@ -30,15 +30,6 @@ const articleSchema = z.object({
     .min(1, "제목은 최소 1자 이상이어야 합니다.")
     .max(10, "제목은 최대 10자 이하로 입력해주세요."),
   content: z.string().max(30, "소개글은 최대 30자 이하로 입력해주세요."),
-  tags: z
-    .array(
-      z.object({
-        category: z.string(),
-        price: z.number().min(0, "가격은 0 이상이어야 합니다."),
-        productName: z.string().min(1, "제품명을 입력해주세요."),
-      }),
-    )
-    .max(5, "태그는 최대 5개까지 추가할 수 있습니다."),
 });
 
 interface ArticleModalProps {
@@ -47,21 +38,18 @@ interface ArticleModalProps {
 }
 
 export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
-  // const {
-  //   control,
-  //   handleSubmit,
-  //   register,
-  //   formState: { errors },
-  // } = useForm<PostArticle>({
-  //   resolver: zodResolver(articleSchema),
-  //   defaultValues: {
-  //     title: "",
-  //     content: "",
-  //     mood: Mood.미니멀,
-  //     tpo: TPO.바다,
-  //     season: Season.Spring,
-  //   },
-  // });
+  const { handleSubmit, register, setValue } = useForm<PostArticle>({
+    resolver: zodResolver(articleSchema),
+    defaultValues: {
+      title: "",
+      content: "",
+      mood: Mood.미니멀,
+      tpo: TPO.바다,
+      season: Season.Spring,
+      tags: [],
+      imageURL: "",
+    },
+  });
 
   const [liked, setLiked] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
@@ -103,50 +91,67 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setImageSrc(imageUrl);
-      setFile(file);
+
+    if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+      alert("이미지 파일만 업로드 가능합니다.");
+      return;
     }
+
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      alert("파일 크기는 5MB 이하로 업로드해야 합니다.");
+      return;
+    }
+    const imageUrl = URL.createObjectURL(file);
+    setImageSrc(imageUrl);
+    setFile(file);
   };
 
   const handleShare = async () => {
     const createdAt = new Date().toISOString();
-    if (file) {
-      const imageURL = await uploadImage(file);
-      console.log(articleInfo, tags, createdAt, imageURL);
 
-      const newArticle: PostArticle = {
-        title: articleInfo.title,
-        content: articleInfo.content,
-        mood: articleInfo.mood,
-        tpo: articleInfo.tpo,
-        season: articleInfo.season,
-        tags,
-        createdAt,
-        imageURL,
-        updatedAt: new Date().toISOString(),
-      };
-
-      postArticle(newArticle)
-        .then(() => {
-          console.log("게시물 공유 완료");
-          setArticleInfo({
-            title: "",
-            content: "",
-            mood: Mood.미니멀,
-            tpo: TPO.바다,
-            season: Season.Spring,
-          });
-          setTags([]);
-          setFile(null);
-          setImageSrc(null);
-          onClose();
-        })
-        .catch((error: any) => {
-          console.error("게시물 공유 중 오류 발생:", error);
-        });
+    if (!file) {
+      alert("이미지를 업로드해주세요.");
+      return;
     }
+
+    const imageURL = await uploadImage(file);
+    console.log(articleInfo, tags, createdAt, imageURL);
+
+    const newArticle: PostArticle = {
+      title: articleInfo.title,
+      content: articleInfo.content,
+      mood: articleInfo.mood,
+      tpo: articleInfo.tpo,
+      season: articleInfo.season,
+      tags,
+      createdAt,
+      imageURL,
+      updatedAt: new Date().toISOString(),
+    };
+
+    postArticle(newArticle)
+      .then(() => {
+        console.log("게시물 공유 완료");
+        setArticleInfo({
+          title: "",
+          content: "",
+          mood: Mood.미니멀,
+          tpo: TPO.바다,
+          season: Season.Spring,
+        });
+        setValue("title", "");
+        setTags([]);
+        setFile(null);
+        setImageSrc(null);
+        onClose();
+      })
+      .catch((error: any) => {
+        console.error("게시물 공유 중 오류 발생:", error);
+      });
   };
 
   const handleError = (errors: any) => {
@@ -218,86 +223,90 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
 
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay
-        bg="blackAlpha.300"
-        backdropFilter="blur(10px) hue-rotate(90deg)"
-      />
-      <ModalContent
-        width="auto"
-        maxWidth="100%"
-        bg="var(--gray900)"
-        borderRadius="10px"
-      >
-        <ModalHeader
-          bg="var(--gray800)"
-          textAlign="center"
-          borderTopRadius="10px"
+      <form onSubmit={handleSubmit(handleShare, handleError)}>
+        <ModalOverlay
+          bg="blackAlpha.300"
+          backdropFilter="blur(10px) hue-rotate(90deg)"
+        />
+        <ModalContent
+          width="auto"
+          maxWidth="100%"
+          bg="var(--gray900)"
+          borderRadius="10px"
         >
-          게시물
-        </ModalHeader>
-        <ModalCloseButton />
-        <ArticleBody padding="20px">
-          <DndProvider backend={HTML5Backend}>
-            <PictureContainer ref={containerRef}>
-              {imageSrc ? (
-                <>
-                  <ImagePreview src={imageSrc} alt="Selected" />
-                  <DeleteButton
-                    onClick={() => {
-                      setImageSrc(null);
-                      setFile(null);
-                    }}
-                  >
-                    삭제
-                  </DeleteButton>
-                </>
-              ) : (
-                <>
-                  <Image src="/image/picture.png" alt="picture" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    id="file-input"
-                    style={{ display: "none" }}
-                    onChange={handleFileChange}
+          <ModalHeader
+            bg="var(--gray800)"
+            textAlign="center"
+            borderTopRadius="10px"
+          >
+            게시물
+          </ModalHeader>
+          <ModalCloseButton />
+          <ArticleBody padding="20px">
+            <DndProvider backend={HTML5Backend}>
+              <PictureContainer ref={containerRef}>
+                {imageSrc ? (
+                  <>
+                    <ImagePreview src={imageSrc} alt="Selected" />
+                    <DeleteButton
+                      onClick={() => {
+                        setImageSrc(null);
+                        setFile(null);
+                      }}
+                    >
+                      삭제
+                    </DeleteButton>
+                  </>
+                ) : (
+                  <>
+                    <Image src="/image/picture.png" alt="picture" />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id="file-input"
+                      style={{ display: "none" }}
+                      onChange={handleFileChange}
+                    />
+                    <PictureButton
+                      onClick={() =>
+                        document.getElementById("file-input")?.click()
+                      }
+                      type="button"
+                    >
+                      사진 선택
+                    </PictureButton>
+                  </>
+                )}
+                {tags.map((tag) => (
+                  <DraggableTag
+                    key={tag.id}
+                    tag={tag}
+                    onMoveTag={handleMoveTag}
+                    onDeleteTag={handleDeleteTag}
                   />
-                  <PictureButton
-                    onClick={() =>
-                      document.getElementById("file-input")?.click()
-                    }
-                  >
-                    사진 선택
-                  </PictureButton>
-                </>
-              )}
-              {tags.map((tag) => (
-                <DraggableTag
-                  key={tag.id}
-                  tag={tag}
-                  onMoveTag={handleMoveTag}
-                  onDeleteTag={handleDeleteTag}
-                />
-              ))}
-            </PictureContainer>
-          </DndProvider>
-          {currentStep === 1 && (
-            <TagContent
-              goToNextStep={goToNextStep}
-              handleAddTag={handleAddTag}
-              tagInfo={tagInfo}
-              handleTagInfoChange={handleTagInfoChange}
-            />
-          )}
-          {currentStep === 2 && (
-            <EtcContent
-              goToPreviousStep={goToPreviousStep}
-              articleInfo={articleInfo}
-              handleArticleInfoChange={handleArticleInfoChange}
-              onShare={handleShare}
-            />
-          )}
-        </ArticleBody>
-      </ModalContent>
+                ))}
+              </PictureContainer>
+            </DndProvider>
+            {currentStep === 1 && (
+              <TagContent
+                tagCount={tags.length}
+                goToNextStep={goToNextStep}
+                handleAddTag={handleAddTag}
+                tagInfo={tagInfo}
+                handleTagInfoChange={handleTagInfoChange}
+              />
+            )}
+            {currentStep === 2 && (
+              <EtcContent
+                goToPreviousStep={goToPreviousStep}
+                articleInfo={articleInfo}
+                handleArticleInfoChange={handleArticleInfoChange}
+                register={register}
+              />
+            )}
+          </ArticleBody>
+        </ModalContent>
+      </form>
     </Modal>
   );
 }

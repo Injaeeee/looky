@@ -1,4 +1,4 @@
-import { Input, Select, Image, Textarea } from "@chakra-ui/react";
+import { Input, Select, Textarea } from "@chakra-ui/react";
 import styled from "styled-components";
 import { Season, TPO } from "../../types/article.types";
 import { Mood } from "../../types/user.types";
@@ -7,7 +7,7 @@ export default function EtcContent({
   goToPreviousStep,
   articleInfo,
   handleArticleInfoChange,
-  onShare,
+  register,
 }: {
   goToPreviousStep: () => void;
   articleInfo: {
@@ -21,7 +21,7 @@ export default function EtcContent({
     field: keyof typeof articleInfo,
     value: string,
   ) => void;
-  onShare: () => void;
+  register: any;
 }) {
   return (
     <ArticleContent>
@@ -36,8 +36,9 @@ export default function EtcContent({
         <Input
           focusBorderColor="pink.100"
           size="lg"
-          placeholder="댓글을 입력해주세요."
+          placeholder="제목을 입력해주세요."
           value={articleInfo.title}
+          {...register("title")}
           onChange={(e) => handleArticleInfoChange("title", e.target.value)}
         />
       </InputWrapper>
@@ -108,7 +109,7 @@ export default function EtcContent({
       </InputWrapper>
       <ButtonWrapper>
         <PrevButton onClick={goToPreviousStep}>이전으로</PrevButton>
-        <ShareButton onClick={onShare}>공유하기</ShareButton>
+        <ShareButton type="submit">공유하기</ShareButton>
       </ButtonWrapper>
     </ArticleContent>
   );
@@ -152,28 +153,6 @@ const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
-`;
-
-const Explanation = styled.span`
-  font-size: 14px;
-  font-weight: 800;
-  color: var(--pink100);
-`;
-
-const MakeTagButton = styled.button`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  border: 1px solid var(--pink100);
-  border-radius: 6px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--pink100);
-  width: 105px;
-  height: 32px;
-  margin-left: auto;
 `;
 
 const ButtonWrapper = styled.div`
