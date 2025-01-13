@@ -11,38 +11,53 @@ import {
 import { BlurTag, PinkBlurTag, PinkTag } from "../components/tag";
 import ArticleModal from "../components/articleModal";
 import CategoryList from "./category";
-import Select from "./select";
+import SelectGroup from "./select";
 import { getArticles } from "../util/article.api";
-import { Article } from "../types/article.types";
+import { Article, Season, TPO, ArticleFilter } from "../types/article.types";
+import { Gender, Height, Mood } from "../types/user.types";
 
 export default function ArticleList() {
   const [selectedArticle, setSelectedArticle] = useState<Article>();
   const [articles, setArticles] = useState<Article[]>([]);
-
+  const [filters, setFilters] = useState<ArticleFilter>({
+    season: null,
+    tpo: null,
+    mood: null,
+    gender: null,
+    height: null,
+  });
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleSelectChange =
+    (key: keyof typeof filters) =>
+    (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const value = event.target.value;
+      setFilters((prev) => ({ ...prev, [key]: value }));
+      console.log(`${key}: ${value}`);
+    };
 
   const handleOpenModal = (article: Article) => {
     setSelectedArticle(article);
     onOpen();
   };
+
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const fetchedArticles = await getArticles();
-        setArticles(fetchedArticles); // 받아온 데이터를 상태에 저장
-        console.log(fetchedArticles);
+        const fetchedArticles = await getArticles(filters);
+        setArticles(fetchedArticles);
       } catch (error) {
         console.error("Error fetching articles:", error);
       }
     };
 
     fetchArticles();
-  }, []);
+  }, [filters]);
 
   return (
     <Container>
       <CategoryList />
-      <Select />
+      <SelectGroup onSelectChange={handleSelectChange} />
       <ArticleListContainer>
         {articles.map((article, index) => (
           <ArticleContainer

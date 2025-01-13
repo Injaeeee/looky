@@ -15,7 +15,8 @@ import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { BlurTag, PinkBlurTag } from "./tag";
 import CommentList from "./commentList";
-import { Article } from "../types/article.types";
+import { Article, Season, TPO } from "../types/article.types";
+import { Gender, Height, Mood } from "../types/user.types";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -61,8 +62,9 @@ export default function ArticleModal({
         <ArticleBody padding="20px">
           <PictureContainer>
             <ImagePreview src={article.imageURL} />
-            {article.tags.map((tag) => (
+            {article.tags.map((tag, i) => (
               <TagWrapper
+                key={i}
                 style={{ top: tag.coordinates.y, left: tag.coordinates.x }}
               >
                 <BlurTag

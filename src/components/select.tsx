@@ -3,25 +3,22 @@ import styled from "styled-components";
 import { Season, TPO } from "../types/article.types";
 import { Gender, Height, Mood } from "../types/user.types";
 
-export default function SelectGroup() {
-  const selectOptions = [
-    { placeholder: "성별", options: ["남성", "여성"] },
-    { placeholder: "계절", options: ["봄", "여름", "가을", "겨울"] },
-    { placeholder: "TPO", options: ["캐주얼", "정장", "운동", "파티"] },
-    { placeholder: "MOOD", options: ["활발", "차분", "우아", "발랄"] },
-    {
-      placeholder: "신장",
-      options: ["150cm 이하", "150-160cm", "160-170cm", "170cm 이상"],
-    },
-  ];
+interface SelectGroupProps {
+  onSelectChange: (
+    key: "season" | "tpo" | "mood" | "gender" | "height",
+  ) => (event: React.ChangeEvent<HTMLSelectElement>) => void;
+}
 
+export default function SelectGroup({ onSelectChange }: SelectGroupProps) {
   return (
     <SelectContainer>
       <StyledChakraSelect
+        onChange={onSelectChange("season")}
         width="auto"
         borderColor="white"
         focusBorderColor="pink.100"
         size="lg"
+        placeholder="계절"
         _hover={{ borderColor: "pink.200" }}
       >
         {Object.values(Season).map((Season) => (
@@ -31,10 +28,12 @@ export default function SelectGroup() {
         ))}
       </StyledChakraSelect>
       <StyledChakraSelect
+        onChange={onSelectChange("tpo")}
         width="auto"
         borderColor="white"
         focusBorderColor="pink.100"
         size="lg"
+        placeholder="TPO"
         _hover={{ borderColor: "pink.200" }}
       >
         {Object.values(TPO).map((TPO) => (
@@ -44,10 +43,12 @@ export default function SelectGroup() {
         ))}
       </StyledChakraSelect>
       <StyledChakraSelect
+        onChange={onSelectChange("mood")}
         width="auto"
         borderColor="white"
         focusBorderColor="pink.100"
         size="lg"
+        placeholder="Mood"
         _hover={{ borderColor: "pink.200" }}
       >
         {Object.values(Mood).map((Mood) => (
@@ -57,10 +58,12 @@ export default function SelectGroup() {
         ))}
       </StyledChakraSelect>
       <StyledChakraSelect
+        onChange={onSelectChange("gender")}
         width="auto"
         borderColor="white"
         focusBorderColor="pink.100"
         size="lg"
+        placeholder="성별"
         _hover={{ borderColor: "pink.200" }}
       >
         {Object.values(Gender).map((Gender) => (
@@ -70,10 +73,12 @@ export default function SelectGroup() {
         ))}
       </StyledChakraSelect>
       <StyledChakraSelect
+        onChange={onSelectChange("height")}
         width="auto"
         borderColor="white"
         focusBorderColor="pink.100"
         size="lg"
+        placeholder="키"
         _hover={{ borderColor: "pink.200" }}
       >
         {Object.values(Height).map((Height) => (
