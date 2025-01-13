@@ -18,6 +18,7 @@ import { Gender, Height, Mood } from "../types/user.types";
 
 export default function ArticleList() {
   const [selectedArticle, setSelectedArticle] = useState<Article>();
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [articles, setArticles] = useState<Article[]>([]);
   const [filters, setFilters] = useState<ArticleFilter>({
     season: null,
@@ -27,6 +28,10 @@ export default function ArticleList() {
     height: null,
   });
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const handleCategoryChange = (categories: string[]) => {
+    setSelectedCategories(categories);
+  };
 
   const handleSelectChange =
     (key: keyof typeof filters) =>
@@ -44,7 +49,7 @@ export default function ArticleList() {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const fetchedArticles = await getArticles(filters);
+        const fetchedArticles = await getArticles(filters, selectedCategories);
         setArticles(fetchedArticles);
       } catch (error) {
         console.error("Error fetching articles:", error);
@@ -52,11 +57,11 @@ export default function ArticleList() {
     };
 
     fetchArticles();
-  }, [filters]);
+  }, [filters, selectedCategories]);
 
   return (
     <Container>
-      <CategoryList />
+      <CategoryList onCategoryChange={handleCategoryChange} />
       <SelectGroup onSelectChange={handleSelectChange} />
       <ArticleListContainer>
         {articles.map((article, index) => (

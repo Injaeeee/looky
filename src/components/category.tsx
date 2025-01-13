@@ -13,6 +13,10 @@ interface CategoryProps {
   onClick: () => void;
 }
 
+interface CategoryListProps {
+  onCategoryChange: (selectedCategories: string[]) => void;
+}
+
 const categories: CategoryType[] = [
   { id: 1, name: "OUTER", src: "../icon/outer.svg" },
   { id: 2, name: "TOP", src: "../icon/top.svg" },
@@ -35,12 +39,23 @@ function Category({ category, isSelected, onClick }: CategoryProps) {
   );
 }
 
-export default function CategoryList() {
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+export default function CategoryList({ onCategoryChange }: CategoryListProps) {
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
   const handleCategoryClick = (category: CategoryType) => {
-    console.log("Clicked category:", category.name);
-    setSelectedCategory(category.id);
+    setSelectedCategories((prev) => {
+      const isSelected = prev.includes(category.id);
+      const updatedCategories = isSelected
+        ? prev.filter((id) => id !== category.id)
+        : [...prev, category.id];
+
+      const selectedCategoryNames = updatedCategories
+        .map((id) => categories.find((cat) => cat.id === id)?.name)
+        .filter((name): name is string => name !== undefined);
+
+      onCategoryChange(selectedCategoryNames);
+      return updatedCategories;
+    });
   };
 
   return (
@@ -49,7 +64,7 @@ export default function CategoryList() {
         <Category
           key={category.id}
           category={category}
-          isSelected={selectedCategory === category.id}
+          isSelected={selectedCategories.includes(category.id)}
           onClick={() => handleCategoryClick(category)}
         />
       ))}
