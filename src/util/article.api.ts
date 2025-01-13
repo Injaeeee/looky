@@ -16,7 +16,7 @@ export async function getArticles(): Promise<Article[]> {
 
   return querySnapshot.docs.map((doc) => ({
     id: doc.id,
-    ...(doc.data() as Omit<Article, "id">), // 나머지 필드 매핑
+    ...(doc.data() as Omit<Article, "id">),
   }));
 }
 

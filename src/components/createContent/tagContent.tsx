@@ -1,10 +1,19 @@
 import { Input, Select, Image } from "@chakra-ui/react";
 import styled from "styled-components";
+import { Category } from "../../types/tag.types";
 
 export default function TagContent({
+  tagCount,
   goToNextStep,
+  handleAddTag,
+  tagInfo,
+  handleTagInfoChange,
 }: {
+  tagCount: number;
   goToNextStep: () => void;
+  handleAddTag: () => void;
+  tagInfo: { category: Category; price: number; productName: string };
+  handleTagInfoChange: (field: keyof typeof tagInfo, value: string) => void;
 }) {
   return (
     <ArticleContent>
@@ -12,16 +21,6 @@ export default function TagContent({
         <UserName>@injae</UserName>
         <UserDetail>175cm 70kg</UserDetail>
       </UserSpec>
-      <InputWrapper>
-        <Title>
-          제목<span>*</span>
-        </Title>
-        <Input
-          focusBorderColor="pink.100"
-          size="lg"
-          placeholder="댓글을 입력해주세요."
-        />
-      </InputWrapper>
       <Explanation>태그 생성을 위한 필수 정보를 입력해주세요</Explanation>
       <InputWrapper>
         <Title>
@@ -29,39 +28,48 @@ export default function TagContent({
         </Title>
         <Select
           width="auto"
-          placeholder="옵션"
           borderColor="white"
           focusBorderColor="pink.100"
           size="lg"
           _hover={{ borderColor: "pink.200" }}
+          value={tagInfo.category}
+          onChange={(e) =>
+            handleTagInfoChange("category", e.target.value as Category)
+          }
         >
-          <option>123</option>
+          {Object.values(Category).map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
         </Select>
       </InputWrapper>
       <InputWrapper>
-        <Title>
-          가격<span>*</span>
-        </Title>
+        <Title>가격</Title>
         <Input
           focusBorderColor="pink.100"
           size="lg"
           placeholder="가격을 입력해주세요."
+          value={tagInfo.price === 0 ? "" : tagInfo.price}
+          onChange={(e) => handleTagInfoChange("price", e.target.value)}
         />
       </InputWrapper>
       <InputWrapper>
-        <Title>
-          브랜드<span>*</span>
-        </Title>
+        <Title>브랜드</Title>
         <Input
           focusBorderColor="pink.100"
           size="lg"
           placeholder="브랜드명을 입력해주세요."
+          value={tagInfo.productName}
+          onChange={(e) => handleTagInfoChange("productName", e.target.value)}
         />
       </InputWrapper>
-      <MakeTagButton>
-        MAKE TAG
-        <Image src="/icon/tag.svg" alt="tag" />
-      </MakeTagButton>
+      {tagCount < 5 && (
+        <MakeTagButton onClick={handleAddTag} type="button">
+          MAKE TAG
+          <Image src="/icon/tag.svg" alt="tag" />
+        </MakeTagButton>
+      )}
       <NextButton onClick={goToNextStep}>다음 단계</NextButton>
     </ArticleContent>
   );

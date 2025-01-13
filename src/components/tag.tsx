@@ -9,10 +9,7 @@ interface PostTagProps {
   category: string;
   price: number;
   name: string;
-<<<<<<< Updated upstream
-=======
   onDelete?: () => void;
->>>>>>> Stashed changes
 }
 
 export function PinkTag({ label }: TagProps) {
@@ -48,7 +45,7 @@ export function PinkBlurTag({ label }: TagProps) {
     </ChakraTag>
   );
 }
-export function BlurTag({ category, price, name }: PostTagProps) {
+export function BlurTag({ category, price, name, onDelete }: PostTagProps) {
   return (
     <ChakraTag
       sx={{
@@ -60,16 +57,6 @@ export function BlurTag({ category, price, name }: PostTagProps) {
         position: "relative",
       }}
     >
-<<<<<<< Updated upstream
-      <TagCloseButton
-        sx={{
-          position: "absolute",
-          top: "4px",
-          right: "5px",
-          color: "white",
-        }}
-      />
-=======
       {onDelete && (
         <TagCloseButton
           sx={{
@@ -81,7 +68,7 @@ export function BlurTag({ category, price, name }: PostTagProps) {
           onClick={onDelete}
         />
       )}
->>>>>>> Stashed changes
+
       <LabelWrapper>
         <GrayLabel>{category}</GrayLabel>
         <GrayLabel>₩ {price}</GrayLabel>
@@ -95,6 +82,7 @@ const LabelWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 5px;
+  margin-right: 10px;
 `;
 
 const PinkLabel = styled(TagLabel)`
