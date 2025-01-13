@@ -34,8 +34,6 @@ export default function ArticleModal({
     setLiked((prev) => !prev);
   };
 
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
     console.log(liked);
   }, [liked]);
@@ -61,7 +59,7 @@ export default function ArticleModal({
         </ModalHeader>
         <ModalCloseButton />
         <ArticleBody padding="20px">
-          <PictureContainer ref={containerRef}>
+          <PictureContainer>
             <ImagePreview src={article.imageURL} />
             {article.tags.map((tag) => (
               <TagWrapper

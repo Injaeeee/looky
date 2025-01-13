@@ -1,5 +1,7 @@
 import { Select as ChakraSelect } from "@chakra-ui/react";
 import styled from "styled-components";
+import { Season, TPO } from "../types/article.types";
+import { Gender, Height, Mood } from "../types/user.types";
 
 export default function SelectGroup() {
   const selectOptions = [
@@ -15,23 +17,71 @@ export default function SelectGroup() {
 
   return (
     <SelectContainer>
-      {selectOptions.map((select, index) => (
-        <StyledChakraSelect
-          width="auto"
-          key={index}
-          placeholder={select.placeholder}
-          borderColor="white"
-          focusBorderColor="pink.100"
-          size="lg"
-          _hover={{ borderColor: "pink.200" }}
-        >
-          {select.options.map((option, i) => (
-            <option key={i} value={option}>
-              {option}
-            </option>
-          ))}
-        </StyledChakraSelect>
-      ))}
+      <StyledChakraSelect
+        width="auto"
+        borderColor="white"
+        focusBorderColor="pink.100"
+        size="lg"
+        _hover={{ borderColor: "pink.200" }}
+      >
+        {Object.values(Season).map((Season) => (
+          <option key={Season} value={Season}>
+            {Season}
+          </option>
+        ))}
+      </StyledChakraSelect>
+      <StyledChakraSelect
+        width="auto"
+        borderColor="white"
+        focusBorderColor="pink.100"
+        size="lg"
+        _hover={{ borderColor: "pink.200" }}
+      >
+        {Object.values(TPO).map((TPO) => (
+          <option key={TPO} value={TPO}>
+            {TPO}
+          </option>
+        ))}
+      </StyledChakraSelect>
+      <StyledChakraSelect
+        width="auto"
+        borderColor="white"
+        focusBorderColor="pink.100"
+        size="lg"
+        _hover={{ borderColor: "pink.200" }}
+      >
+        {Object.values(Mood).map((Mood) => (
+          <option key={Mood} value={Mood}>
+            {Mood}
+          </option>
+        ))}
+      </StyledChakraSelect>
+      <StyledChakraSelect
+        width="auto"
+        borderColor="white"
+        focusBorderColor="pink.100"
+        size="lg"
+        _hover={{ borderColor: "pink.200" }}
+      >
+        {Object.values(Gender).map((Gender) => (
+          <option key={Gender} value={Gender}>
+            {Gender}
+          </option>
+        ))}
+      </StyledChakraSelect>
+      <StyledChakraSelect
+        width="auto"
+        borderColor="white"
+        focusBorderColor="pink.100"
+        size="lg"
+        _hover={{ borderColor: "pink.200" }}
+      >
+        {Object.values(Height).map((Height) => (
+          <option key={Height} value={Height}>
+            {Height}
+          </option>
+        ))}
+      </StyledChakraSelect>
     </SelectContainer>
   );
 }
