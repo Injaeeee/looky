@@ -34,7 +34,107 @@ interface ArticleModalProps {
 
 export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
   const [liked, setLiked] = useState(false);
-  const [currentStep, setCurrentStep] = useState(1); // 현재 단계 상태
+  const [currentStep, setCurrentStep] = useState(1);
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [tagInfo, setTagInfo] = useState({
+    category: Category.OUTER,
+    price: 0,
+    productName: "",
+  });
+
+  const [articleInfo, setArticleInfo] = useState<ArticleInfo>({
+    title: "",
+    tpo: TPO.바다,
+    mood: Mood.미니멀,
+    season: Season.Spring,
+    content: "",
+  });
+
+  const handleArticleInfoChange = (
+    field: keyof typeof articleInfo,
+    value: string,
+  ) => {
+    setArticleInfo((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const handleTagInfoChange = (field: keyof typeof tagInfo, value: string) => {
+    setTagInfo((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
+    if (!allowedTypes.includes(file.type)) {
+      alert("이미지 파일만 업로드 가능합니다.");
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      alert("파일 크기는 5MB 이하로 업로드해야 합니다.");
+      return;
+    }
+    const imageUrl = URL.createObjectURL(file);
+    setImageSrc(imageUrl);
+    setFile(file);
+  };
+
+  const handleShare = async () => {
+    const createdAt = new Date().toISOString();
+
+    if (!file) {
+      alert("이미지를 업로드해주세요.");
+      return;
+    }
+
+    const imageURL = await uploadImage(file);
+    console.log(articleInfo, tags, createdAt, imageURL);
+
+    const newArticle: PostArticle = {
+      ...articleInfo,
+      tags,
+      createdAt,
+      imageURL,
+      updatedAt: new Date().toISOString(),
+    };
+
+    postArticle(newArticle)
+      .then(() => {
+        console.log("게시물 공유 완료");
+        setArticleInfo({
+          title: "",
+          content: "",
+          mood: Mood.미니멀,
+          tpo: TPO.바다,
+          season: Season.Spring,
+        });
+        setValue("title", "");
+        setTags([]);
+        setFile(null);
+        setImageSrc(null);
+        onClose();
+      })
+      .catch((error: any) => {
+        console.error("게시물 공유 중 오류 발생:", error);
+      });
+  };
+
+  const handleError = (errors: any) => {
+    console.error("유효성 검사 에러:", errors);
+  };
 
   const goToNextStep = () => {
     setCurrentStep((prev) => prev + 1); // 다음 단계로 이동

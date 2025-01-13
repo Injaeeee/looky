@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   Stack,
@@ -12,66 +12,44 @@ import { BlurTag, PinkBlurTag, PinkTag } from "../components/tag";
 import ArticleModal from "../components/articleModal";
 import CategoryList from "./category";
 import Select from "./select";
+import { getArticles } from "../util/article.api";
+import { Article } from "../types/article.types";
 
 export default function ArticleList() {
-  const [selectedArticle, setSelectedArticle] = useState<{
-    title: string;
-    description: string;
-  } | null>(null);
+  const [selectedArticle, setSelectedArticle] = useState<Article>();
+  const [articles, setArticles] = useState<Article[]>([]);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleOpenModal = (title: string, description: string) => {
-    setSelectedArticle({ title, description });
+  const handleOpenModal = (article: Article) => {
+    setSelectedArticle(article);
     onOpen();
   };
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        const fetchedArticles = await getArticles();
+        setArticles(fetchedArticles); // 받아온 데이터를 상태에 저장
+        console.log(fetchedArticles);
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      }
+    };
 
-  const taskLists = [
-    {
-      title: "Living Room Sofa",
-      description: "Perfect for modern tropical spaces",
-      tags: ["Tag 1", "Tag 2", "Tag 3"],
-    },
-    {
-      title: "Dining Table",
-      description: "Elegant and durable",
-      tags: ["Furniture", "Wood", "Stylish"],
-    },
-    {
-      title: "Bed Frame",
-      description: "Comfortable and sturdy",
-      tags: ["Cozy", "Modern", "Affordable"],
-    },
-    {
-      title: "Bed Frame",
-      description: "Comfortable and sturdy",
-      tags: ["Cozy", "Modern", "Affordable"],
-    },
-    {
-      title: "Bed Frame",
-      description: "Comfortable and sturdy",
-      tags: ["Cozy", "Modern", "Affordable"],
-    },
-    {
-      title: "Bed Frame",
-      description: "Comfortable and sturdy",
-      tags: ["Cozy", "Modern", "Affordable"],
-    },
-  ];
+    fetchArticles();
+  }, []);
 
   return (
     <Container>
       <CategoryList />
       <Select />
       <ArticleListContainer>
-        {taskLists.map((task, index) => (
+        {articles.map((article, index) => (
           <ArticleContainer
             key={index}
-            onClick={() => handleOpenModal(task.title, task.description)}
+            onClick={() => handleOpenModal(article)}
           >
-            <CardImage
-              src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-              alt="Background Image"
-            />
+            <CardImage src={article.imageURL} alt="Background Image" />
             <CardContent>
               <Stack spacing="1">
                 <Header size="md" color="white">
@@ -79,12 +57,12 @@ export default function ArticleList() {
                     name="Dan Abrahmov"
                     src="https://bit.ly/dan-abramov"
                   />
-                  {task.title}
+                  {article.title}
                 </Header>
-                <Text color="white">{task.description}</Text>
+                <Text color="white">{article.title}</Text>
                 <Stack direction="row" spacing="2">
-                  {task.tags.map((tag, idx) => (
-                    <PinkTag key={idx} label={tag} />
+                  {article.tags.map((tag, idx) => (
+                    <PinkTag key={idx} label={tag.productName} />
                   ))}
                 </Stack>
               </Stack>
@@ -97,8 +75,7 @@ export default function ArticleList() {
         <ArticleModal
           isOpen={isOpen}
           onClose={onClose}
-          title={selectedArticle.title}
-          description={selectedArticle.description}
+          article={selectedArticle}
         />
       )}
     </Container>

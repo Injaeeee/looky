@@ -9,6 +9,10 @@ interface PostTagProps {
   category: string;
   price: number;
   name: string;
+<<<<<<< Updated upstream
+=======
+  onDelete?: () => void;
+>>>>>>> Stashed changes
 }
 
 export function PinkTag({ label }: TagProps) {
@@ -56,6 +60,7 @@ export function BlurTag({ category, price, name }: PostTagProps) {
         position: "relative",
       }}
     >
+<<<<<<< Updated upstream
       <TagCloseButton
         sx={{
           position: "absolute",
@@ -64,6 +69,19 @@ export function BlurTag({ category, price, name }: PostTagProps) {
           color: "white",
         }}
       />
+=======
+      {onDelete && (
+        <TagCloseButton
+          sx={{
+            position: "absolute",
+            top: "4px",
+            right: "5px",
+            color: "white",
+          }}
+          onClick={onDelete}
+        />
+      )}
+>>>>>>> Stashed changes
       <LabelWrapper>
         <GrayLabel>{category}</GrayLabel>
         <GrayLabel>₩ {price}</GrayLabel>

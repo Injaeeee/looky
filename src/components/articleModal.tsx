@@ -3,39 +3,38 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Button,
   Stack,
   Image,
   Input,
   InputRightElement,
   InputGroup,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { BlurTag, PinkBlurTag } from "./tag";
 import CommentList from "./commentList";
+import { Article } from "../types/article.types";
 
 interface ArticleModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
-  description: string;
+  article: Article;
 }
 
 export default function ArticleModal({
   isOpen,
   onClose,
-  title,
-  description,
+  article,
 }: ArticleModalProps) {
   const [liked, setLiked] = useState(false);
 
   const toggleLike = () => {
     setLiked((prev) => !prev);
   };
+
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     console.log(liked);
@@ -58,31 +57,39 @@ export default function ArticleModal({
           textAlign="center"
           borderTopRadius="10px"
         >
-          {title}
+          {article.title}
         </ModalHeader>
         <ModalCloseButton />
         <ArticleBody padding="20px">
-          <PictureContainer />
+          <PictureContainer ref={containerRef}>
+            <ImagePreview src={article.imageURL} />
+            {article.tags.map((tag) => (
+              <TagWrapper
+                style={{ top: tag.coordinates.y, left: tag.coordinates.x }}
+              >
+                <BlurTag
+                  category={tag.category}
+                  price={tag.price}
+                  name={tag.productName}
+                />
+              </TagWrapper>
+            ))}
+          </PictureContainer>
           <ArticleContent>
             <UserSpec>
               <UserName>@injae</UserName>
               <UserDetail>175cm 70kg</UserDetail>
             </UserSpec>
             <UserInfo>
-              <UserTitle>INFO</UserTitle>#남 #겨울
+              <UserTitle>INFO</UserTitle>#남 #{article.season} #{article.mood} #
+              {article.tpo}
             </UserInfo>
             <UserInfo>
               <UserTitle>Tag</UserTitle>
               <Stack direction="row" spacing="2" flexWrap="wrap">
-                <PinkBlurTag label="SHOES" />
-                <PinkBlurTag label="SHOES" />
-                <PinkBlurTag label="SHOES" />
-                <PinkBlurTag label="SHOES!!!!!!!!" />
-                <PinkBlurTag label="SHOES!!!!!!!!" />
-                <PinkBlurTag label="SHOES!!!!!!!!" />
-                <PinkBlurTag label="SHOES!!!!!!!!" />
-                <PinkBlurTag label="SHOES!!!!!!!!" />
-                <PinkBlurTag label="SHOES!!!!!!!!" />
+                {article.tags.map((tag, idx) => (
+                  <PinkBlurTag key={idx} label={tag.productName} />
+                ))}
               </Stack>
             </UserInfo>
             <Communication>
@@ -127,7 +134,15 @@ const ArticleBody = styled(ModalBody)`
 const PictureContainer = styled.div`
   min-width: 650px;
   min-height: 650px;
-  background-color: white;
+  position: relative;
+`;
+
+const ImagePreview = styled.img`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
 `;
 
 const ArticleContent = styled.div`
@@ -138,13 +153,15 @@ const ArticleContent = styled.div`
 `;
 
 const UserTitle = styled.p`
-  font-size: 12px;
+  font-size: 18px;
   font-weight: 600;
 `;
 
 const UserInfo = styled.div`
   display: flex;
   flex-direction: column;
+  font-size: 15px;
+  gap: 5px;
 `;
 
 const UserSpec = styled.div`
@@ -184,4 +201,8 @@ const FixedInputWrapper = styled.div`
   align-items: center;
   border-top: 1.5px solid var(--gray300);
   padding-top: 3px;
+`;
+
+const TagWrapper = styled.div`
+  position: absolute;
 `;
