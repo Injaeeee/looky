@@ -1,4 +1,4 @@
-import { Mood } from "./user.types";
+import { Gender, Height, Mood } from "./user.types";
 import { Tag } from "./tag.types";
 
 export enum TPO {
@@ -15,31 +15,39 @@ export enum TPO {
 export enum Season {
   Spring = "Spring",
   Summer = "Summer",
-  Sparkling = "Sparkling",
+  fall = "fall",
   Winter = "Winter",
 }
 
-export type Writer = {
+export interface Writer {
   image?: string;
   nickname: string;
   id: number;
-};
+}
 
-export type ArticleInfo = {
+export interface ArticleInfo {
   title: string;
   mood: Mood;
   tpo: TPO;
   season: Season;
   content: string;
-};
+}
 
-export type PostArticle = ArticleInfo & {
-  // id: number;
+export interface PostArticle extends ArticleInfo {
   tags: Tag[];
   createdAt: string;
   updatedAt: string;
   imageURL: string | undefined;
-  // commentCount: number;
-  // writer: Writer;
-  // likeCount: number;
-};
+}
+
+export interface Article extends PostArticle {
+  id: string;
+}
+
+export interface ArticleFilter {
+  season?: Season | null;
+  tpo?: TPO | null;
+  mood?: Mood | null;
+  gender?: Gender | null;
+  height?: Height | null;
+}

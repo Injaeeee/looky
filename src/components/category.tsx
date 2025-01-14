@@ -13,15 +13,19 @@ interface CategoryProps {
   onClick: () => void;
 }
 
+interface CategoryListProps {
+  onCategoryChange: (selectedCategories: string[]) => void;
+}
+
 const categories: CategoryType[] = [
-  { id: 1, name: "OUTER", src: "https://bit.ly/dan-abramov" },
-  { id: 2, name: "TOP", src: "https://bit.ly/ryan-florence" },
-  { id: 3, name: "PANTS", src: "https://bit.ly/code-beast" },
-  { id: 4, name: "NEAT", src: "https://bit.ly/kent-c-dodds" },
-  { id: 5, name: "JEANS", src: "https://bit.ly/dan-abramov" },
-  { id: 6, name: "CAP", src: "https://bit.ly/ryan-florence" },
-  { id: 7, name: "SHOES", src: "https://bit.ly/code-beast" },
-  { id: 8, name: "BAG", src: "https://bit.ly/kent-c-dodds" },
+  { id: 1, name: "OUTER", src: "../icon/outer.svg" },
+  { id: 2, name: "TOP", src: "../icon/top.svg" },
+  { id: 3, name: "PANTS", src: "../icon/pants.svg" },
+  { id: 4, name: "NEAT", src: "../icon/neat.svg" },
+  { id: 5, name: "JEANS", src: "../icon/jeans.svg" },
+  { id: 6, name: "CAP", src: "../icon/cap.svg" },
+  { id: 7, name: "SHOES", src: "../icon/shoes.svg" },
+  { id: 8, name: "BAG", src: "../icon/bag.svg" },
 ];
 
 function Category({ category, isSelected, onClick }: CategoryProps) {
@@ -35,12 +39,23 @@ function Category({ category, isSelected, onClick }: CategoryProps) {
   );
 }
 
-export default function CategoryList() {
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+export default function CategoryList({ onCategoryChange }: CategoryListProps) {
+  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
   const handleCategoryClick = (category: CategoryType) => {
-    console.log("Clicked category:", category.name);
-    setSelectedCategory(category.id);
+    setSelectedCategories((prev) => {
+      const isSelected = prev.includes(category.id);
+      const updatedCategories = isSelected
+        ? prev.filter((id) => id !== category.id)
+        : [...prev, category.id];
+
+      const selectedCategoryNames = updatedCategories
+        .map((id) => categories.find((cat) => cat.id === id)?.name)
+        .filter((name): name is string => name !== undefined);
+
+      onCategoryChange(selectedCategoryNames);
+      return updatedCategories;
+    });
   };
 
   return (
@@ -49,7 +64,7 @@ export default function CategoryList() {
         <Category
           key={category.id}
           category={category}
-          isSelected={selectedCategory === category.id}
+          isSelected={selectedCategories.includes(category.id)}
           onClick={() => handleCategoryClick(category)}
         />
       ))}
@@ -70,6 +85,9 @@ const CategoryItem = styled.div`
 `;
 
 const AvatarWrapper = styled.div<{ $isSelected: boolean }>`
+  width: 70px;
+  height: 70px;
+  background-color: var(--gray300);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -84,9 +102,8 @@ const AvatarWrapper = styled.div<{ $isSelected: boolean }>`
 `;
 
 const CategoryAvatar = styled.img`
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+  width: 70%;
+  height: 70%;
 `;
 
 const CategoryName = styled.span<{ $isSelected: boolean }>`

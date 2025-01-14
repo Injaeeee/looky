@@ -17,18 +17,12 @@ const comments = [
   },
   {
     id: 2,
-    userName: "Sarah Drasner",
-    content: "Styled-components are amazing!",
-    avatarSrc: "https://bit.ly/sarah-drasner",
-  },
-  {
-    id: 3,
     userName: "Ryan Florence",
     content: "Let's build great UIs!",
     avatarSrc: "https://bit.ly/ryan-florence",
   },
   {
-    id: 4,
+    id: 3,
     userName: "Kent C. Dodds",
     content: "Testing is essential.",
     avatarSrc: "https://bit.ly/kent-c-dodds",

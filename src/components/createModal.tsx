@@ -122,11 +122,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     console.log(articleInfo, tags, createdAt, imageURL);
 
     const newArticle: PostArticle = {
-      title: articleInfo.title,
-      content: articleInfo.content,
-      mood: articleInfo.mood,
-      tpo: articleInfo.tpo,
-      season: articleInfo.season,
+      ...articleInfo,
       tags,
       createdAt,
       imageURL,

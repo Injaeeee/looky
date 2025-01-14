@@ -1,37 +1,92 @@
 import { Select as ChakraSelect } from "@chakra-ui/react";
 import styled from "styled-components";
+import { Season, TPO } from "../types/article.types";
+import { Gender, Height, Mood } from "../types/user.types";
 
-export default function SelectGroup() {
-  const selectOptions = [
-    { placeholder: "성별", options: ["남성", "여성"] },
-    { placeholder: "계절", options: ["봄", "여름", "가을", "겨울"] },
-    { placeholder: "TPO", options: ["캐주얼", "정장", "운동", "파티"] },
-    { placeholder: "MOOD", options: ["활발", "차분", "우아", "발랄"] },
-    {
-      placeholder: "신장",
-      options: ["150cm 이하", "150-160cm", "160-170cm", "170cm 이상"],
-    },
-  ];
+interface SelectGroupProps {
+  onSelectChange: (
+    key: "season" | "tpo" | "mood" | "gender" | "height",
+  ) => (event: React.ChangeEvent<HTMLSelectElement>) => void;
+}
 
+export default function SelectGroup({ onSelectChange }: SelectGroupProps) {
   return (
     <SelectContainer>
-      {selectOptions.map((select, index) => (
-        <StyledChakraSelect
-          width="auto"
-          key={index}
-          placeholder={select.placeholder}
-          borderColor="white"
-          focusBorderColor="pink.100"
-          size="lg"
-          _hover={{ borderColor: "pink.200" }}
-        >
-          {select.options.map((option, i) => (
-            <option key={i} value={option}>
-              {option}
-            </option>
-          ))}
-        </StyledChakraSelect>
-      ))}
+      <StyledChakraSelect
+        onChange={onSelectChange("season")}
+        width="auto"
+        borderColor="white"
+        focusBorderColor="pink.100"
+        size="lg"
+        placeholder="계절"
+        _hover={{ borderColor: "pink.200" }}
+      >
+        {Object.values(Season).map((Season) => (
+          <option key={Season} value={Season}>
+            {Season}
+          </option>
+        ))}
+      </StyledChakraSelect>
+      <StyledChakraSelect
+        onChange={onSelectChange("tpo")}
+        width="auto"
+        borderColor="white"
+        focusBorderColor="pink.100"
+        size="lg"
+        placeholder="TPO"
+        _hover={{ borderColor: "pink.200" }}
+      >
+        {Object.values(TPO).map((TPO) => (
+          <option key={TPO} value={TPO}>
+            {TPO}
+          </option>
+        ))}
+      </StyledChakraSelect>
+      <StyledChakraSelect
+        onChange={onSelectChange("mood")}
+        width="auto"
+        borderColor="white"
+        focusBorderColor="pink.100"
+        size="lg"
+        placeholder="Mood"
+        _hover={{ borderColor: "pink.200" }}
+      >
+        {Object.values(Mood).map((Mood) => (
+          <option key={Mood} value={Mood}>
+            {Mood}
+          </option>
+        ))}
+      </StyledChakraSelect>
+      <StyledChakraSelect
+        onChange={onSelectChange("gender")}
+        width="auto"
+        borderColor="white"
+        focusBorderColor="pink.100"
+        size="lg"
+        placeholder="성별"
+        _hover={{ borderColor: "pink.200" }}
+      >
+        {Object.values(Gender).map((Gender) => (
+          <option key={Gender} value={Gender}>
+            {Gender}
+          </option>
+        ))}
+      </StyledChakraSelect>
+      <StyledChakraSelect
+        onChange={onSelectChange("height")}
+        width="auto"
+        borderColor="white"
+        focusBorderColor="pink.100"
+        size="lg"
+        placeholder="키"
+        _hover={{ borderColor: "pink.200" }}
+      >
+        {Object.values(Height).map((Height) => (
+          <option key={Height} value={Height}>
+            {Height}
+          </option>
+        ))}
+      </StyledChakraSelect>
     </SelectContainer>
   );
 }

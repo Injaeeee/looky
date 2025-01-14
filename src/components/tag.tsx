@@ -9,7 +9,7 @@ interface PostTagProps {
   category: string;
   price: number;
   name: string;
-  onDelete: () => void;
+  onDelete?: () => void;
 }
 
 export function PinkTag({ label }: TagProps) {
@@ -57,15 +57,18 @@ export function BlurTag({ category, price, name, onDelete }: PostTagProps) {
         position: "relative",
       }}
     >
-      <TagCloseButton
-        sx={{
-          position: "absolute",
-          top: "4px",
-          right: "5px",
-          color: "white",
-        }}
-        onClick={onDelete}
-      />
+      {onDelete && (
+        <TagCloseButton
+          sx={{
+            position: "absolute",
+            top: "4px",
+            right: "5px",
+            color: "white",
+          }}
+          onClick={onDelete}
+        />
+      )}
+
       <LabelWrapper>
         <GrayLabel>{category}</GrayLabel>
         <GrayLabel>₩ {price}</GrayLabel>
