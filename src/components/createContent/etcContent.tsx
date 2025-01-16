@@ -2,6 +2,7 @@ import { Input, Select, Textarea } from "@chakra-ui/react";
 import styled from "styled-components";
 import { Season, TPO } from "../../types/article.types";
 import { Mood } from "../../types/user.types";
+import { PinkBorderButton, PinkButton } from "../button";
 
 export default function EtcContent({
   goToPreviousStep,
@@ -108,8 +109,8 @@ export default function EtcContent({
         </Select>
       </InputWrapper>
       <ButtonWrapper>
-        <PrevButton onClick={goToPreviousStep}>이전으로</PrevButton>
-        <ShareButton type="submit">공유하기</ShareButton>
+        <PinkBorderButton onClick={goToPreviousStep}>이전으로</PinkBorderButton>
+        <PinkButton type="submit">공유하기</PinkButton>
       </ButtonWrapper>
     </ArticleContent>
   );

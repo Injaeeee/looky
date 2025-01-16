@@ -23,6 +23,7 @@ import { postArticle } from "../util/article.api";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { PinkButton } from "./button";
 
 const articleSchema = z.object({
   title: z
@@ -263,14 +264,15 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
                       style={{ display: "none" }}
                       onChange={handleFileChange}
                     />
-                    <PictureButton
+                    <PinkButton
                       onClick={() =>
                         document.getElementById("file-input")?.click()
                       }
                       type="button"
+                      color="white"
                     >
                       사진 선택
-                    </PictureButton>
+                    </PinkButton>
                   </>
                 )}
                 {tags.map((tag) => (
@@ -322,15 +324,6 @@ const PictureContainer = styled.div`
   min-width: 650px;
   min-height: 650px;
   border: var(--gray600) dashed 3px;
-`;
-
-const PictureButton = styled.button`
-  background-color: var(--pink100);
-  color: white;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 7px 12px;
 `;
 
 const ImagePreview = styled.img`

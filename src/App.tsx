@@ -7,7 +7,8 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./assets/style/theme";
 import RankingPage from "./pages/rankingPage";
 import MyPage from "./pages/myPage";
-import TestPage from "./pages/testPage";
+import Login from "./pages/login";
+import SignUp from "./pages/signUp";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,14 @@ const router = createBrowserRouter([
       {
         path: "mypage",
         element: <MyPage />,
+      },
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "signin",
+        element: <SignUp />,
       },
     ],
   },

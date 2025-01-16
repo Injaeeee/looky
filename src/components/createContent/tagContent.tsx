@@ -1,6 +1,7 @@
 import { Input, Select, Image } from "@chakra-ui/react";
 import styled from "styled-components";
 import { Category } from "../../types/tag.types";
+import { PinkBorderButton, PinkButton } from "../button";
 
 export default function TagContent({
   tagCount,
@@ -121,29 +122,16 @@ const Explanation = styled.span`
   color: var(--pink100);
 `;
 
-const MakeTagButton = styled.button`
+const MakeTagButton = styled(PinkBorderButton)`
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 5px;
-  border: 1px solid var(--pink100);
-  border-radius: 6px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--pink100);
-  padding: 7px 12px;
   margin-left: auto;
 `;
 
-const NextButton = styled.button`
+const NextButton = styled(PinkButton)`
   position: absolute;
   right: 0;
   bottom: 0;
-  background-color: var(--pink100);
-  color: black;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 7px 12px;
 `;
