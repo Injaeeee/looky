@@ -8,7 +8,7 @@ import {
   useDisclosure,
   Button,
 } from "@chakra-ui/react";
-import { BlurTag, PinkBlurTag, PinkTag } from "../tag";
+import { BlurTag, PinkBlurTag, PinkTag } from "../common/tag";
 import ArticleModal from "../articleModal";
 
 export default function MyArticles() {

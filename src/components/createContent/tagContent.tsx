@@ -1,7 +1,7 @@
 import { Input, Select, Image } from "@chakra-ui/react";
 import styled from "styled-components";
 import { Category } from "../../types/tag.types";
-import { PinkBorderButton, PinkButton } from "../button";
+import { PinkBorderButton, PinkButton } from "../common/button";
 
 export default function TagContent({
   tagCount,

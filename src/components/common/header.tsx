@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { Avatar, Image, useDisclosure } from "@chakra-ui/react";
-import CreateModal from "./createModal";
+import CreateModal from "../createModal";
 
 export default function Header() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);

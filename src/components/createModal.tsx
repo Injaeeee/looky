@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import { BlurTag } from "./tag";
+import { BlurTag } from "./common/tag";
 import TagContent from "./createContent/tagContent";
 import EtcContent from "./createContent/etcContent";
 import { DndProvider, useDrag } from "react-dnd";
@@ -23,7 +23,7 @@ import { postArticle } from "../util/article.api";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { PinkButton } from "./button";
+import { PinkButton } from "./common/button";
 
 const articleSchema = z.object({
   title: z

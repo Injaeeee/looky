@@ -1,7 +1,7 @@
 import ArticleList from "../components/articleList";
 import styled from "styled-components";
 import { Avatar, Button, Card, Image, Text } from "@chakra-ui/react";
-import { SearchInput } from "../components/input";
+import { SearchInput } from "../components/common/input";
 import BestRanking from "../components/bestRanking";
 
 export default function ListPage() {
@@ -44,7 +44,6 @@ const Navigation = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   max-width: 270px;
   height: 64px;
   gap: 10px;

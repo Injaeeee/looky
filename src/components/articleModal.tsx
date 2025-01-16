@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import { BlurTag, PinkBlurTag } from "./tag";
+import { BlurTag, PinkBlurTag } from "./common/tag";
 import CommentList from "./commentList";
 import { Article, Season, TPO } from "../types/article.types";
 import { Gender, Height, Mood } from "../types/user.types";

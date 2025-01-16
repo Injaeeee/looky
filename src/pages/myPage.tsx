@@ -48,7 +48,6 @@ export default function MyPage() {
         </Button>
       </ButtonWrapper>
       <MyArticles />
-
       <EditProfileModal isOpen={isOpen} onClose={onClose} />
     </Container>
   );

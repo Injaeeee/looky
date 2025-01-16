@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { Image } from "@chakra-ui/react";
-import { BlurTag } from "../components/tag";
+import { BlurTag } from "../components/common/tag";
 import MainRanking from "../components/mainRanking";
-import { PinkBorderButton } from "../components/button";
+import { PinkBorderButton } from "../components/common/button";
 
 export default function MainPage() {
   return (

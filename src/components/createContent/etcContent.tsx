@@ -2,7 +2,7 @@ import { Input, Select, Textarea } from "@chakra-ui/react";
 import styled from "styled-components";
 import { Season, TPO } from "../../types/article.types";
 import { Mood } from "../../types/user.types";
-import { PinkBorderButton, PinkButton } from "../button";
+import { PinkBorderButton, PinkButton } from "../common/button";
 
 export default function EtcContent({
   goToPreviousStep,
@@ -162,23 +162,4 @@ const ButtonWrapper = styled.div`
   bottom: 0;
   display: flex;
   gap: 5px;
-`;
-
-const PrevButton = styled.button`
-  border: 1px solid var(--pink100);
-  border-radius: 6px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  padding: 7px 12px;
-  color: var(--pink100);
-`;
-
-const ShareButton = styled.button`
-  background-color: var(--pink100);
-  color: black;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 7px 12px;
 `;

@@ -1,7 +1,7 @@
 import { Select as ChakraSelect } from "@chakra-ui/react";
 import styled from "styled-components";
-import { Season, TPO } from "../types/article.types";
-import { Gender, Height, Mood } from "../types/user.types";
+import { Season, TPO } from "../../types/article.types";
+import { Gender, Height, Mood } from "../../types/user.types";
 
 interface SelectGroupProps {
   onSelectChange: (
