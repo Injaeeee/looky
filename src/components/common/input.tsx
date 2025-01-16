@@ -1,10 +1,13 @@
 import { Search2Icon } from "@chakra-ui/icons";
 import styled from "styled-components";
 
+import React, { forwardRef } from "react";
+
 interface CustomInputProps {
   placeholder: string;
+  type?: string;
+  ref?: React.Ref<HTMLInputElement>;
 }
-
 export function SearchInput() {
   return (
     <InputWrapper>
@@ -16,9 +19,11 @@ export function SearchInput() {
   );
 }
 
-export default function Input({ placeholder, ...props }: CustomInputProps) {
-  return <CustomInput placeholder={placeholder} {...props} />;
-}
+const Input = forwardRef<HTMLInputElement, CustomInputProps>(
+  ({ placeholder, ...props }, ref) => {
+    return <CustomInput placeholder={placeholder} {...props} ref={ref} />;
+  },
+);
 
 const InputWrapper = styled.div`
   position: relative;
@@ -64,3 +69,5 @@ const CustomInput = styled.input`
     outline: none;
   }
 `;
+
+export default Input;
