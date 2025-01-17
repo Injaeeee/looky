@@ -6,7 +6,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../util/user.api";
 
 const schema = z.object({
   username: z
@@ -21,6 +22,7 @@ const schema = z.object({
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -34,10 +36,15 @@ export default function Login() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: any) => {
-    console.log("아이디:", data.username);
-    console.log("비밀번호:", data.password);
-    console.log(errors); // 오류 객체 확인
+  const onSubmit = async (data: any) => {
+    try {
+      await loginUser({ email: data.username, password: data.password });
+      alert("로그인 성공했습니다!");
+      navigate("/");
+    } catch (error: any) {
+      alert(error.message || "회원가입에 실패했습니다.");
+      console.log(error.message);
+    }
   };
 
   return (

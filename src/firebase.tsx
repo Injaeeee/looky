@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
-// firestore를 불러오는 모듈을 임포트
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
+import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_apiKey,
@@ -18,6 +18,7 @@ const app = initializeApp(firebaseConfig);
 // firestore 객체 생성
 const db = getFirestore(app);
 const storage = getStorage(app);
+const auth = getAuth(app);
 
 // firestore export
-export { db, storage };
+export { db, storage, auth };

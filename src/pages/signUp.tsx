@@ -6,25 +6,39 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
+import { signUpUser } from "../util/user.api";
 
-const schema = z.object({
-  username: z
-    .string()
-    .min(1, { message: "아이디는 필수 항목입니다." })
-    .max(20, { message: "아이디는 20자 이하로 입력해주세요." }),
-  password: z
-    .string()
-    .min(6, { message: "비밀번호는 최소 6자 이상이어야 합니다." })
-    .max(20, { message: "비밀번호는 20자 이하로 입력해주세요." }),
-});
+const schema = z
+  .object({
+    username: z
+      .string()
+      .email({ message: "유효한 이메일 주소를 입력해주세요." })
+      .min(1, { message: "아이디는 필수 항목입니다." })
+      .max(20, { message: "아이디는 20자 이하로 입력해주세요." }),
+    password: z
+      .string()
+      .min(6, { message: "비밀번호는 최소 6자 이상이어야 합니다." })
+      .max(20, { message: "비밀번호는 20자 이하로 입력해주세요." }),
+    passwordCheck: z.string(),
+  })
+  .refine((data) => data.password === data.passwordCheck, {
+    message: "비밀번호가 일치하지 않습니다.",
+    path: ["passwordCheck"],
+  });
 
 export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordCheck, setShowPasswordCheck] = useState(false);
+  const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
+  };
+
+  const togglePasswordCheckVisibility = () => {
+    setShowPasswordCheck((prev) => !prev);
   };
 
   const {
@@ -35,10 +49,14 @@ export default function SignUp() {
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = (data: any) => {
-    console.log("아이디:", data.username);
-    console.log("비밀번호:", data.password);
-    console.log(errors); // 오류 객체 확인
+  const onSubmit = async (data: any) => {
+    try {
+      await signUpUser({ email: data.username, password: data.password });
+      alert("회원가입에 성공했습니다!");
+      navigate("/login");
+    } catch (error: any) {
+      alert(error.message || "회원가입에 실패했습니다.");
+    }
   };
 
   return (
@@ -72,14 +90,14 @@ export default function SignUp() {
         <Title>비밀번호 확인</Title>
         <Input
           placeholder="비밀번호를 재입력해주세요."
-          type={showPassword ? "text" : "password"}
-          {...register("password")}
+          type={showPasswordCheck ? "text" : "password"}
+          {...register("passwordCheck")}
         />
-        {errors.password && (
-          <ErrorText>{errors.password.message as string}</ErrorText>
+        {errors.passwordCheck && (
+          <ErrorText>{errors.passwordCheck.message as string}</ErrorText>
         )}
-        <IconWrapper onClick={togglePasswordVisibility}>
-          {showPassword ? (
+        <IconWrapper onClick={togglePasswordCheckVisibility}>
+          {showPasswordCheck ? (
             <ViewOffIcon boxSize={10} color="white" />
           ) : (
             <ViewIcon boxSize={10} color="white" />
