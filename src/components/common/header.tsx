@@ -9,7 +9,7 @@ import { logoutUser } from "../../util/user.api";
 export default function Header() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { isAuthenticated, user } = useAuthStore();
+  const { isAuthenticated, user, restoreSession } = useAuthStore();
   const location = useLocation();
 
   const handleLogout = async () => {
@@ -20,6 +20,10 @@ export default function Header() {
       console.error("로그아웃 오류:", error.message);
     }
   };
+
+  useEffect(() => {
+    restoreSession();
+  }, [restoreSession]);
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 768);
@@ -51,8 +55,8 @@ export default function Header() {
         {isAuthenticated ? (
           <LeftWrapper>
             <UserWrapper to="/mypage">
-              <Avatar name="Oshigaki Kisame" src="" />
-              <UserName>{user?.email}</UserName>
+              <Avatar name={user?.name} src={user?.imageUrl} />
+              <UserName>{user?.name}</UserName>
             </UserWrapper>
             <LogoutButton onClick={handleLogout}> / 로그아웃</LogoutButton>
           </LeftWrapper>

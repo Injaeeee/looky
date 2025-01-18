@@ -11,7 +11,7 @@ import {
 import { BlurTag, PinkBlurTag, PinkTag } from "./common/tag";
 import ArticleModal from "../components/articleModal";
 import CategoryList from "./category";
-import SelectGroup from "./common/select";
+import { SelectGroup } from "./common/select";
 import { getArticles } from "../util/article.api";
 import { Article, Season, TPO, ArticleFilter } from "../types/article.types";
 import { Gender, Height, Mood } from "../types/user.types";

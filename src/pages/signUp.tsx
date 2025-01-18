@@ -9,10 +9,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { signUpUser } from "../util/user.api";
+import { Image } from "@chakra-ui/react";
+import {
+  GenderSelect,
+  HeightSelect,
+  MoodSelect,
+} from "../components/common/select";
 
 const schema = z
   .object({
-    username: z
+    name: z
+      .string()
+      .min(1, { message: "이름을 입력해주세요." })
+      .max(20, { message: "10자 이하로 입력해주세요." }),
+    email: z
       .string()
       .email({ message: "유효한 이메일 주소를 입력해주세요." })
       .min(1, { message: "아이디는 필수 항목입니다." })
@@ -22,6 +32,9 @@ const schema = z
       .min(6, { message: "비밀번호는 최소 6자 이상이어야 합니다." })
       .max(20, { message: "비밀번호는 20자 이하로 입력해주세요." }),
     passwordCheck: z.string(),
+    mood: z.string().min(1, { message: "무드를 선택해주세요." }),
+    height: z.string().min(1, { message: "키를 선택해주세요." }),
+    gender: z.string().min(1, { message: "성별을 선택해주세요." }),
   })
   .refine((data) => data.password === data.passwordCheck, {
     message: "비밀번호가 일치하지 않습니다.",
@@ -51,7 +64,14 @@ export default function SignUp() {
 
   const onSubmit = async (data: any) => {
     try {
-      await signUpUser({ email: data.username, password: data.password });
+      await signUpUser({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+        height: data.height,
+        gender: data.gender,
+        mood: data.mood,
+      });
       alert("회원가입에 성공했습니다!");
       navigate("/login");
     } catch (error: any) {
@@ -61,11 +81,17 @@ export default function SignUp() {
 
   return (
     <Container onSubmit={handleSubmit(onSubmit)}>
+      <Image src="/image/loginLogo.png" alt="logo" />
+      <InputWrapper>
+        <Title>이름</Title>
+        <Input placeholder="이름을 입력해주세요." {...register("name")} />
+        {errors.name && <ErrorText>{errors.name.message as string}</ErrorText>}
+      </InputWrapper>
       <InputWrapper>
         <Title>아이디</Title>
-        <Input placeholder="아이디를 입력해주세요." {...register("username")} />
-        {errors.username && (
-          <ErrorText>{errors.username.message as string}</ErrorText>
+        <Input placeholder="아이디를 입력해주세요." {...register("email")} />
+        {errors.email && (
+          <ErrorText>{errors.email.message as string}</ErrorText>
         )}
       </InputWrapper>
       <InputWrapper>
@@ -112,6 +138,29 @@ export default function SignUp() {
         </WarningText>
       </WarningWrapper>
 
+      <SelectWrapper>
+        <InputWrapper>
+          <Title>무드</Title>
+          <MoodSelect {...register("mood")} />
+          {errors.mood && (
+            <ErrorText>{errors.mood.message as string}</ErrorText>
+          )}
+        </InputWrapper>
+        <InputWrapper>
+          <Title>키</Title>
+          <HeightSelect {...register("height")} />
+          {errors.height && (
+            <ErrorText>{errors.height.message as string}</ErrorText>
+          )}
+        </InputWrapper>
+        <InputWrapper>
+          <Title>성별</Title>
+          <GenderSelect {...register("gender")} />
+          {errors.gender && (
+            <ErrorText>{errors.gender.message as string}</ErrorText>
+          )}
+        </InputWrapper>
+      </SelectWrapper>
       <Button type="submit">회원가입</Button>
       <SignUpLink to="/login">이미 회원이신가요? {">"}</SignUpLink>
     </Container>
@@ -125,7 +174,7 @@ const Container = styled.form`
   gap: 40px;
   width: 450px;
   align-items: center;
-  margin: 150px auto 0;
+  margin: 30px auto;
 `;
 
 const InputWrapper = styled.div`
@@ -188,4 +237,11 @@ const WarningText = styled.p`
   line-height: 18px;
   font-weight: 500;
   color: var(--gray400);
+`;
+
+const SelectWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  justify-content: space-around;
 `;

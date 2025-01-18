@@ -27,9 +27,10 @@ export enum Gender {
 export type User = {
   id: number;
   email: string;
-  nickname: string;
+  name: string;
   image: string | null;
-  weight: number;
+  height: Height;
+  mood: Mood;
   createdAt: string;
   updatedAt: string;
 };

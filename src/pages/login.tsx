@@ -8,6 +8,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../util/user.api";
+import { Image } from "@chakra-ui/react";
 
 const schema = z.object({
   username: z
@@ -38,7 +39,10 @@ export default function Login() {
 
   const onSubmit = async (data: any) => {
     try {
-      await loginUser({ email: data.username, password: data.password });
+      await loginUser({
+        email: data.username,
+        password: data.password,
+      });
       alert("로그인 성공했습니다!");
       navigate("/");
     } catch (error: any) {
@@ -49,6 +53,7 @@ export default function Login() {
 
   return (
     <Container onSubmit={handleSubmit(onSubmit)}>
+      <Image src="/image/loginLogo.png" alt="logo" />
       <InputWrapper>
         <Title>아이디</Title>
         <Input placeholder="아이디를 입력해주세요." {...register("username")} />
