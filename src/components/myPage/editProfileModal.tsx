@@ -1,4 +1,4 @@
-import { Gender, Height, Mood } from "../../types/user.types";
+import { User } from "../../types/user.types";
 import {
   Modal,
   ModalBody,
@@ -8,28 +8,15 @@ import {
   ModalOverlay,
   Avatar,
   Input,
-  Select,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { GenderSelect, HeightSelect, MoodSelect } from "../common/select";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateUserProfile } from "../../util/user.api";
 import { uploadImage } from "../../util/image.api";
-
-interface User {
-  uid: string;
-  email: string;
-  imageUrl: string;
-  name: string;
-  mood: Mood;
-  height: Height;
-  gender: Gender;
-  accessToken: string;
-  refreshToken: string;
-}
 
 interface ArticleModalProps {
   isOpen: boolean;

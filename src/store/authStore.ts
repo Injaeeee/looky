@@ -1,17 +1,5 @@
-import { Gender, Height, Mood } from "@/types/user.types";
+import { User } from "@/types/user.types";
 import { create } from "zustand";
-
-interface User {
-  uid: string;
-  email: string;
-  name: string;
-  imageUrl: string;
-  mood: Mood;
-  height: Height;
-  gender: Gender;
-  accessToken: string;
-  refreshToken: string;
-}
 
 interface AuthState {
   user: User | null;

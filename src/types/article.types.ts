@@ -21,8 +21,8 @@ export enum Season {
 
 export interface Writer {
   image?: string;
-  nickname: string;
-  id: number;
+  name: string;
+  uid: string;
 }
 
 export interface ArticleInfo {

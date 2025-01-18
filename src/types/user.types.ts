@@ -24,13 +24,25 @@ export enum Gender {
   여 = "여",
 }
 
-export type User = {
-  id: number;
+export interface UserInfo {
+  name?: string;
+  mood?: string;
+  height?: string;
+  gender?: string;
+}
+
+export interface Auth {
+  accessToken?: string;
+  refreshToken?: string;
+}
+
+export interface User extends UserInfo, Auth {
+  uid: string;
   email: string;
-  name: string;
-  image: string | null;
-  height: Height;
-  mood: Mood;
-  createdAt: string;
-  updatedAt: string;
-};
+  imageUrl: string;
+}
+
+export interface UserData extends UserInfo {
+  email: string;
+  password: string;
+}

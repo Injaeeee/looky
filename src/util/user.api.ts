@@ -6,27 +6,7 @@ import {
 import { auth, db } from "../firebase";
 import { useAuthStore } from "../store/authStore";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { Gender, Height, Mood } from "../types/user.types";
-
-interface UserData {
-  email: string;
-  password: string;
-  name?: string;
-  mood?: string;
-  height?: string;
-  gender?: string;
-}
-interface User {
-  uid: string;
-  email: string;
-  imageUrl: string;
-  name: string;
-  mood: Mood;
-  height: Height;
-  gender: Gender;
-  accessToken: string;
-  refreshToken: string;
-}
+import { Gender, Height, Mood, User, UserData } from "../types/user.types";
 
 /**
  * Firebase 회원가입 함수
@@ -70,7 +50,6 @@ export const loginUser = async (data: UserData): Promise<void> => {
   const { email, password } = data;
 
   try {
-    // Firebase Authentication 로그인
     const userCredential = await signInWithEmailAndPassword(
       auth,
       email,
