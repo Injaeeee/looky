@@ -35,13 +35,12 @@ export default function ArticleModal({
 }: ArticleModalProps) {
   const [liked, setLiked] = useState<boolean>(false);
   const [likeCount, setLikeCount] = useState<number>(article.likeCount);
+  const { user } = useAuthStore();
 
   useEffect(() => {
-    const savedLike = localStorage.getItem(`liked-${article.id}`);
-    if (savedLike) {
-      setLiked(JSON.parse(savedLike));
-    } else {
-      setLiked(false);
+    if (user && user.articleLike) {
+      const isLiked = user.articleLike.includes(article.id);
+      setLiked(isLiked);
     }
 
     const savedLikeCount = localStorage.getItem(`likeCount-${article.id}`);
@@ -50,7 +49,7 @@ export default function ArticleModal({
     } else {
       setLikeCount(article.likeCount);
     }
-  }, [article.id, article.likeCount]);
+  }, [article.id, article.likeCount, user]);
 
   const toggleLike = async () => {
     const newLikedState = !liked;
@@ -67,10 +66,8 @@ export default function ArticleModal({
     );
 
     try {
-      const user = useAuthStore.getState().user;
       if (user) {
         const { uid } = user;
-
         await updateUserLikeStatus(uid, article.id, newLikedState);
         await updateLikeCount(article.id, incrementValue);
       }

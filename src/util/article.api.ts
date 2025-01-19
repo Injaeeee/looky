@@ -84,3 +84,29 @@ export async function updateLikeCount(
     likeCount: increment(incrementValue),
   });
 }
+
+export async function getLikedArticles(
+  likedArticleIds: string[],
+): Promise<Article[]> {
+  if (likedArticleIds.length === 0) return [];
+
+  const productRef = collection(db, "articles");
+  const q = query(productRef, where("__name__", "in", likedArticleIds));
+  const querySnapshot = await getDocs(q);
+
+  return querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as Omit<Article, "id">),
+  }));
+}
+
+export async function getMyArticles(writerUid: string): Promise<Article[]> {
+  const productRef = collection(db, "articles");
+  const q = query(productRef, where("writer.uid", "==", writerUid));
+  const querySnapshot = await getDocs(q);
+
+  return querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as Omit<Article, "id">),
+  }));
+}

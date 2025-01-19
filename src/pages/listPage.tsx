@@ -7,7 +7,7 @@ import { useAuthStore } from "../store/authStore";
 import { useEffect, useState } from "react";
 import { getArticles } from "../util/article.api";
 import { Article, ArticleFilter } from "../types/article.types";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function ListPage() {
   const { user } = useAuthStore();
@@ -33,7 +33,7 @@ export default function ListPage() {
           <UserInfo>
             <UserName>{user?.name}</UserName>
             <UserDetail>
-              {user?.height} · {user?.mood} post 12
+              {user?.height} · {user?.mood}
             </UserDetail>
           </UserInfo>
         </UserWrapper>

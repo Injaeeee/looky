@@ -6,9 +6,9 @@ import EditProfileModal from "../components/myPage/editProfileModal";
 import { useAuthStore } from "../store/authStore";
 
 export default function MyPage() {
-  const [activeButton, setActiveButton] = useState<string>("shots");
+  const [activeButton, setActiveButton] = useState<string>("내 게시물");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isAuthenticated, user, restoreSession } = useAuthStore();
+  const { user } = useAuthStore();
 
   const handleOpenModal = () => {
     onOpen();
@@ -31,16 +31,10 @@ export default function MyPage() {
       </UserWrapper>
       <ButtonWrapper>
         <Button
-          $isActive={activeButton === "shots"}
-          onClick={() => handleButtonClick("shots")}
+          $isActive={activeButton === "내 게시물"}
+          onClick={() => handleButtonClick("내 게시물")}
         >
-          shots
-        </Button>
-        <Button
-          $isActive={activeButton === "collection"}
-          onClick={() => handleButtonClick("collection")}
-        >
-          collection
+          내 게시물
         </Button>
         <Button
           $isActive={activeButton === "like"}
@@ -49,7 +43,7 @@ export default function MyPage() {
           like
         </Button>
       </ButtonWrapper>
-      <MyArticles />
+      <MyArticles activeButton={activeButton} />
       {user && (
         <EditProfileModal isOpen={isOpen} onClose={onClose} user={user} />
       )}

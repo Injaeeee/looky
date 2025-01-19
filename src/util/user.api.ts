@@ -39,6 +39,7 @@ export const signUpUser = async (data: UserData): Promise<void> => {
       mood,
       height,
       gender,
+      likeArticle: [],
     });
 
     console.log("회원가입 성공:", user);
@@ -72,14 +73,13 @@ export const loginUser = async (data: UserData): Promise<void> => {
     }
 
     const userData = userDocSnap.data();
-
     const accessToken = await user.getIdToken();
     const refreshToken = user.refreshToken;
 
     useAuthStore.getState().login({
       uid: user.uid,
       email: user.email || "",
-      likeArticle: userData.likeArticle,
+      articleLike: userData.articleLike || [],
       imageUrl: userData.imageUrl,
       name: userData.name,
       mood: userData.mood,
@@ -88,10 +88,7 @@ export const loginUser = async (data: UserData): Promise<void> => {
       accessToken,
       refreshToken,
     });
-
-    console.log("로그인 성공:", user);
   } catch (error: any) {
-    console.error("로그인 오류:", error);
     throw new Error(error.message || "로그인에 실패했습니다.");
   }
 };
@@ -102,15 +99,9 @@ export const loginUser = async (data: UserData): Promise<void> => {
  */
 export const logoutUser = async (): Promise<void> => {
   try {
-    // Firebase Authentication 로그아웃
     await signOut(auth);
 
     useAuthStore.getState().logout();
-
-    const likedKeys = Object.keys(localStorage).filter((key) =>
-      key.startsWith("liked-"),
-    );
-    likedKeys.forEach((key) => localStorage.removeItem(key));
 
     const likeCountKeys = Object.keys(localStorage).filter((key) =>
       key.startsWith("likeCount-"),
@@ -157,17 +148,38 @@ export const updateUserLikeStatus = async (
   liked: boolean,
 ): Promise<void> => {
   const userDocRef = doc(db, "users", userId);
+  const { login, user } = useAuthStore.getState();
+
+  console.log(user?.articleLike);
+  console.log(liked);
 
   try {
     if (liked) {
       await updateDoc(userDocRef, {
         articleLike: arrayUnion(articleId),
       });
+
+      login({
+        ...user,
+        articleLike: [...(user?.articleLike || []), articleId],
+        uid: user?.uid || "",
+        email: user?.email || "",
+        imageUrl: user?.imageUrl || "",
+      });
     } else {
       await updateDoc(userDocRef, {
         articleLike: arrayRemove(articleId),
       });
+
+      login({
+        ...user,
+        articleLike: user?.articleLike?.filter((id) => id !== articleId) || [],
+        uid: user?.uid || "",
+        email: user?.email || "",
+        imageUrl: user?.imageUrl || "",
+      });
     }
+
     console.log(`사용자의 좋아요 상태가 업데이트되었습니다: ${liked}`);
   } catch (error) {
     console.error("좋아요 상태 업데이트 실패:", error);

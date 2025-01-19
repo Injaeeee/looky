@@ -37,7 +37,7 @@ export interface User extends UserInfo {
   imageUrl: string;
   accessToken?: string;
   refreshToken?: string;
-  likeArticle: string[];
+  articleLike: string[];
 }
 
 export interface UserData extends UserInfo {
