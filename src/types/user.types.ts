@@ -31,15 +31,12 @@ export interface UserInfo {
   gender?: string;
 }
 
-export interface Auth {
-  accessToken?: string;
-  refreshToken?: string;
-}
-
-export interface User extends UserInfo, Auth {
+export interface User extends UserInfo {
   uid: string;
   email: string;
   imageUrl: string;
+  accessToken?: string;
+  refreshToken?: string;
 }
 
 export interface UserData extends UserInfo {

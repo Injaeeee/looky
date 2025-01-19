@@ -14,55 +14,38 @@ import CategoryList from "./category";
 import { SelectGroup } from "./common/select";
 import { getArticles } from "../util/article.api";
 import { Article, Season, TPO, ArticleFilter } from "../types/article.types";
-import { Gender, Height, Mood } from "../types/user.types";
 
-export default function ArticleList() {
-  const [selectedArticle, setSelectedArticle] = useState<Article>();
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [filters, setFilters] = useState<ArticleFilter>({
-    season: null,
-    tpo: null,
-    mood: null,
-    gender: null,
-    height: null,
-  });
+export default function ArticleList({
+  articles,
+  filters,
+  onCategoryChange,
+  onFiltersChange,
+}: {
+  articles: Article[];
+  filters: ArticleFilter;
+  onCategoryChange: (categories: string[]) => void;
+  onFiltersChange: (filters: ArticleFilter) => void;
+}) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const handleCategoryChange = (categories: string[]) => {
-    setSelectedCategories(categories);
-  };
-
-  const handleSelectChange =
-    (key: keyof typeof filters) =>
-    (event: React.ChangeEvent<HTMLSelectElement>) => {
-      const value = event.target.value;
-      setFilters((prev) => ({ ...prev, [key]: value }));
-      console.log(`${key}: ${value}`);
-    };
+  const [selectedArticle, setSelectedArticle] = useState<Article>();
 
   const handleOpenModal = (article: Article) => {
     setSelectedArticle(article);
     onOpen();
   };
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const fetchedArticles = await getArticles(filters, selectedCategories);
-        setArticles(fetchedArticles);
-      } catch (error) {
-        console.error("Error fetching articles:", error);
-      }
-    };
-
-    fetchArticles();
-  }, [filters, selectedCategories]);
-
   return (
     <Container>
-      <CategoryList onCategoryChange={handleCategoryChange} />
-      <SelectGroup onSelectChange={handleSelectChange} />
+      <CategoryList onCategoryChange={onCategoryChange} />
+      <SelectGroup
+        onSelectChange={(key) => (event) => {
+          const value = event.target.value;
+          onFiltersChange({
+            ...filters,
+            [key]: value,
+          });
+        }}
+      />
       <ArticleListContainer>
         {articles.map((article, index) => (
           <ArticleContainer
@@ -74,16 +57,18 @@ export default function ArticleList() {
               <Stack spacing="1">
                 <Header size="md" color="white">
                   <Avatar
-                    name="Dan Abrahmov"
-                    src="https://bit.ly/dan-abramov"
+                    name={article.writer?.name}
+                    src={article.writer?.imageUrl}
                   />
-                  {article.title}
+                  {article.writer?.name}
                 </Header>
                 <Text color="white">{article.title}</Text>
                 <Stack direction="row" spacing="2">
-                  {article.tags.map((tag, idx) => (
-                    <PinkTag key={idx} label={tag.productName} />
-                  ))}
+                  {article.tags
+                    .filter((tag) => tag.productName)
+                    .map((tag, idx) => (
+                      <PinkTag key={idx} label={tag.productName} />
+                    ))}
                 </Stack>
               </Stack>
             </CardContent>

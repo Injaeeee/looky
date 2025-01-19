@@ -5,6 +5,7 @@ import { Avatar, Image, useDisclosure } from "@chakra-ui/react";
 import CreateModal from "../createModal";
 import { useAuthStore } from "../../store/authStore";
 import { logoutUser } from "../../util/user.api";
+import { PinkBorderButton } from "./button";
 
 export default function Header() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
@@ -56,12 +57,17 @@ export default function Header() {
           <LeftWrapper>
             <UserWrapper to="/mypage">
               <Avatar name={user?.name} src={user?.imageUrl} />
-              <UserName>{user?.name}</UserName>
+              <UserName>{user?.name} </UserName>
             </UserWrapper>
-            <LogoutButton onClick={handleLogout}> / 로그아웃</LogoutButton>
+            |<PinkBorderButton onClick={handleLogout}>Logout</PinkBorderButton>
           </LeftWrapper>
         ) : (
-          <RouterButton to="/login">로그인</RouterButton>
+          <LeftWrapper>
+            <Link to="/login">
+              <PinkBorderButton>Login</PinkBorderButton>
+            </Link>
+            <RouterButton to="/signup">Sign Up</RouterButton>
+          </LeftWrapper>
         )}
         <LogoWrapper to="/">
           <Image src="/image/logo.png" alt="logo" />
@@ -119,7 +125,7 @@ const Navigation = styled.nav`
 const LeftWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
 `;
 
 const UserWrapper = styled(Link)`
@@ -143,12 +149,6 @@ const RouterButton = styled(Link)`
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--pink100);
-`;
-
-const LogoutButton = styled.button`
   font-size: 14px;
   font-weight: 600;
   color: var(--pink100);

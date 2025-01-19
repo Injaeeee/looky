@@ -1,5 +1,5 @@
 import { PinkButton } from "../components/common/button";
-import Input from "../components/common/input";
+import { Input } from "../components/common/input";
 import styled from "styled-components";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useState } from "react";

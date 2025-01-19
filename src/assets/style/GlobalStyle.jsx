@@ -108,7 +108,7 @@ input::-webkit-inner-spin-button {
   --gray200: #eeeeee;
   --gray300: #cccccc;
   --gray400: #D9D9D9;
-  --gray500: #555555;
+  --gray500: #6d6d6d;
   --gray600: #4a4a4a;
   --gray700: #333333;
   --gray800: #262626;

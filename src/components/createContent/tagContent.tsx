@@ -2,6 +2,7 @@ import { Input, Select, Image } from "@chakra-ui/react";
 import styled from "styled-components";
 import { Category } from "../../types/tag.types";
 import { PinkBorderButton, PinkButton } from "../common/button";
+import { useAuthStore } from "../../store/authStore";
 
 export default function TagContent({
   tagCount,
@@ -16,11 +17,14 @@ export default function TagContent({
   tagInfo: { category: Category; price: number; productName: string };
   handleTagInfoChange: (field: keyof typeof tagInfo, value: string) => void;
 }) {
+  const { user } = useAuthStore();
   return (
     <ArticleContent>
       <UserSpec>
-        <UserName>@injae</UserName>
-        <UserDetail>175cm 70kg</UserDetail>
+        <UserName>{user?.name}</UserName>
+        <UserDetail>
+          #{user?.gender} #{user?.height}
+        </UserDetail>
       </UserSpec>
       <Explanation>태그 생성을 위한 필수 정보를 입력해주세요</Explanation>
       <InputWrapper>

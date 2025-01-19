@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Season, TPO } from "../../types/article.types";
 import { Mood } from "../../types/user.types";
 import { PinkBorderButton, PinkButton } from "../common/button";
+import { useAuthStore } from "../../store/authStore";
 
 export default function EtcContent({
   goToPreviousStep,
@@ -24,11 +25,14 @@ export default function EtcContent({
   ) => void;
   register: any;
 }) {
+  const { user } = useAuthStore();
   return (
     <ArticleContent>
       <UserSpec>
-        <UserName>@injae</UserName>
-        <UserDetail>175cm 70kg</UserDetail>
+        <UserName>{user?.name}</UserName>
+        <UserDetail>
+          #{user?.gender} #{user?.height}
+        </UserDetail>
       </UserSpec>
       <InputWrapper>
         <Title>
@@ -69,6 +73,7 @@ export default function EtcContent({
           placeholder="소개글을 입력해주세요."
           rows={5}
           value={articleInfo.content}
+          {...register("content")}
           onChange={(e) => handleArticleInfoChange("content", e.target.value)}
         />
       </InputWrapper>

@@ -11,12 +11,11 @@ import {
   InputRightElement,
   InputGroup,
 } from "@chakra-ui/react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { BlurTag, PinkBlurTag } from "./common/tag";
 import CommentList from "./commentList";
-import { Article, Season, TPO } from "../types/article.types";
-import { Gender, Height, Mood } from "../types/user.types";
+import { Article } from "../types/article.types";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -77,19 +76,23 @@ export default function ArticleModal({
           </PictureContainer>
           <ArticleContent>
             <UserSpec>
-              <UserName>@injae</UserName>
-              <UserDetail>175cm 70kg</UserDetail>
+              <UserName>{article.writer?.name}</UserName>
+              <UserDetail>
+                {article.writer?.gender}· {article.writer?.height}
+              </UserDetail>
             </UserSpec>
             <UserInfo>
-              <UserTitle>INFO</UserTitle>#남 #{article.season} #{article.mood} #
+              <UserTitle>INFO</UserTitle> #{article.season} #{article.mood} #
               {article.tpo}
             </UserInfo>
             <UserInfo>
               <UserTitle>Tag</UserTitle>
               <Stack direction="row" spacing="2" flexWrap="wrap">
-                {article.tags.map((tag, idx) => (
-                  <PinkBlurTag key={idx} label={tag.productName} />
-                ))}
+                {article.tags
+                  .filter((tag) => tag.productName)
+                  .map((tag, idx) => (
+                    <PinkBlurTag key={idx} label={tag.productName} />
+                  ))}
               </Stack>
             </UserInfo>
             <Communication>
@@ -170,13 +173,14 @@ const UserSpec = styled.div`
 `;
 
 const UserName = styled.p`
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 20px;
+  font-weight: 600;
 `;
 
 const UserDetail = styled.p`
-  font-size: 14px;
-  font-weight: 200;
+  font-size: 15px;
+  color: var(--gray500);
+  font-weight: 400;
 `;
 
 const Communication = styled.div`

@@ -15,41 +15,45 @@ import {
 export async function getArticles(
   filters: ArticleFilter,
   selectedCategories: string[],
+  searchTerm: string = "",
 ): Promise<Article[]> {
   const productRef = collection(db, "articles");
-
   let q = query(productRef);
 
-  // 필터 조건을 추가
+  // Firestore 필터 조건 추가
   Object.entries(filters).forEach(([key, value]) => {
     if (value) {
-      q = query(q, where(key, "==", value));
+      if (key === "height" || key === "gender") {
+        q = query(q, where(`writer.${key}`, "==", value));
+      } else {
+        q = query(q, where(key, "==", value));
+      }
     }
   });
-
   const querySnapshot = await getDocs(q);
 
-  // selectedCategories가 비어 있으면 모든 게시물 반환
-  if (selectedCategories.length === 0) {
-    return querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...(doc.data() as Omit<Article, "id">),
-    }));
+  // Firestore에서 받아온 데이터를 변환
+  let articles = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as Omit<Article, "id">),
+  }));
+
+  // 카테고리 필터 적용
+  if (selectedCategories.length > 0) {
+    articles = articles.filter((article) =>
+      article.tags.some((tag) => selectedCategories.includes(tag.category)),
+    );
   }
 
-  // selectedCategories가 있을 때만 필터링
-  const filteredArticles = querySnapshot.docs
-    .map((doc) => ({
-      id: doc.id,
-      ...(doc.data() as Omit<Article, "id">),
-    }))
-    .filter((article) => {
-      return article.tags.some((tag) =>
-        selectedCategories.includes(tag.category),
-      );
-    });
+  // 검색어 필터 적용
+  if (searchTerm.trim()) {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    articles = articles.filter((article) =>
+      article.title.toLowerCase().includes(lowerSearchTerm),
+    );
+  }
 
-  return filteredArticles;
+  return articles;
 }
 
 export async function getRankingArticles(): Promise<Article[]> {
