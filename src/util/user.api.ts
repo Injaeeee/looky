@@ -104,7 +104,13 @@ export const logoutUser = async (): Promise<void> => {
   try {
     // Firebase Authentication 로그아웃
     await signOut(auth);
+
     useAuthStore.getState().logout();
+
+    const likedKeys = Object.keys(localStorage).filter((key) =>
+      key.startsWith("liked-"),
+    );
+    likedKeys.forEach((key) => localStorage.removeItem(key));
 
     const likeCountKeys = Object.keys(localStorage).filter((key) =>
       key.startsWith("likeCount-"),

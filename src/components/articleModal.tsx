@@ -60,6 +60,7 @@ export default function ArticleModal({
     const updatedLikeCount = likeCount + incrementValue;
     setLikeCount(updatedLikeCount);
 
+    localStorage.setItem(`liked-${article.id}`, JSON.stringify(newLikedState));
     localStorage.setItem(
       `likeCount-${article.id}`,
       JSON.stringify(updatedLikeCount),
@@ -69,6 +70,7 @@ export default function ArticleModal({
       const user = useAuthStore.getState().user;
       if (user) {
         const { uid } = user;
+
         await updateUserLikeStatus(uid, article.id, newLikedState);
         await updateLikeCount(article.id, incrementValue);
       }
