@@ -33,6 +33,7 @@ export interface PostArticle extends ArticleInfo {
   createdAt: string;
   updatedAt: string;
   imageURL: string | undefined;
+  likeCount: number;
 }
 
 export interface Article extends PostArticle {

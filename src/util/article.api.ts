@@ -10,6 +10,8 @@ import {
   where,
   addDoc,
   orderBy,
+  updateDoc,
+  increment,
 } from "firebase/firestore";
 
 export async function getArticles(
@@ -71,4 +73,14 @@ export async function postArticle(newArticle: PostArticle) {
   const productRef = collection(db, "articles");
   const docRef = await addDoc(productRef, newArticle);
   console.log("생성된 문서 ID: ", docRef.id);
+}
+
+export async function updateLikeCount(
+  articleId: string,
+  incrementValue: number,
+) {
+  const articleRef = doc(db, "articles", articleId);
+  await updateDoc(articleRef, {
+    likeCount: increment(incrementValue),
+  });
 }

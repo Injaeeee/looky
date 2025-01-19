@@ -5,7 +5,14 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../firebase";
 import { useAuthStore } from "../store/authStore";
-import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  arrayRemove,
+  arrayUnion,
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { Gender, Height, Mood, User, UserData } from "../types/user.types";
 
 /**
@@ -72,6 +79,7 @@ export const loginUser = async (data: UserData): Promise<void> => {
     useAuthStore.getState().login({
       uid: user.uid,
       email: user.email || "",
+      likeArticle: userData.likeArticle,
       imageUrl: userData.imageUrl,
       name: userData.name,
       mood: userData.mood,
@@ -96,9 +104,12 @@ export const logoutUser = async (): Promise<void> => {
   try {
     // Firebase Authentication 로그아웃
     await signOut(auth);
-
-    // 로그아웃 상태를 Auth Store에 반영
     useAuthStore.getState().logout();
+
+    const likeCountKeys = Object.keys(localStorage).filter((key) =>
+      key.startsWith("likeCount-"),
+    );
+    likeCountKeys.forEach((key) => localStorage.removeItem(key));
 
     console.log("로그아웃 성공");
   } catch (error: any) {
@@ -130,6 +141,30 @@ export const updateUserProfile = async (
     console.log("사용자 프로필 업데이트 성공");
   } catch (error) {
     console.error("프로필 업데이트 오류:", error);
+    throw error;
+  }
+};
+
+export const updateUserLikeStatus = async (
+  userId: string,
+  articleId: string,
+  liked: boolean,
+): Promise<void> => {
+  const userDocRef = doc(db, "users", userId);
+
+  try {
+    if (liked) {
+      await updateDoc(userDocRef, {
+        articleLike: arrayUnion(articleId),
+      });
+    } else {
+      await updateDoc(userDocRef, {
+        articleLike: arrayRemove(articleId),
+      });
+    }
+    console.log(`사용자의 좋아요 상태가 업데이트되었습니다: ${liked}`);
+  } catch (error) {
+    console.error("좋아요 상태 업데이트 실패:", error);
     throw error;
   }
 };

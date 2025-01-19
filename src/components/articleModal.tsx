@@ -16,6 +16,11 @@ import styled from "styled-components";
 import { BlurTag, PinkBlurTag } from "./common/tag";
 import CommentList from "./commentList";
 import { Article } from "../types/article.types";
+import { Icon } from "@chakra-ui/react";
+import { TiHeartFullOutline, TiHeartOutline } from "react-icons/ti";
+import { updateLikeCount } from "../util/article.api";
+import { useAuthStore } from "../store/authStore";
+import { updateUserLikeStatus } from "../util/user.api";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -28,15 +33,49 @@ export default function ArticleModal({
   onClose,
   article,
 }: ArticleModalProps) {
-  const [liked, setLiked] = useState(false);
-
-  const toggleLike = () => {
-    setLiked((prev) => !prev);
-  };
+  const [liked, setLiked] = useState<boolean>(false);
+  const [likeCount, setLikeCount] = useState<number>(article.likeCount);
 
   useEffect(() => {
-    console.log(liked);
-  }, [liked]);
+    const savedLike = localStorage.getItem(`liked-${article.id}`);
+    if (savedLike) {
+      setLiked(JSON.parse(savedLike));
+    } else {
+      setLiked(false);
+    }
+
+    const savedLikeCount = localStorage.getItem(`likeCount-${article.id}`);
+    if (savedLikeCount) {
+      setLikeCount(JSON.parse(savedLikeCount));
+    } else {
+      setLikeCount(article.likeCount);
+    }
+  }, [article.id, article.likeCount]);
+
+  const toggleLike = async () => {
+    const newLikedState = !liked;
+    setLiked(newLikedState);
+
+    const incrementValue = newLikedState ? 1 : -1;
+    const updatedLikeCount = likeCount + incrementValue;
+    setLikeCount(updatedLikeCount);
+
+    localStorage.setItem(
+      `likeCount-${article.id}`,
+      JSON.stringify(updatedLikeCount),
+    );
+
+    try {
+      const user = useAuthStore.getState().user;
+      if (user) {
+        const { uid } = user;
+        await updateUserLikeStatus(uid, article.id, newLikedState);
+        await updateLikeCount(article.id, incrementValue);
+      }
+    } catch (error) {
+      console.error("좋아요 처리 중 오류 발생:", error);
+    }
+  };
 
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
@@ -96,10 +135,15 @@ export default function ArticleModal({
               </Stack>
             </UserInfo>
             <Communication>
-              <button onClick={toggleLike}>
-                <Image src="/icon/like.svg" width="16px" />
-                123
-              </button>
+              <LikeButton onClick={toggleLike}>
+                <Icon
+                  as={liked ? TiHeartFullOutline : TiHeartOutline}
+                  w={10}
+                  h={10}
+                  color={"var(--pink400)"}
+                />
+                {likeCount}
+              </LikeButton>
               <button>
                 <Image src="/icon/bookMark.svg" width="16px" />
               </button>
@@ -189,6 +233,13 @@ const Communication = styled.div`
   align-items: flex-start;
   margin-top: 20px;
   gap: 8px;
+`;
+
+const LikeButton = styled.button`
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
 `;
 
 const CommentInput = styled(Input)`

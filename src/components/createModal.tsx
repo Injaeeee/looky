@@ -133,6 +133,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
       createdAt,
       imageURL,
       updatedAt: new Date().toISOString(),
+      likeCount: 0,
     };
 
     postArticle(newArticle)
