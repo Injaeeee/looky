@@ -53,7 +53,6 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     },
   });
 
-  const [liked, setLiked] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -74,6 +73,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     season: Season.Spring,
     content: "",
     writer: writer,
+    comment: [],
   });
 
   const handleArticleInfoChange = (
@@ -146,6 +146,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
           tpo: TPO.바다,
           season: Season.Spring,
           writer: user,
+          comment: [],
         });
         setValue("title", "");
         setTags([]);
@@ -172,10 +173,6 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
 
   const goToPreviousStep = () => {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
-  };
-
-  const toggleLike = () => {
-    setLiked((prev) => !prev);
   };
 
   useEffect(() => {

@@ -21,6 +21,8 @@ import { TiHeartFullOutline, TiHeartOutline } from "react-icons/ti";
 import { updateLikeCount } from "../util/article.api";
 import { useAuthStore } from "../store/authStore";
 import { updateUserLikeStatus } from "../util/user.api";
+import { postComment } from "../util/comment.api";
+import { Comment } from "../types/comment.types";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -35,7 +37,9 @@ export default function ArticleModal({
 }: ArticleModalProps) {
   const [liked, setLiked] = useState<boolean>(false);
   const [likeCount, setLikeCount] = useState<number>(article.likeCount);
-  const { user } = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
+  const [comments, setComments] = useState<Comment[]>(article.comments || []);
+  const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
     if (user && user.articleLike) {
@@ -50,6 +54,12 @@ export default function ArticleModal({
       setLikeCount(article.likeCount);
     }
   }, [article.id, article.likeCount, user]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setComments(article.comments || []);
+    }
+  }, [isOpen, article.comments]);
 
   const toggleLike = async () => {
     const newLikedState = !liked;
@@ -73,6 +83,31 @@ export default function ArticleModal({
       }
     } catch (error) {
       console.error("좋아요 처리 중 오류 발생:", error);
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (!commentText.trim()) return;
+    if (!user) {
+      console.error("로그인이 필요합니다.");
+      return;
+    }
+
+    const newComment: Comment = {
+      userUid: user.uid,
+      userEmail: user.email,
+      userImage: user.imageUrl,
+      userName: user.name || "",
+      createdAt: new Date().toISOString(),
+      content: commentText,
+    };
+
+    try {
+      await postComment(article.id, newComment);
+      setComments((prevComments) => [newComment, ...prevComments]);
+      setCommentText("");
+    } catch (error) {
+      console.error("댓글 추가 중 오류 발생:", error);
     }
   };
 
@@ -134,7 +169,7 @@ export default function ArticleModal({
               </Stack>
             </UserInfo>
             <Communication>
-              <LikeButton onClick={toggleLike}>
+              <LikeButton onClick={toggleLike} type="button">
                 <Icon
                   as={liked ? TiHeartFullOutline : TiHeartOutline}
                   w={10}
@@ -148,23 +183,31 @@ export default function ArticleModal({
               </button>
             </Communication>
             <CommentListWrapper>
-              <CommentList />
+              {article.comments ? (
+                <CommentList comments={comments} />
+              ) : (
+                <>댓글이 없습니다.</>
+              )}
             </CommentListWrapper>
-            <FixedInputWrapper>
-              <InputGroup>
-                <CommentInput
-                  focusBorderColor="pink.100"
-                  size="lg"
-                  variant="flushed"
-                  placeholder="댓글을 입력해주세요."
-                />
-                <InputRightElement>
-                  <button>
-                    <Image src="/icon/message.svg" width="15px" />
-                  </button>
-                </InputRightElement>
-              </InputGroup>
-            </FixedInputWrapper>
+            {isAuthenticated && (
+              <FixedInputWrapper>
+                <InputGroup>
+                  <CommentInput
+                    focusBorderColor="pink.100"
+                    size="lg"
+                    variant="flushed"
+                    placeholder="댓글을 입력해주세요."
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                  />
+                  <InputRightElement>
+                    <button onClick={handleAddComment}>
+                      <Image src="/icon/message.svg" width="15px" />
+                    </button>
+                  </InputRightElement>
+                </InputGroup>
+              </FixedInputWrapper>
+            )}
           </ArticleContent>
         </ArticleBody>
       </ModalContent>
