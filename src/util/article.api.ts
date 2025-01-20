@@ -59,8 +59,7 @@ export async function getArticles(
 
 export async function postArticle(newArticle: PostArticle) {
   const productRef = collection(db, "articles");
-  const docRef = await addDoc(productRef, newArticle);
-  console.log("생성된 문서 ID: ", docRef.id);
+  await addDoc(productRef, newArticle);
 }
 
 export async function updateLikeCount(

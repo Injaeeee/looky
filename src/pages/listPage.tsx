@@ -1,6 +1,6 @@
 import ArticleList from "../components/articleList";
 import styled from "styled-components";
-import { Avatar, Button, Card, Image, Text } from "@chakra-ui/react";
+import { Avatar, Image } from "@chakra-ui/react";
 import { SearchInput } from "../components/common/input";
 import BestRanking from "../components/bestRanking";
 import { useAuthStore } from "../store/authStore";

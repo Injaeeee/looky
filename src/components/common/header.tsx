@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { Avatar, Image, useDisclosure } from "@chakra-ui/react";
 import CreateModal from "../createModal";
@@ -13,7 +13,6 @@ export default function Header() {
   const [selectedArticle, setSelectedArticle] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isAuthenticated, user, restoreSession } = useAuthStore();
-  const location = useLocation();
 
   const handleLogout = async () => {
     try {

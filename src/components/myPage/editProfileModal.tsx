@@ -9,7 +9,7 @@ import {
   Avatar,
   Input,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import { GenderSelect, HeightSelect, MoodSelect } from "../common/select";
 import { useForm } from "react-hook-form";
@@ -56,10 +56,6 @@ export default function EditProfileModal({
     },
   });
 
-  const toggleLike = () => {
-    setLiked((prev) => !prev);
-  };
-
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
@@ -87,10 +83,6 @@ export default function EditProfileModal({
     setImageSrc("/icon/user.svg");
     setFile(null);
   };
-
-  useEffect(() => {
-    console.log(liked);
-  }, [liked]);
 
   const onSubmit = async (data: any) => {
     let imageUrl: string = imageSrc ?? "/icon/user.svg";

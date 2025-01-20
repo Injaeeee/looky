@@ -1,21 +1,10 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  Stack,
-  Heading,
-  Text,
-  Avatar,
-  useDisclosure,
-  Button,
-} from "@chakra-ui/react";
-import { BlurTag, PinkBlurTag, PinkTag } from "../common/tag";
+import { Stack, Heading, Text, Avatar, useDisclosure } from "@chakra-ui/react";
+import { PinkTag } from "../common/tag";
 import ArticleModal from "../articleModal";
 import { useAuthStore } from "../../store/authStore";
-import {
-  getArticles,
-  getLikedArticles,
-  getMyArticles,
-} from "../../util/article.api";
+import { getLikedArticles, getMyArticles } from "../../util/article.api";
 import { Article } from "../../types/article.types";
 
 interface MyArticlesProps {
@@ -33,7 +22,6 @@ export default function MyArticles({ activeButton }: MyArticlesProps) {
     if (!user?.articleLike || user.articleLike.length === 0) return;
     const likedArticles = await getLikedArticles(user.articleLike);
     setArticles(likedArticles);
-    console.log(user.articleLike);
   };
 
   const fetchUserArticles = async () => {
@@ -43,7 +31,6 @@ export default function MyArticles({ activeButton }: MyArticlesProps) {
   };
 
   useEffect(() => {
-    if (user) console.log(user.articleLike, user);
     if (activeButton === "like") {
       fetchLikedArticles();
     } else if (activeButton === "내 게시물") {

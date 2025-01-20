@@ -9,8 +9,13 @@ export default function MainRanking() {
   const [articles, setArticles] = useState<Article[]>([]);
 
   const fetchArticles = async () => {
-    const result = await getRankingArticles();
-    setArticles(result);
+    try {
+      const result = await getRankingArticles();
+      setArticles(result || []);
+    } catch (error) {
+      console.error("Failed to fetch ranking articles:", error);
+      setArticles([]);
+    }
   };
 
   useEffect(() => {
@@ -25,96 +30,61 @@ export default function MainRanking() {
           index === 0 ? (
             <BestArticle key={article.id}>
               <CardImage
-                src={article.imageURL}
+                src={article.imageURL || "/placeholder.png"}
                 alt={`${article.title} Image`}
               />
               <CardContent>
                 <Ranking>
                   <BestNumber>{index + 1} .</BestNumber>
-                  <BestName>{article.writer?.name}</BestName>
+                  <BestName>{article.writer?.name || "익명"}</BestName>
                 </Ranking>
                 <CommentCount>
                   <Image src="/icon/comment.svg" alt="comment" />
-                  {article.comments.length}
+                  {article.comments?.length || 0}
                 </CommentCount>
               </CardContent>
             </BestArticle>
-          ) : index === articles.length - 1 ? (
-            <SplitArticle key={article.id}>
-              <HalfArticle>
-                <CardImage
-                  src={articles[3].imageURL}
-                  alt={`${articles[3].title} Image`}
-                />
-                <CardContent>
-                  <Ranking>
-                    <RankingNumber>{index + 1} .</RankingNumber>
-                    <RankingName>{articles[3].title}</RankingName>
-                  </Ranking>
-                  <CommentCount>
-                    <Image src="/icon/comment.svg" alt="comment" />
-                    {article.comments.length}
-                  </CommentCount>
-                </CardContent>
-              </HalfArticle>
-              <HalfArticle>
-                <CardImage
-                  src={articles[4]?.imageURL}
-                  alt={`${articles[4]?.title} Image`}
-                />
-                <CardContent>
-                  <Ranking>
-                    <RankingNumber>{index + 1} .</RankingNumber>
-                    <RankingName>
-                      {articles[4].writer?.name || "Placeholder"}
-                    </RankingName>
-                  </Ranking>
-                  <CommentCount>
-                    <Image src="/icon/comment.svg" alt="comment" />
-                    {article.comments.length}
-                  </CommentCount>
-                </CardContent>
-              </HalfArticle>
-            </SplitArticle>
           ) : (
             <ArticleItem key={article.id}>
               <CardImage
-                src={article.imageURL}
+                src={article.imageURL || "/placeholder.png"}
                 alt={`${article.title} Image`}
               />
               <CardContent>
                 <Ranking>
                   <RankingNumber>{index + 1} .</RankingNumber>
-                  <RankingName>{article.writer?.name}</RankingName>
+                  <RankingName>{article.writer?.name || "익명"}</RankingName>
                 </Ranking>
                 <CommentCount>
                   <Image src="/icon/comment.svg" alt="comment" />
-                  {article.comments.length}
+                  {article.comments?.length || 0}
                 </CommentCount>
               </CardContent>
             </ArticleItem>
           ),
         )}
-        <SplitArticles>
-          {articles.slice(3, 5).map((article, index) => (
-            <HalfArticle key={article.id}>
-              <CardImage
-                src={article.imageURL}
-                alt={`${article.title} Image`}
-              />
-              <CardContent>
-                <Ranking>
-                  <RankingNumber>{index + 4} .</RankingNumber>
-                  <RankingName>{article.writer?.name}</RankingName>
-                </Ranking>
-                <CommentCount>
-                  <Image src="/icon/comment.svg" alt="comment" />
-                  {article.comments.length}
-                </CommentCount>
-              </CardContent>
-            </HalfArticle>
-          ))}
-        </SplitArticles>
+        {articles.length > 3 && (
+          <SplitArticles>
+            {articles.slice(3, 5).map((article, index) => (
+              <HalfArticle key={article.id}>
+                <CardImage
+                  src={article.imageURL || "/placeholder.png"}
+                  alt={`${article.title} Image`}
+                />
+                <CardContent>
+                  <Ranking>
+                    <RankingNumber>{index + 4} .</RankingNumber>
+                    <RankingName>{article.writer?.name || ""}</RankingName>
+                  </Ranking>
+                  <CommentCount>
+                    <Image src="/icon/comment.svg" alt="comment" />
+                    {article.comments?.length || 0}
+                  </CommentCount>
+                </CardContent>
+              </HalfArticle>
+            ))}
+          </SplitArticles>
+        )}
       </Container>
       <Link to="/ranking">
         <Button>

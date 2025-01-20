@@ -1,13 +1,6 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import {
-  Stack,
-  Heading,
-  Text,
-  Avatar,
-  useDisclosure,
-  Button,
-} from "@chakra-ui/react";
+import { Stack, Heading, Text, Avatar, useDisclosure } from "@chakra-ui/react";
 import { PinkTag } from "./common/tag";
 import ArticleModal from "../components/articleModal";
 import { getRankingArticles } from "../util/article.api";
