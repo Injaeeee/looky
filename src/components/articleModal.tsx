@@ -11,12 +11,18 @@ import {
   InputRightElement,
   InputGroup,
 } from "@chakra-ui/react";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
-import { BlurTag, PinkBlurTag } from "./tag";
+import { BlurTag, PinkBlurTag } from "./common/tag";
 import CommentList from "./commentList";
-import { Article, Season, TPO } from "../types/article.types";
-import { Gender, Height, Mood } from "../types/user.types";
+import { Article } from "../types/article.types";
+import { Icon } from "@chakra-ui/react";
+import { TiHeartFullOutline, TiHeartOutline } from "react-icons/ti";
+import { updateLikeCount } from "../util/article.api";
+import { useAuthStore } from "../store/authStore";
+import { updateUserLikeStatus } from "../util/user.api";
+import { postComment } from "../util/comment.api";
+import { Comment } from "../types/comment.types";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -29,15 +35,81 @@ export default function ArticleModal({
   onClose,
   article,
 }: ArticleModalProps) {
-  const [liked, setLiked] = useState(false);
-
-  const toggleLike = () => {
-    setLiked((prev) => !prev);
-  };
+  const [liked, setLiked] = useState<boolean>(false);
+  const [likeCount, setLikeCount] = useState<number>(article.likeCount);
+  const { user, isAuthenticated } = useAuthStore();
+  const [comments, setComments] = useState<Comment[]>(article.comments || []);
+  const [commentText, setCommentText] = useState("");
 
   useEffect(() => {
-    console.log(liked);
-  }, [liked]);
+    if (user && user.articleLike) {
+      const isLiked = user.articleLike.includes(article.id);
+      setLiked(isLiked);
+    }
+
+    const savedLikeCount = localStorage.getItem(`likeCount-${article.id}`);
+    if (savedLikeCount) {
+      setLikeCount(JSON.parse(savedLikeCount));
+    } else {
+      setLikeCount(article.likeCount);
+    }
+  }, [article.id, article.likeCount, user]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setComments(article.comments || []);
+    }
+  }, [isOpen, article.comments]);
+
+  const toggleLike = async () => {
+    const newLikedState = !liked;
+    setLiked(newLikedState);
+
+    const incrementValue = newLikedState ? 1 : -1;
+    const updatedLikeCount = likeCount + incrementValue;
+    setLikeCount(updatedLikeCount);
+
+    localStorage.setItem(`liked-${article.id}`, JSON.stringify(newLikedState));
+    localStorage.setItem(
+      `likeCount-${article.id}`,
+      JSON.stringify(updatedLikeCount),
+    );
+
+    try {
+      if (user) {
+        const { uid } = user;
+        await updateUserLikeStatus(uid, article.id, newLikedState);
+        await updateLikeCount(article.id, incrementValue);
+      }
+    } catch (error) {
+      console.error("좋아요 처리 중 오류 발생:", error);
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (!commentText.trim()) return;
+    if (!user) {
+      console.error("로그인이 필요합니다.");
+      return;
+    }
+
+    const newComment: Comment = {
+      userUid: user.uid,
+      userEmail: user.email,
+      userImage: user.imageUrl,
+      userName: user.name || "",
+      createdAt: new Date().toISOString(),
+      content: commentText,
+    };
+
+    try {
+      await postComment(article.id, newComment);
+      setComments((prevComments) => [newComment, ...prevComments]);
+      setCommentText("");
+    } catch (error) {
+      console.error("댓글 추가 중 오류 발생:", error);
+    }
+  };
 
   return (
     <Modal isCentered isOpen={isOpen} onClose={onClose}>
@@ -77,48 +149,65 @@ export default function ArticleModal({
           </PictureContainer>
           <ArticleContent>
             <UserSpec>
-              <UserName>@injae</UserName>
-              <UserDetail>175cm 70kg</UserDetail>
+              <UserName>{article.writer?.name}</UserName>
+              <UserDetail>
+                {article.writer?.gender}· {article.writer?.height}
+              </UserDetail>
             </UserSpec>
             <UserInfo>
-              <UserTitle>INFO</UserTitle>#남 #{article.season} #{article.mood} #
+              <UserTitle>INFO</UserTitle> #{article.season} #{article.mood} #
               {article.tpo}
             </UserInfo>
             <UserInfo>
               <UserTitle>Tag</UserTitle>
               <Stack direction="row" spacing="2" flexWrap="wrap">
-                {article.tags.map((tag, idx) => (
-                  <PinkBlurTag key={idx} label={tag.productName} />
-                ))}
+                {article.tags
+                  .filter((tag) => tag.productName)
+                  .map((tag, idx) => (
+                    <PinkBlurTag key={idx} label={tag.productName} />
+                  ))}
               </Stack>
             </UserInfo>
             <Communication>
-              <button onClick={toggleLike}>
-                <Image src="/icon/like.svg" width="16px" />
-                123
-              </button>
+              <LikeButton onClick={toggleLike} type="button">
+                <Icon
+                  as={liked ? TiHeartFullOutline : TiHeartOutline}
+                  w={10}
+                  h={10}
+                  color={"var(--pink400)"}
+                />
+                {likeCount}
+              </LikeButton>
               <button>
                 <Image src="/icon/bookMark.svg" width="16px" />
               </button>
             </Communication>
             <CommentListWrapper>
-              <CommentList />
+              {article.comments ? (
+                <CommentList comments={comments} />
+              ) : (
+                <>댓글이 없습니다.</>
+              )}
             </CommentListWrapper>
-            <FixedInputWrapper>
-              <InputGroup>
-                <CommentInput
-                  focusBorderColor="pink.100"
-                  size="lg"
-                  variant="flushed"
-                  placeholder="댓글을 입력해주세요."
-                />
-                <InputRightElement>
-                  <button>
-                    <Image src="/icon/message.svg" width="15px" />
-                  </button>
-                </InputRightElement>
-              </InputGroup>
-            </FixedInputWrapper>
+            {isAuthenticated && (
+              <FixedInputWrapper>
+                <InputGroup>
+                  <CommentInput
+                    focusBorderColor="pink.100"
+                    size="lg"
+                    variant="flushed"
+                    placeholder="댓글을 입력해주세요."
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                  />
+                  <InputRightElement>
+                    <button onClick={handleAddComment}>
+                      <Image src="/icon/message.svg" width="15px" />
+                    </button>
+                  </InputRightElement>
+                </InputGroup>
+              </FixedInputWrapper>
+            )}
           </ArticleContent>
         </ArticleBody>
       </ModalContent>
@@ -170,13 +259,14 @@ const UserSpec = styled.div`
 `;
 
 const UserName = styled.p`
-  font-size: 16px;
-  font-weight: 400;
+  font-size: 20px;
+  font-weight: 600;
 `;
 
 const UserDetail = styled.p`
-  font-size: 14px;
-  font-weight: 200;
+  font-size: 15px;
+  color: var(--gray500);
+  font-weight: 400;
 `;
 
 const Communication = styled.div`
@@ -185,6 +275,13 @@ const Communication = styled.div`
   align-items: flex-start;
   margin-top: 20px;
   gap: 8px;
+`;
+
+const LikeButton = styled.button`
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
 `;
 
 const CommentInput = styled(Input)`

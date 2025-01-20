@@ -1,7 +1,8 @@
 import styled from "styled-components";
 import { Image } from "@chakra-ui/react";
-import { BlurTag } from "../components/tag";
+import { BlurTag } from "../components/common/tag";
 import MainRanking from "../components/mainRanking";
+import { PinkBorderButton } from "../components/common/button";
 
 export default function MainPage() {
   return (
@@ -253,18 +254,11 @@ const SubTitle = styled.p`
   font-weight: 400;
 `;
 
-const Button = styled.button`
+const Button = styled(PinkBorderButton)`
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 5px;
-  border: 1px solid var(--pink100);
-  border-radius: 6px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  color: var(--pink100);
-  padding: 7px 12px;
 `;
 
 const Footer = styled.div`

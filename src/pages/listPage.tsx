@@ -1,34 +1,61 @@
 import ArticleList from "../components/articleList";
 import styled from "styled-components";
 import { Avatar, Button, Card, Image, Text } from "@chakra-ui/react";
-import { SearchInput } from "../components/input";
+import { SearchInput } from "../components/common/input";
 import BestRanking from "../components/bestRanking";
+import { useAuthStore } from "../store/authStore";
+import { useEffect, useState } from "react";
+import { getArticles } from "../util/article.api";
+import { Article, ArticleFilter } from "../types/article.types";
+import { Link } from "react-router-dom";
 
 export default function ListPage() {
+  const { user } = useAuthStore();
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [filters, setFilters] = useState<ArticleFilter>({});
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+  const fetchArticles = async () => {
+    const result = await getArticles(filters, selectedCategories, searchTerm);
+    setArticles(result);
+  };
+
+  useEffect(() => {
+    fetchArticles();
+  }, [filters, selectedCategories, searchTerm]);
+
   return (
     <Container>
       <Navigation>
         <UserWrapper>
-          <Avatar name="Oshigaki Kisame" src="" />
+          <Avatar name={user?.name} src={user?.imageUrl} />
           <UserInfo>
-            <UserName>@injae</UserName>
-            <UserDetail>175cm 70kg post 12</UserDetail>
+            <UserName>{user?.name}</UserName>
+            <UserDetail>
+              {user?.height} · {user?.mood}
+            </UserDetail>
           </UserInfo>
         </UserWrapper>
-        <ProductSearchWrapper>
-          <ProductTitle>상품명</ProductTitle>
-          <SearchInput />
-        </ProductSearchWrapper>
+        <SearchWrapper>
+          <SearchTitle>검색</SearchTitle>
+          <SearchInput onSearch={setSearchTerm} />
+        </SearchWrapper>
         <RankingWrapper>
           <RankingTitle>
             <Image src="/icon/rankIcon.svg" alt="rank icon" />
             LOOKY BEST RANKING
           </RankingTitle>
           <BestRanking />
-          <SeeMoreButton>SEE MORE {">"}</SeeMoreButton>
+          <SeeMoreLink to="/ranking">SEE MORE {">"}</SeeMoreLink>
         </RankingWrapper>
       </Navigation>
-      <ArticleList />
+      <ArticleList
+        articles={articles}
+        filters={filters}
+        onCategoryChange={setSelectedCategories}
+        onFiltersChange={setFilters}
+      />
     </Container>
   );
 }
@@ -44,7 +71,6 @@ const Navigation = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
   max-width: 270px;
   height: 64px;
   gap: 10px;
@@ -82,7 +108,7 @@ const UserDetail = styled.p`
   font-weight: 200;
 `;
 
-const ProductSearchWrapper = styled.div`
+const SearchWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -93,7 +119,7 @@ const ProductSearchWrapper = styled.div`
   border-radius: 8px;
 `;
 
-const ProductTitle = styled.p`
+const SearchTitle = styled.p`
   font-size: 12px;
   font-weight: 600;
 `;
@@ -132,7 +158,7 @@ const RankingTitle = styled.p`
   }
 `;
 
-const SeeMoreButton = styled.button`
+const SeeMoreLink = styled(Link)`
   color: var(--gray500);
   align-self: flex-end;
   font-size: 10px;

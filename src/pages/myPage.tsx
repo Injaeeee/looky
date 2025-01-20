@@ -3,10 +3,12 @@ import styled from "styled-components";
 import { Avatar, useDisclosure } from "@chakra-ui/react";
 import MyArticles from "../components/myPage/myArticles";
 import EditProfileModal from "../components/myPage/editProfileModal";
+import { useAuthStore } from "../store/authStore";
 
 export default function MyPage() {
-  const [activeButton, setActiveButton] = useState<string>("shots");
+  const [activeButton, setActiveButton] = useState<string>("내 게시물");
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user } = useAuthStore();
 
   const handleOpenModal = () => {
     onOpen();
@@ -19,9 +21,9 @@ export default function MyPage() {
   return (
     <Container>
       <UserWrapper>
-        <Avatar name="Oshigaki Kisame" src="" boxSize="104px" />
+        <Avatar name={user?.name} src={user?.imageUrl} boxSize="104px" />
         <UserInfo>
-          <UserName>@injae </UserName>
+          <UserName>{user?.name}</UserName>
           <EditButton onClick={() => handleOpenModal()}>
             edit profile
           </EditButton>
@@ -29,16 +31,10 @@ export default function MyPage() {
       </UserWrapper>
       <ButtonWrapper>
         <Button
-          $isActive={activeButton === "shots"}
-          onClick={() => handleButtonClick("shots")}
+          $isActive={activeButton === "내 게시물"}
+          onClick={() => handleButtonClick("내 게시물")}
         >
-          shots
-        </Button>
-        <Button
-          $isActive={activeButton === "collection"}
-          onClick={() => handleButtonClick("collection")}
-        >
-          collection
+          내 게시물
         </Button>
         <Button
           $isActive={activeButton === "like"}
@@ -47,9 +43,10 @@ export default function MyPage() {
           like
         </Button>
       </ButtonWrapper>
-      <MyArticles />
-
-      <EditProfileModal isOpen={isOpen} onClose={onClose} />
+      <MyArticles activeButton={activeButton} />
+      {user && (
+        <EditProfileModal isOpen={isOpen} onClose={onClose} user={user} />
+      )}
     </Container>
   );
 }

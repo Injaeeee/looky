@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
-import { BlurTag } from "./tag";
+import { BlurTag } from "./common/tag";
 import TagContent from "./createContent/tagContent";
 import EtcContent from "./createContent/etcContent";
 import { DndProvider, useDrag } from "react-dnd";
@@ -23,13 +23,15 @@ import { postArticle } from "../util/article.api";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { PinkButton } from "./common/button";
+import { useAuthStore } from "../store/authStore";
 
 const articleSchema = z.object({
   title: z
     .string()
     .min(1, "제목은 최소 1자 이상이어야 합니다.")
     .max(10, "제목은 최대 10자 이하로 입력해주세요."),
-  content: z.string().max(30, "소개글은 최대 30자 이하로 입력해주세요."),
+  content: z.string().max(5, "소개글은 최대 30자 이하로 입력해주세요."),
 });
 
 interface ArticleModalProps {
@@ -51,7 +53,6 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     },
   });
 
-  const [liked, setLiked] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -62,12 +63,17 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     productName: "",
   });
 
+  const { user } = useAuthStore();
+  const { accessToken, refreshToken, ...writer } = user!;
+
   const [articleInfo, setArticleInfo] = useState<ArticleInfo>({
     title: "",
     tpo: TPO.바다,
     mood: Mood.미니멀,
     season: Season.Spring,
     content: "",
+    writer: writer,
+    comment: [],
   });
 
   const handleArticleInfoChange = (
@@ -127,6 +133,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
       createdAt,
       imageURL,
       updatedAt: new Date().toISOString(),
+      likeCount: 0,
     };
 
     postArticle(newArticle)
@@ -138,6 +145,8 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
           mood: Mood.미니멀,
           tpo: TPO.바다,
           season: Season.Spring,
+          writer: user,
+          comment: [],
         });
         setValue("title", "");
         setTags([]);
@@ -151,7 +160,11 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
   };
 
   const handleError = (errors: any) => {
-    console.error("유효성 검사 에러:", errors);
+    const errorMessages = Object.values(errors)
+      .map((error: any) => error.message)
+      .join("\n");
+
+    alert(errorMessages);
   };
 
   const goToNextStep = () => {
@@ -162,23 +175,11 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     setCurrentStep((prev) => Math.max(prev - 1, 1));
   };
 
-  const toggleLike = () => {
-    setLiked((prev) => !prev);
-  };
-
-  useEffect(() => {
-    console.log(liked);
-  }, [liked]);
-
   useEffect(() => {
     if (isOpen) {
       setCurrentStep(1);
     }
   }, [isOpen]);
-
-  useEffect(() => {
-    console.log(tags);
-  }, [tags]);
 
   const handleAddTag = () => {
     if (containerRef.current) {
@@ -263,14 +264,15 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
                       style={{ display: "none" }}
                       onChange={handleFileChange}
                     />
-                    <PictureButton
+                    <PinkButton
                       onClick={() =>
                         document.getElementById("file-input")?.click()
                       }
                       type="button"
+                      color="white"
                     >
                       사진 선택
-                    </PictureButton>
+                    </PinkButton>
                   </>
                 )}
                 {tags.map((tag) => (
@@ -322,15 +324,6 @@ const PictureContainer = styled.div`
   min-width: 650px;
   min-height: 650px;
   border: var(--gray600) dashed 3px;
-`;
-
-const PictureButton = styled.button`
-  background-color: var(--pink100);
-  color: white;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 7px 12px;
 `;
 
 const ImagePreview = styled.img`

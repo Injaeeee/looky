@@ -1,5 +1,6 @@
-import { Gender, Height, Mood } from "./user.types";
+import { Gender, Height, Mood, User } from "./user.types";
 import { Tag } from "./tag.types";
+import { Comment } from "./comment.types";
 
 export enum TPO {
   바다 = "바다",
@@ -19,18 +20,14 @@ export enum Season {
   Winter = "Winter",
 }
 
-export interface Writer {
-  image?: string;
-  nickname: string;
-  id: number;
-}
-
 export interface ArticleInfo {
   title: string;
   mood: Mood;
   tpo: TPO;
   season: Season;
   content: string;
+  writer: User | null;
+  comments: Comment[];
 }
 
 export interface PostArticle extends ArticleInfo {
@@ -38,6 +35,7 @@ export interface PostArticle extends ArticleInfo {
   createdAt: string;
   updatedAt: string;
   imageURL: string | undefined;
+  likeCount: number;
 }
 
 export interface Article extends PostArticle {

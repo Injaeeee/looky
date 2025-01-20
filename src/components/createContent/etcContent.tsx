@@ -2,6 +2,8 @@ import { Input, Select, Textarea } from "@chakra-ui/react";
 import styled from "styled-components";
 import { Season, TPO } from "../../types/article.types";
 import { Mood } from "../../types/user.types";
+import { PinkBorderButton, PinkButton } from "../common/button";
+import { useAuthStore } from "../../store/authStore";
 
 export default function EtcContent({
   goToPreviousStep,
@@ -23,11 +25,14 @@ export default function EtcContent({
   ) => void;
   register: any;
 }) {
+  const { user } = useAuthStore();
   return (
     <ArticleContent>
       <UserSpec>
-        <UserName>@injae</UserName>
-        <UserDetail>175cm 70kg</UserDetail>
+        <UserName>{user?.name}</UserName>
+        <UserDetail>
+          #{user?.gender} #{user?.height}
+        </UserDetail>
       </UserSpec>
       <InputWrapper>
         <Title>
@@ -68,6 +73,7 @@ export default function EtcContent({
           placeholder="소개글을 입력해주세요."
           rows={5}
           value={articleInfo.content}
+          {...register("content")}
           onChange={(e) => handleArticleInfoChange("content", e.target.value)}
         />
       </InputWrapper>
@@ -108,8 +114,8 @@ export default function EtcContent({
         </Select>
       </InputWrapper>
       <ButtonWrapper>
-        <PrevButton onClick={goToPreviousStep}>이전으로</PrevButton>
-        <ShareButton type="submit">공유하기</ShareButton>
+        <PinkBorderButton onClick={goToPreviousStep}>이전으로</PinkBorderButton>
+        <PinkButton type="submit">공유하기</PinkButton>
       </ButtonWrapper>
     </ArticleContent>
   );
@@ -161,23 +167,4 @@ const ButtonWrapper = styled.div`
   bottom: 0;
   display: flex;
   gap: 5px;
-`;
-
-const PrevButton = styled.button`
-  border: 1px solid var(--pink100);
-  border-radius: 6px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 600;
-  padding: 7px 12px;
-  color: var(--pink100);
-`;
-
-const ShareButton = styled.button`
-  background-color: var(--pink100);
-  color: black;
-  font-size: 12px;
-  font-weight: 600;
-  border-radius: 6px;
-  padding: 7px 12px;
 `;

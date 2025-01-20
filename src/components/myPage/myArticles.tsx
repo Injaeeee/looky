@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import {
   Stack,
@@ -8,80 +8,79 @@ import {
   useDisclosure,
   Button,
 } from "@chakra-ui/react";
-import { BlurTag, PinkBlurTag, PinkTag } from "../tag";
+import { BlurTag, PinkBlurTag, PinkTag } from "../common/tag";
 import ArticleModal from "../articleModal";
+import { useAuthStore } from "../../store/authStore";
+import {
+  getArticles,
+  getLikedArticles,
+  getMyArticles,
+} from "../../util/article.api";
+import { Article } from "../../types/article.types";
 
-export default function MyArticles() {
-  const [selectedArticle, setSelectedArticle] = useState<{
-    title: string;
-    description: string;
-  } | null>(null);
+interface MyArticlesProps {
+  activeButton: string;
+}
+
+export default function MyArticles({ activeButton }: MyArticlesProps) {
+  const [selectedArticle, setSelectedArticle] = useState<Article>();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { user } = useAuthStore();
 
-  const handleOpenModal = (title: string, description: string) => {
-    setSelectedArticle({ title, description });
-    onOpen();
+  const [articles, setArticles] = useState<Article[]>([]);
+
+  const fetchLikedArticles = async () => {
+    if (!user?.articleLike || user.articleLike.length === 0) return;
+    const likedArticles = await getLikedArticles(user.articleLike);
+    setArticles(likedArticles);
+    console.log(user.articleLike);
   };
 
-  const taskLists = [
-    {
-      title: "Living Room Sofa",
-      description: "Perfect for modern tropical spaces",
-      tags: ["Tag 1", "Tag 2", "Tag 3"],
-    },
-    {
-      title: "Dining Table",
-      description: "Elegant and durable",
-      tags: ["Furniture", "Wood", "Stylish"],
-    },
-    {
-      title: "Bed Frame",
-      description: "Comfortable and sturdy",
-      tags: ["Cozy", "Modern", "Affordable"],
-    },
-    {
-      title: "Bed Frame",
-      description: "Comfortable and sturdy",
-      tags: ["Cozy", "Modern", "Affordable"],
-    },
-    {
-      title: "Bed Frame",
-      description: "Comfortable and sturdy",
-      tags: ["Cozy", "Modern", "Affordable"],
-    },
-    {
-      title: "Bed Frame",
-      description: "Comfortable and sturdy",
-      tags: ["Cozy", "Modern", "Affordable"],
-    },
-  ];
+  const fetchUserArticles = async () => {
+    if (!user) return;
+    const userArticles = await getMyArticles(user?.uid);
+    setArticles(userArticles);
+  };
+
+  useEffect(() => {
+    if (user) console.log(user.articleLike, user);
+    if (activeButton === "like") {
+      fetchLikedArticles();
+    } else if (activeButton === "내 게시물") {
+      fetchUserArticles();
+    }
+  }, [activeButton, user]);
+
+  const handleOpenModal = (article: Article) => {
+    setSelectedArticle(article);
+    onOpen();
+  };
 
   return (
     <Container>
       <ArticleListContainer>
-        {taskLists.map((task, index) => (
+        {articles.map((article, index) => (
           <ArticleContainer
             key={index}
-            onClick={() => handleOpenModal(task.title, task.description)}
+            onClick={() => handleOpenModal(article)}
           >
-            <CardImage
-              src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-              alt="Background Image"
-            />
+            <CardImage src={article.imageURL} alt="Background Image" />
             <CardContent>
               <Stack spacing="1">
                 <Header size="md" color="white">
                   <Avatar
-                    name="Dan Abrahmov"
-                    src="https://bit.ly/dan-abramov"
+                    name={article.writer?.name}
+                    src={article.writer?.imageUrl}
                   />
-                  {task.title}
+                  {article.writer?.name}
                 </Header>
-                <Text color="white">{task.description}</Text>
+                <Text color="white">{article.title}</Text>
                 <Stack direction="row" spacing="2">
-                  {task.tags.map((tag, idx) => (
-                    <PinkTag key={idx} label={tag} />
-                  ))}
+                  {article.tags
+                    .filter((tag) => tag.productName)
+                    .map((tag, idx) => (
+                      <PinkTag key={idx} label={tag.productName} />
+                    ))}
                 </Stack>
               </Stack>
             </CardContent>
@@ -93,8 +92,7 @@ export default function MyArticles() {
         <ArticleModal
           isOpen={isOpen}
           onClose={onClose}
-          title={selectedArticle.title}
-          description={selectedArticle.description}
+          article={selectedArticle}
         />
       )}
     </Container>

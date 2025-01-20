@@ -1,56 +1,31 @@
 import { Avatar } from "@chakra-ui/react";
+import { Comment } from "../types/comment.types";
 import styled from "styled-components";
 
-interface CommentProps {
-  id: number;
-  userName: string;
-  content: string;
-  avatarSrc: string;
+interface CommentListProps {
+  comments: Comment[];
+}
+interface CommentItemProps {
+  comment: Comment;
 }
 
-const comments = [
-  {
-    id: 1,
-    userName: "Dan Abrahmov",
-    content: "React is great!",
-    avatarSrc: "https://bit.ly/dan-abramov",
-  },
-  {
-    id: 2,
-    userName: "Ryan Florence",
-    content: "Let's build great UIs!",
-    avatarSrc: "https://bit.ly/ryan-florence",
-  },
-  {
-    id: 3,
-    userName: "Kent C. Dodds",
-    content: "Testing is essential.",
-    avatarSrc: "https://bit.ly/kent-c-dodds",
-  },
-];
-function Comment({ userName, content, avatarSrc }: CommentProps) {
+function CommentItem({ comment }: CommentItemProps) {
   return (
     <CommentWrapper>
-      <Avatar name={userName} src={avatarSrc} />
+      <Avatar name={comment.userName} src={comment.userImage} />
       <ContentWrapper>
-        <UserName>{userName}</UserName>
-        <Content>{content}</Content>
+        <UserName>{comment.userName}</UserName>
+        <Content>{comment.content}</Content>
       </ContentWrapper>
     </CommentWrapper>
   );
 }
 
-export default function CommentList() {
+export default function CommentList({ comments }: CommentListProps) {
   return (
     <CommentListWrapper>
-      {comments.map((comment) => (
-        <Comment
-          key={comment.id}
-          id={comment.id}
-          userName={comment.userName}
-          content={comment.content}
-          avatarSrc={comment.avatarSrc}
-        />
+      {comments.map((comment, index) => (
+        <CommentItem key={index} comment={comment} />
       ))}
     </CommentListWrapper>
   );
