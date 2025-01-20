@@ -25,6 +25,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { PinkButton } from "./common/button";
 import { useAuthStore } from "../store/authStore";
+import { useArticleStore } from "../store/articleStore";
 
 const articleSchema = z.object({
   title: z
@@ -136,7 +137,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     };
 
     postArticle(newArticle)
-      .then(() => {
+      .then((articleId) => {
         setArticleInfo({
           title: "",
           content: "",
@@ -151,6 +152,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
         setFile(null);
         setImageSrc(null);
         onClose();
+        useArticleStore.getState().setArticleId(articleId || "");
       })
       .catch((error: any) => {
         console.error("게시물 공유 중 오류 발생:", error);

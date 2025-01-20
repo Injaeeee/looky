@@ -3,10 +3,9 @@ import { extendTheme } from "@chakra-ui/react";
 const theme = extendTheme({
   components: {
     Select: {
-      // Select의 기본 스타일
       baseStyle: {
         field: {
-          color: "pink.100", // Select의 글자색
+          color: "pink.100",
         },
       },
     },

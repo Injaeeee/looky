@@ -11,6 +11,7 @@ import {
   updateDoc,
   increment,
   limit,
+  deleteDoc,
 } from "firebase/firestore";
 import { showToast } from "../components/common/toast";
 
@@ -61,14 +62,33 @@ export async function getArticles(
 export async function postArticle(newArticle: PostArticle) {
   try {
     const productRef = collection(db, "articles");
-    await addDoc(productRef, newArticle);
+    const docRef = await addDoc(productRef, newArticle);
     showToast({
       title: "게시물이 등록되었습니다.",
       status: "success",
     });
+
+    return docRef.id;
   } catch (error) {
     showToast({
       title: "게시물 등록 실패",
+      description: "오류가 발생했습니다.",
+      status: "error",
+    });
+  }
+}
+
+export async function deleteArticle(articleId: string) {
+  try {
+    const articleRef = doc(db, "articles", articleId);
+    await deleteDoc(articleRef);
+    showToast({
+      title: "게시물이 삭제되었습니다.",
+      status: "success",
+    });
+  } catch (error) {
+    showToast({
+      title: "게시물 삭제 실패",
       description: "오류가 발생했습니다.",
       status: "error",
     });
