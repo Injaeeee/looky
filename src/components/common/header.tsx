@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { Avatar, Image, useDisclosure } from "@chakra-ui/react";
 import CreateModal from "../createModal";
@@ -13,14 +13,11 @@ export default function Header() {
   const [selectedArticle, setSelectedArticle] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isAuthenticated, user, restoreSession } = useAuthStore();
+  const navigate = useNavigate();
 
   const handleLogout = async () => {
-    try {
-      await logoutUser();
-      alert("로그아웃되었습니다.");
-    } catch (error: any) {
-      console.error("로그아웃 오류:", error.message);
-    }
+    await logoutUser();
+    navigate("/");
   };
 
   useEffect(() => {

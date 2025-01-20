@@ -1,5 +1,6 @@
 import { storage } from "../firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { showToast } from "../components/common/toast";
 
 // 파일 업로드 함수
 export const uploadImage = async (file: File): Promise<string | undefined> => {
@@ -11,7 +12,11 @@ export const uploadImage = async (file: File): Promise<string | undefined> => {
     const downloadURL = await getDownloadURL(storageRef);
     return downloadURL;
   } catch (error) {
-    console.error("파일 업로드 실패:", error);
+    showToast({
+      title: "파일 업로드 실패",
+      description: "오류가 발생했습니다.",
+      status: "error",
+    });
   }
 };
 
@@ -25,6 +30,10 @@ export const getImageURL = async (
     const downloadURL = await getDownloadURL(storageRef);
     return downloadURL;
   } catch (error) {
-    console.error("파일 다운로드 실패:", error);
+    showToast({
+      title: "파일 다운로드 실패",
+      description: "오류가 발생했습니다.",
+      status: "error",
+    });
   }
 };

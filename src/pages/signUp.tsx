@@ -63,20 +63,16 @@ export default function SignUp() {
   });
 
   const onSubmit = async (data: any) => {
-    try {
-      await signUpUser({
-        email: data.email,
-        password: data.password,
-        name: data.name,
-        height: data.height,
-        gender: data.gender,
-        mood: data.mood,
-      });
-      alert("회원가입에 성공했습니다!");
-      navigate("/login");
-    } catch (error: any) {
-      alert(error.message || "회원가입에 실패했습니다.");
-    }
+    await signUpUser({
+      email: data.email,
+      password: data.password,
+      name: data.name,
+      height: data.height,
+      gender: data.gender,
+      mood: data.mood,
+    });
+
+    navigate("/login");
   };
 
   return (

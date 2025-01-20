@@ -38,16 +38,11 @@ export default function Login() {
   });
 
   const onSubmit = async (data: any) => {
-    try {
-      await loginUser({
-        email: data.username,
-        password: data.password,
-      });
-      alert("로그인 성공했습니다!");
-      navigate("/");
-    } catch (error: any) {
-      alert(error.message || "회원가입에 실패했습니다.");
-    }
+    await loginUser({
+      email: data.username,
+      password: data.password,
+    });
+    navigate("/");
   };
 
   return (
