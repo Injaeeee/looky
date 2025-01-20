@@ -14,6 +14,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { Gender, Height, Mood, User, UserData } from "../types/user.types";
+import { showToast } from "../components/common/toast";
 
 /**
  * Firebase 회원가입 함수
@@ -41,9 +42,17 @@ export const signUpUser = async (data: UserData): Promise<void> => {
       gender,
       likeArticle: [],
     });
+
+    showToast({
+      title: "회원가입이 완료되었습니다.",
+      status: "success",
+    });
   } catch (error: any) {
-    console.error("회원가입 오류:", error);
-    throw new Error(error.message || "회원가입에 실패했습니다.");
+    showToast({
+      title: "회원가입 오류",
+      description: `{error.message} 회원가입에 실패했습니다.`,
+      status: "error",
+    });
   }
 };
 
@@ -86,8 +95,12 @@ export const loginUser = async (data: UserData): Promise<void> => {
       accessToken,
       refreshToken,
     });
-  } catch (error: any) {
-    throw new Error(error.message || "로그인에 실패했습니다.");
+  } catch (error) {
+    showToast({
+      title: "로그인 오류",
+      description: "오류가 발생했습니다.",
+      status: "error",
+    });
   }
 };
 
@@ -106,8 +119,11 @@ export const logoutUser = async (): Promise<void> => {
     );
     likeCountKeys.forEach((key) => localStorage.removeItem(key));
   } catch (error: any) {
-    console.error("로그아웃 오류:", error);
-    throw new Error(error.message || "로그아웃에 실패했습니다.");
+    showToast({
+      title: "로그인 오류",
+      description: "오류가 발생했습니다.",
+      status: "error",
+    });
   }
 };
 
@@ -130,9 +146,16 @@ export const updateUserProfile = async (
       imageUrl,
       ...updates,
     });
+    showToast({
+      title: "프로필 업데이트가 완료되었습니다.",
+      status: "success",
+    });
   } catch (error) {
-    console.error("프로필 업데이트 오류:", error);
-    throw error;
+    showToast({
+      title: "프로필 업데이트 오류",
+      description: "오류가 발생했습니다.",
+      status: "error",
+    });
   }
 };
 
@@ -164,14 +187,17 @@ export const updateUserLikeStatus = async (
 
       login({
         ...user,
-        articleLike: user?.articleLike?.filter((id) => id !== articleId) || [],
+        articleLike:
+          user?.articleLike?.filter((id: string) => id !== articleId) || [],
         uid: user?.uid || "",
         email: user?.email || "",
         imageUrl: user?.imageUrl || "",
       });
     }
   } catch (error) {
-    console.error("좋아요 상태 업데이트 실패:", error);
-    throw error;
+    showToast({
+      title: "좋아요 상태 업데이트 실패",
+      status: "error",
+    });
   }
 };

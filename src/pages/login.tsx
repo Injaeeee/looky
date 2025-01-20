@@ -2,13 +2,14 @@ import { PinkButton } from "../components/common/button";
 import { Input } from "../components/common/input";
 import styled from "styled-components";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../util/user.api";
 import { Image } from "@chakra-ui/react";
+import { useAuthStore } from "../store/authStore";
 
 const schema = z.object({
   username: z
@@ -24,10 +25,17 @@ const schema = z.object({
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const {
     register,
@@ -38,16 +46,11 @@ export default function Login() {
   });
 
   const onSubmit = async (data: any) => {
-    try {
-      await loginUser({
-        email: data.username,
-        password: data.password,
-      });
-      alert("로그인 성공했습니다!");
-      navigate("/");
-    } catch (error: any) {
-      alert(error.message || "회원가입에 실패했습니다.");
-    }
+    await loginUser({
+      email: data.username,
+      password: data.password,
+    });
+    navigate("/");
   };
 
   return (

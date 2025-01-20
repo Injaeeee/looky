@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { getArticles } from "../util/article.api";
 import { Article, ArticleFilter } from "../types/article.types";
 import { Link } from "react-router-dom";
+import { useArticleStore } from "../store/articleStore";
 
 export default function ListPage() {
   const { user } = useAuthStore();
@@ -15,6 +16,7 @@ export default function ListPage() {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState<ArticleFilter>({});
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const ArticleId = useArticleStore((state) => state.ArticleId);
 
   const fetchArticles = async () => {
     const result = await getArticles(filters, selectedCategories, searchTerm);
@@ -23,7 +25,7 @@ export default function ListPage() {
 
   useEffect(() => {
     fetchArticles();
-  }, [filters, selectedCategories, searchTerm]);
+  }, [filters, selectedCategories, searchTerm, ArticleId]);
 
   return (
     <Container>

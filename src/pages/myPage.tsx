@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Avatar, useDisclosure } from "@chakra-ui/react";
 import MyArticles from "../components/myPage/myArticles";
 import EditProfileModal from "../components/myPage/editProfileModal";
 import { useAuthStore } from "../store/authStore";
-
+import { useNavigate } from "react-router-dom";
 export default function MyPage() {
   const [activeButton, setActiveButton] = useState<string>("내 게시물");
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user } = useAuthStore();
-
+  const { isAuthenticated, user } = useAuthStore();
+  const navigate = useNavigate();
   const handleOpenModal = () => {
     onOpen();
   };
@@ -17,6 +17,12 @@ export default function MyPage() {
   const handleButtonClick = (buttonName: string) => {
     setActiveButton(buttonName);
   };
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate("/login");
+    }
+  }, [isAuthenticated, navigate]);
 
   return (
     <Container>

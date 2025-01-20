@@ -2,7 +2,7 @@ import { PinkButton } from "../components/common/button";
 import { Input } from "../components/common/input";
 import styled from "styled-components";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +15,7 @@ import {
   HeightSelect,
   MoodSelect,
 } from "../components/common/select";
+import { useAuthStore } from "../store/authStore";
 
 const schema = z
   .object({
@@ -45,6 +46,12 @@ export default function SignUp() {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordCheck, setShowPasswordCheck] = useState(false);
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuthStore();
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/");
+    }
+  }, [isAuthenticated, navigate]);
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -63,20 +70,16 @@ export default function SignUp() {
   });
 
   const onSubmit = async (data: any) => {
-    try {
-      await signUpUser({
-        email: data.email,
-        password: data.password,
-        name: data.name,
-        height: data.height,
-        gender: data.gender,
-        mood: data.mood,
-      });
-      alert("회원가입에 성공했습니다!");
-      navigate("/login");
-    } catch (error: any) {
-      alert(error.message || "회원가입에 실패했습니다.");
-    }
+    await signUpUser({
+      email: data.email,
+      password: data.password,
+      name: data.name,
+      height: data.height,
+      gender: data.gender,
+      mood: data.mood,
+    });
+
+    navigate("/login");
   };
 
   return (

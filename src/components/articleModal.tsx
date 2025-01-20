@@ -11,7 +11,7 @@ import {
   InputRightElement,
   InputGroup,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { BlurTag, PinkBlurTag } from "./common/tag";
 import CommentList from "./commentList";
@@ -23,6 +23,10 @@ import { useAuthStore } from "../store/authStore";
 import { updateUserLikeStatus } from "../util/user.api";
 import { postComment } from "../util/comment.api";
 import { Comment } from "../types/comment.types";
+import { PinkBorderButton } from "./common/button";
+import Dialog from "./common/dialog";
+import { deleteArticle } from "../util/article.api";
+import { useArticleStore } from "../store/articleStore";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -40,13 +44,23 @@ export default function ArticleModal({
   const { user, isAuthenticated } = useAuthStore();
   const [comments, setComments] = useState<Comment[]>(article.comments || []);
   const [commentText, setCommentText] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const cancelRef = useRef<HTMLButtonElement>(null!);
+  const handleDialogOpen = () => setIsDialogOpen(true);
+  const handleDialogClose = () => setIsDialogOpen(false);
+
+  const handleDialogConfirm = async () => {
+    await deleteArticle(article.id);
+    useArticleStore.getState().setArticleId(article.id);
+    setIsDialogOpen(false);
+    onClose();
+  };
 
   useEffect(() => {
     if (user && user.articleLike) {
       const isLiked = user.articleLike.includes(article.id);
       setLiked(isLiked);
     }
-
     const savedLikeCount = localStorage.getItem(`likeCount-${article.id}`);
     if (savedLikeCount) {
       setLikeCount(JSON.parse(savedLikeCount));
@@ -75,23 +89,16 @@ export default function ArticleModal({
       JSON.stringify(updatedLikeCount),
     );
 
-    try {
-      if (user) {
-        const { uid } = user;
-        await updateUserLikeStatus(uid, article.id, newLikedState);
-        await updateLikeCount(article.id, incrementValue);
-      }
-    } catch (error) {
-      console.error("좋아요 처리 중 오류 발생:", error);
+    if (user) {
+      const { uid } = user;
+      await updateUserLikeStatus(uid, article.id, newLikedState);
+      await updateLikeCount(article.id, incrementValue);
     }
   };
 
   const handleAddComment = async () => {
     if (!commentText.trim()) return;
-    if (!user) {
-      console.error("로그인이 필요합니다.");
-      return;
-    }
+    if (!user) return;
 
     const newComment: Comment = {
       userUid: user.uid,
@@ -102,13 +109,9 @@ export default function ArticleModal({
       content: commentText,
     };
 
-    try {
-      await postComment(article.id, newComment);
-      setComments((prevComments) => [newComment, ...prevComments]);
-      setCommentText("");
-    } catch (error) {
-      console.error("댓글 추가 중 오류 발생:", error);
-    }
+    await postComment(article.id, newComment);
+    setComments((prevComments) => [newComment, ...prevComments]);
+    setCommentText("");
   };
 
   return (
@@ -148,18 +151,30 @@ export default function ArticleModal({
             ))}
           </PictureContainer>
           <ArticleContent>
-            <UserSpec>
-              <UserName>{article.writer?.name}</UserName>
-              <UserDetail>
-                {article.writer?.gender}· {article.writer?.height}
-              </UserDetail>
-            </UserSpec>
+            <UserWrapper>
+              <UserSpec>
+                <UserName>{article.writer?.name}</UserName>
+                <UserDetail>
+                  {article.writer?.gender} · {article.writer?.height}
+                </UserDetail>
+              </UserSpec>
+              {article.writer?.uid === user?.uid && (
+                <PinkBorderButton onClick={handleDialogOpen}>
+                  삭제하기
+                </PinkBorderButton>
+              )}
+            </UserWrapper>
             <UserInfo>
-              <UserTitle>INFO</UserTitle> #{article.season} #{article.mood} #
-              {article.tpo}
+              <UserTitle>INFO</UserTitle>
+              <Info>
+                <p>#{article.season}</p>
+                <p>#{article.mood}</p>
+                <p>#{article.tpo}</p>
+              </Info>
             </UserInfo>
+            <UserInfo>{article.content}</UserInfo>
             <UserInfo>
-              <UserTitle>Tag</UserTitle>
+              <UserTitle>TAG</UserTitle>
               <Stack direction="row" spacing="2" flexWrap="wrap">
                 {article.tags
                   .filter((tag) => tag.productName)
@@ -169,15 +184,27 @@ export default function ArticleModal({
               </Stack>
             </UserInfo>
             <Communication>
-              <LikeButton onClick={toggleLike} type="button">
-                <Icon
-                  as={liked ? TiHeartFullOutline : TiHeartOutline}
-                  w={10}
-                  h={10}
-                  color={"var(--pink400)"}
-                />
-                {likeCount}
-              </LikeButton>
+              {isAuthenticated ? (
+                <LikeButton onClick={toggleLike} type="button">
+                  <Icon
+                    as={liked ? TiHeartFullOutline : TiHeartOutline}
+                    w={10}
+                    h={10}
+                    color={"var(--pink400)"}
+                  />
+                  {likeCount}
+                </LikeButton>
+              ) : (
+                <LikeWrapper>
+                  <Icon
+                    as={TiHeartFullOutline}
+                    w={10}
+                    h={10}
+                    color={"var(--pink400)"}
+                  />
+                  {likeCount}
+                </LikeWrapper>
+              )}
             </Communication>
             <CommentListWrapper>
               {article.comments ? (
@@ -208,6 +235,13 @@ export default function ArticleModal({
           </ArticleContent>
         </ArticleBody>
       </ModalContent>
+      <Dialog
+        isOpen={isDialogOpen}
+        onClose={handleDialogClose}
+        onConfirm={handleDialogConfirm}
+        content="게시물을 삭제하시겠습니까?"
+        leastDestructiveRef={cancelRef}
+      />
     </Modal>
   );
 }
@@ -238,6 +272,11 @@ const ArticleContent = styled.div`
   width: 350px;
 `;
 
+const UserWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
 const UserTitle = styled.p`
   font-size: 18px;
   font-weight: 600;
@@ -246,24 +285,32 @@ const UserTitle = styled.p`
 const UserInfo = styled.div`
   display: flex;
   flex-direction: column;
-  font-size: 15px;
+  font-size: 13px;
   gap: 5px;
+`;
+
+const Info = styled.div`
+  display: flex;
+  gap: 15px;
+  padding-bottom: 18px;
+  border-bottom: 2px solid var(--gray700);
 `;
 
 const UserSpec = styled.div`
   display: flex;
+  align-items: center;
   gap: 10px;
 `;
 
 const UserName = styled.p`
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 25px;
+  font-weight: 800;
 `;
 
 const UserDetail = styled.p`
   font-size: 15px;
   color: var(--gray500);
-  font-weight: 400;
+  font-weight: 600;
 `;
 
 const Communication = styled.div`
@@ -277,7 +324,12 @@ const Communication = styled.div`
 const LikeButton = styled.button`
   display: flex;
   flex-direction: column;
+  align-items: center;
+`;
 
+const LikeWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   align-items: center;
 `;
 
