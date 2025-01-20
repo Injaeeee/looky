@@ -178,9 +178,6 @@ export default function ArticleModal({
                 />
                 {likeCount}
               </LikeButton>
-              <button>
-                <Image src="/icon/bookMark.svg" width="16px" />
-              </button>
             </Communication>
             <CommentListWrapper>
               {article.comments ? (

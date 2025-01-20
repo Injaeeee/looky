@@ -1,4 +1,7 @@
+import { Article } from "../types/article.types";
+import { getRankingArticles } from "../util/article.api";
 import { Avatar } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 
 interface RankType {
@@ -9,55 +12,11 @@ interface RankType {
   likes: number;
 }
 
-const ranks: RankType[] = [
-  {
-    id: 1,
-    rank: 1,
-    nickname: "@injae",
-    avatarSrc: "https://bit.ly/dan-abramov", // 실제 URL로 변경
-    likes: 100,
-  },
-  {
-    id: 2,
-    rank: 2,
-    nickname: "@user2",
-    avatarSrc: "https://bit.ly/dan-abramov", // 실제 URL로 변경
-    likes: 90,
-  },
-  {
-    id: 3,
-    rank: 3,
-    nickname: "@user3",
-    avatarSrc: "https://bit.ly/dan-abramov", // 실제 URL로 변경
-    likes: 80,
-  },
-  {
-    id: 4,
-    rank: 4,
-    nickname: "@user4",
-    avatarSrc: "https://bit.ly/dan-abramov", // 실제 URL로 변경
-    likes: 70,
-  },
-  {
-    id: 5,
-    rank: 5,
-    nickname: "@user5",
-    avatarSrc: "https://bit.ly/dan-abramov", // 실제 URL로 변경
-    likes: 60,
-  },
-];
-
-function Rank({
-  rank,
-  nickname,
-  avatarSrc,
-  likes,
-  isLast,
-}: RankType & { isLast: boolean }) {
+function Rank({ rank, nickname, avatarSrc, likes }: RankType) {
   const isTopThree = rank <= 3;
 
   return (
-    <RankContainer $isLast={isLast}>
+    <RankContainer>
       <RankingNumber $isTopThree={isTopThree}>{rank}.</RankingNumber>
       <RankerWrapper>
         <Avatar name={nickname} src={avatarSrc} size="sm" />
@@ -69,17 +28,26 @@ function Rank({
 }
 
 export default function BestRanking() {
+  const [articles, setArticles] = useState<Article[]>([]);
+
+  const fetchArticles = async () => {
+    const result = await getRankingArticles();
+    setArticles(result);
+  };
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
   return (
     <RankListContainer>
-      {ranks.map((rank, index) => (
+      {articles.slice(0, 5).map((article, index) => (
         <Rank
-          key={rank.id}
-          id={rank.id}
-          rank={rank.rank}
-          nickname={rank.nickname}
-          avatarSrc={rank.avatarSrc}
-          likes={rank.likes}
-          isLast={index === ranks.length - 1}
+          key={article.id}
+          id={index}
+          rank={index + 1}
+          nickname={article.writer?.name || ""}
+          avatarSrc={article.imageURL || ""}
+          likes={article.likeCount}
         />
       ))}
     </RankListContainer>
@@ -100,14 +68,13 @@ const RankerWrapper = styled.div`
   gap: 5px;
 `;
 
-const RankContainer = styled.div<{ $isLast: boolean }>`
+const RankContainer = styled.div`
   display: flex;
   justify-content: space-between;
   gap: 20px;
   padding-bottom: 5px;
   align-items: center;
   border-bottom: solid var(--gray500) 2px;
-  ${({ $isLast }) => $isLast && "border-bottom: none;"}
 `;
 
 const RankingNumber = styled.p<{ $isTopThree: boolean }>`

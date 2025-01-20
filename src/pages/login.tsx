@@ -47,7 +47,6 @@ export default function Login() {
       navigate("/");
     } catch (error: any) {
       alert(error.message || "회원가입에 실패했습니다.");
-      console.log(error.message);
     }
   };
 

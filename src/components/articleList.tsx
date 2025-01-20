@@ -1,19 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
-import {
-  Stack,
-  Heading,
-  Text,
-  Avatar,
-  useDisclosure,
-  Button,
-} from "@chakra-ui/react";
-import { BlurTag, PinkBlurTag, PinkTag } from "./common/tag";
+import { Stack, Heading, Text, Avatar, useDisclosure } from "@chakra-ui/react";
+import { PinkTag } from "./common/tag";
 import ArticleModal from "../components/articleModal";
 import CategoryList from "./category";
 import { SelectGroup } from "./common/select";
-import { getArticles } from "../util/article.api";
-import { Article, Season, TPO, ArticleFilter } from "../types/article.types";
+import { Article, ArticleFilter } from "../types/article.types";
 
 export default function ArticleList({
   articles,

@@ -1,38 +1,26 @@
-import { Avatar, Stack, Text, Heading, Image } from "@chakra-ui/react";
+import { Image } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import { Article } from "../types/article.types";
 import styled from "styled-components";
+import { getRankingArticles } from "../util/article.api";
+import { Link } from "react-router-dom";
+
 export default function MainRanking() {
-  const articles = [
-    {
-      id: 1,
-      image:
-        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
-      name: "Kim",
-    },
-    {
-      id: 2,
-      image:
-        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
-      name: "Lee",
-    },
-    {
-      id: 3,
-      image:
-        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
-      name: "Park",
-    },
-    {
-      id: 4,
-      image:
-        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
-      name: "Choi",
-    },
-    {
-      id: 5,
-      image:
-        "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaW90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80",
-      name: "Jung",
-    },
-  ];
+  const [articles, setArticles] = useState<Article[]>([]);
+
+  const fetchArticles = async () => {
+    try {
+      const result = await getRankingArticles();
+      setArticles(result || []);
+    } catch (error) {
+      console.error("Failed to fetch ranking articles:", error);
+      setArticles([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
 
   return (
     <MainContainer>
@@ -41,91 +29,69 @@ export default function MainRanking() {
         {articles.slice(0, 3).map((article, index) =>
           index === 0 ? (
             <BestArticle key={article.id}>
-              <CardImage src={article.image} alt={`${article.name} Image`} />
+              <CardImage
+                src={article.imageURL || "/placeholder.png"}
+                alt={`${article.title} Image`}
+              />
               <CardContent>
                 <Ranking>
                   <BestNumber>{index + 1} .</BestNumber>
-                  <BestName>{article.name}</BestName>
+                  <BestName>{article.writer?.name || "익명"}</BestName>
                 </Ranking>
                 <CommentCount>
                   <Image src="/icon/comment.svg" alt="comment" />
-                  123
+                  {article.comments?.length || 0}
                 </CommentCount>
               </CardContent>
             </BestArticle>
-          ) : index === articles.length - 1 ? (
-            <SplitArticle key={article.id}>
-              <HalfArticle>
-                <CardImage
-                  src={articles[3].image}
-                  alt={`${articles[3].name} Image`}
-                />
-                <CardContent>
-                  <Ranking>
-                    <RankingNumber>{index + 1} .</RankingNumber>
-                    <RankingName>{articles[3].name}</RankingName>
-                  </Ranking>
-                  <CommentCount>
-                    <Image src="/icon/comment.svg" alt="comment" />
-                  </CommentCount>
-                </CardContent>
-              </HalfArticle>
-              <HalfArticle>
-                <CardImage
-                  src={articles[4]?.image || "/placeholder.jpg"}
-                  alt={`${articles[4]?.name || "Placeholder"} Image`}
-                />
-                <CardContent>
-                  <Ranking>
-                    <RankingNumber>{index + 1} .</RankingNumber>
-                    <RankingName>
-                      {articles[4]?.name || "Placeholder"}
-                    </RankingName>
-                  </Ranking>
-                  <CommentCount>
-                    <Image src="/icon/comment.svg" alt="comment" />
-                  </CommentCount>
-                </CardContent>
-              </HalfArticle>
-            </SplitArticle>
           ) : (
-            <Article key={article.id}>
-              <CardImage src={article.image} alt={`${article.name} Image`} />
+            <ArticleItem key={article.id}>
+              <CardImage
+                src={article.imageURL || "/placeholder.png"}
+                alt={`${article.title} Image`}
+              />
               <CardContent>
                 <Ranking>
                   <RankingNumber>{index + 1} .</RankingNumber>
-                  <RankingName>{article.name}</RankingName>
+                  <RankingName>{article.writer?.name || "익명"}</RankingName>
                 </Ranking>
                 <CommentCount>
                   <Image src="/icon/comment.svg" alt="comment" />
-                  123
+                  {article.comments?.length || 0}
                 </CommentCount>
               </CardContent>
-            </Article>
+            </ArticleItem>
           ),
         )}
-        <SplitArticles>
-          {articles.slice(3, 5).map((article, index) => (
-            <HalfArticle key={article.id}>
-              <CardImage src={article.image} alt={`${article.name} Image`} />
-              <CardContent>
-                <Ranking>
-                  <RankingNumber>{index + 4} .</RankingNumber>
-                  <RankingName>{article.name}</RankingName>
-                </Ranking>
-                <CommentCount>
-                  <Image src="/icon/comment.svg" alt="comment" />
-                  123
-                </CommentCount>
-              </CardContent>
-            </HalfArticle>
-          ))}
-        </SplitArticles>
+        {articles.length > 3 && (
+          <SplitArticles>
+            {articles.slice(3, 5).map((article, index) => (
+              <HalfArticle key={article.id}>
+                <CardImage
+                  src={article.imageURL || "/placeholder.png"}
+                  alt={`${article.title} Image`}
+                />
+                <CardContent>
+                  <Ranking>
+                    <RankingNumber>{index + 4} .</RankingNumber>
+                    <RankingName>{article.writer?.name || ""}</RankingName>
+                  </Ranking>
+                  <CommentCount>
+                    <Image src="/icon/comment.svg" alt="comment" />
+                    {article.comments?.length || 0}
+                  </CommentCount>
+                </CardContent>
+              </HalfArticle>
+            ))}
+          </SplitArticles>
+        )}
       </Container>
-      <Button>
-        <Image src="/icon/ranking.svg" alt="ranking" />
-        랭킹 더 보기{" "}
-      </Button>
+      <Link to="/ranking">
+        <Button>
+          <Image src="/icon/ranking.svg" alt="ranking" />
+          랭킹 더 보기
+        </Button>
+      </Link>
     </MainContainer>
   );
 }
@@ -145,7 +111,7 @@ const Container = styled.div`
   gap: 20px;
 `;
 
-const Article = styled.div`
+const ArticleItem = styled.div`
   width: 305px;
   height: 355px;
   position: relative;
@@ -158,7 +124,7 @@ const SplitArticles = styled.div`
   gap: 10px;
 `;
 
-const BestArticle = styled(Article)`
+const BestArticle = styled(ArticleItem)`
   border: 2px solid var(--pink100);
   border-radius: 7px;
 `;

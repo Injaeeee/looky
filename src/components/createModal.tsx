@@ -73,7 +73,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     season: Season.Spring,
     content: "",
     writer: writer,
-    comment: [],
+    comments: [],
   });
 
   const handleArticleInfoChange = (
@@ -125,7 +125,6 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     }
 
     const imageURL = await uploadImage(file);
-    console.log(articleInfo, tags, createdAt, imageURL);
 
     const newArticle: PostArticle = {
       ...articleInfo,
@@ -138,7 +137,6 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
 
     postArticle(newArticle)
       .then(() => {
-        console.log("게시물 공유 완료");
         setArticleInfo({
           title: "",
           content: "",
@@ -146,7 +144,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
           tpo: TPO.바다,
           season: Season.Spring,
           writer: user,
-          comment: [],
+          comments: [],
         });
         setValue("title", "");
         setTags([]);

@@ -41,8 +41,6 @@ export const signUpUser = async (data: UserData): Promise<void> => {
       gender,
       likeArticle: [],
     });
-
-    console.log("회원가입 성공:", user);
   } catch (error: any) {
     console.error("회원가입 오류:", error);
     throw new Error(error.message || "회원가입에 실패했습니다.");
@@ -107,8 +105,6 @@ export const logoutUser = async (): Promise<void> => {
       key.startsWith("likeCount-"),
     );
     likeCountKeys.forEach((key) => localStorage.removeItem(key));
-
-    console.log("로그아웃 성공");
   } catch (error: any) {
     console.error("로그아웃 오류:", error);
     throw new Error(error.message || "로그아웃에 실패했습니다.");
@@ -134,8 +130,6 @@ export const updateUserProfile = async (
       imageUrl,
       ...updates,
     });
-
-    console.log("사용자 프로필 업데이트 성공");
   } catch (error) {
     console.error("프로필 업데이트 오류:", error);
     throw error;
@@ -149,9 +143,6 @@ export const updateUserLikeStatus = async (
 ): Promise<void> => {
   const userDocRef = doc(db, "users", userId);
   const { login, user } = useAuthStore.getState();
-
-  console.log(user?.articleLike);
-  console.log(liked);
 
   try {
     if (liked) {
@@ -179,8 +170,6 @@ export const updateUserLikeStatus = async (
         imageUrl: user?.imageUrl || "",
       });
     }
-
-    console.log(`사용자의 좋아요 상태가 업데이트되었습니다: ${liked}`);
   } catch (error) {
     console.error("좋아요 상태 업데이트 실패:", error);
     throw error;

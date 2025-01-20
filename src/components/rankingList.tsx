@@ -1,60 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
-import {
-  Stack,
-  Heading,
-  Text,
-  Avatar,
-  useDisclosure,
-  Button,
-} from "@chakra-ui/react";
-import { BlurTag, PinkBlurTag, PinkTag } from "./common/tag";
+import { Stack, Heading, Text, Avatar, useDisclosure } from "@chakra-ui/react";
+import { PinkTag } from "./common/tag";
 import ArticleModal from "../components/articleModal";
+import { getRankingArticles } from "../util/article.api";
+import { Article } from "../types/article.types";
 
 export default function RankingList() {
-  const [selectedArticle, setSelectedArticle] = useState<{
-    title: string;
-    description: string;
-  } | null>(null);
+  const [selectedArticle, setSelectedArticle] = useState<Article>();
+  const [articles, setArticles] = useState<Article[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const handleOpenModal = (title: string, description: string) => {
-    setSelectedArticle({ title, description });
+  const handleOpenModal = (article: Article) => {
+    setSelectedArticle(article);
     onOpen();
   };
 
-  const taskLists = [
-    {
-      title: "Living Room Sofa",
-      description: "Perfect for modern tropical spaces",
-      tags: ["Tag 1", "Tag 2", "Tag 3"],
-    },
-    {
-      title: "Dining Table",
-      description: "Elegant and durable",
-      tags: ["Furniture", "Wood", "Stylish"],
-    },
-    {
-      title: "Bed Frame",
-      description: "Comfortable and sturdy",
-      tags: ["Cozy", "Modern", "Affordable"],
-    },
-    {
-      title: "Bed Frame",
-      description: "Comfortable and sturdy",
-      tags: ["Cozy", "Modern", "Affordable"],
-    },
-    {
-      title: "Bed Frame",
-      description: "Comfortable and sturdy",
-      tags: ["Cozy", "Modern", "Affordable"],
-    },
-    {
-      title: "Bed Frame",
-      description: "Comfortable and sturdy",
-      tags: ["Cozy", "Modern", "Affordable"],
-    },
-  ];
+  const fetchArticles = async () => {
+    const result = await getRankingArticles();
+    setArticles(result);
+  };
+
+  useEffect(() => {
+    fetchArticles();
+  }, []);
 
   return (
     <Container>
@@ -69,37 +38,41 @@ export default function RankingList() {
             <p> 받은 게시물을 직접 확인해보세요</p>
           </InfoLabel>
         </RankingInfo>
-        {taskLists.map((task, index) => (
+        {articles.map((article, index) => (
           <ArticleContainer
             key={index}
             $isHighlighted={index < 3}
-            onClick={() => handleOpenModal(task.title, task.description)}
+            onClick={() => handleOpenModal(article)}
           >
             {index < 3 && (
               <HighlightedWrapper>
                 <HighlightedRank>{index + 1} </HighlightedRank>
                 <HighlightedUser>
                   <Header size="md" color="white">
-                    {task.title}
+                    {article.title}
                   </Header>
-                  {task.description}
+                  {article.content.length > 10
+                    ? `${article.content.slice(0, 10)}...`
+                    : article.content}
                 </HighlightedUser>
               </HighlightedWrapper>
             )}
-            <CardImage
-              src="https://images.unsplash.com/photo-1555041469-a586c61ea9bc?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1770&q=80"
-              alt="Background Image"
-            />
+            <CardImage src={article.imageURL} alt={article.title} />
             <CardContent>
               <Header size="md" color="white">
-                <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
-                {task.title}
+                <Avatar
+                  name={article.writer?.name}
+                  src={article.writer?.imageUrl}
+                />
+                {article.writer?.name}
               </Header>
-              <Text color="white">{task.description}</Text>
+              <Text color="white">{article.title}</Text>
               <Stack direction="row" spacing="2">
-                {task.tags.map((tag, idx) => (
-                  <PinkTag key={idx} label={tag} />
-                ))}
+                {article.tags
+                  .filter((tag) => tag.productName)
+                  .map((tag, idx) => (
+                    <PinkTag key={idx} label={tag.productName} />
+                  ))}
               </Stack>
             </CardContent>
           </ArticleContainer>
@@ -110,8 +83,7 @@ export default function RankingList() {
         <ArticleModal
           isOpen={isOpen}
           onClose={onClose}
-          title={selectedArticle.title}
-          description={selectedArticle.description}
+          article={selectedArticle}
         />
       )}
     </Container>
@@ -122,7 +94,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 48px;
-  margin: 150px auto 0;
+  margin: 150px auto;
 `;
 
 const RankingInfo = styled.div`

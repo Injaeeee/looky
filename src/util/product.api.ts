@@ -21,5 +21,4 @@ export async function postDocuments() {
     name: "Custom Product",
     price: 200,
   });
-  console.log("문서 ID: ", productRef); // 새로 생성된 문서 출력
 }
