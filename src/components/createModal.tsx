@@ -73,7 +73,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     season: Season.Spring,
     content: "",
     writer: writer,
-    comment: [],
+    comments: [],
   });
 
   const handleArticleInfoChange = (
@@ -146,7 +146,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
           tpo: TPO.바다,
           season: Season.Spring,
           writer: user,
-          comment: [],
+          comments: [],
         });
         setValue("title", "");
         setTags([]);

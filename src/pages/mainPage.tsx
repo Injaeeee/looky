@@ -1,10 +1,22 @@
 import styled from "styled-components";
-import { Image } from "@chakra-ui/react";
+import { Image, useDisclosure } from "@chakra-ui/react";
 import { BlurTag } from "../components/common/tag";
 import MainRanking from "../components/mainRanking";
 import { PinkBorderButton } from "../components/common/button";
+import { Link } from "react-router-dom";
+import CreateModal from "../components/createModal";
+import { useState } from "react";
+import { useAuthStore } from "../store/authStore";
 
 export default function MainPage() {
+  const [selectedArticle, setSelectedArticle] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { isAuthenticated } = useAuthStore();
+
+  const handleOpenModal = () => {
+    setSelectedArticle(true);
+    onOpen();
+  };
   return (
     <Container>
       <FrontImage
@@ -41,7 +53,10 @@ export default function MainPage() {
                 height="500px"
                 objectFit="contain"
               />
-              <ViewPost>VIEW POST {">"}</ViewPost>
+
+              <ViewPost>
+                <PinkLink to="/list">VIEW POST {">"}</PinkLink>
+              </ViewPost>
             </ViewIntro>
           </MainWrapper>
           <LookyLabel>With Looky</LookyLabel>
@@ -82,10 +97,12 @@ export default function MainPage() {
             height="500px"
             objectFit="contain"
           />
-          <LeftButton>
-            <Image src="/icon/pinkCreate.svg" alt="create" />
-            CREATE
-          </LeftButton>
+          {isAuthenticated && (
+            <LeftButton onClick={() => handleOpenModal()}>
+              <Image src="/icon/pinkCreate.svg" alt="create" />
+              CREATE
+            </LeftButton>
+          )}
         </InfoContent>
         <InfoContent>
           <Image
@@ -99,8 +116,10 @@ export default function MainPage() {
             다른 사람과 공유해보세요.
           </InfoLabel>
           <RightButton>
-            <Image src="/icon/article.svg" alt="article" />
-            게시판 바로가기
+            <PinkLink to="/list">
+              <Image src="/icon/article.svg" alt="article" />
+              게시판 바로가기
+            </PinkLink>
           </RightButton>
         </InfoContent>
       </Content>
@@ -119,7 +138,8 @@ export default function MainPage() {
           <Image src="/icon/instagram.svg" alt="instagram" />
         </PlatformWrapper>
         <FooterPinkLabel>© 2025 LOOKY All rights reserved</FooterPinkLabel>
-      </Footer>
+      </Footer>{" "}
+      {selectedArticle && <CreateModal isOpen={isOpen} onClose={onClose} />}
     </Container>
   );
 }
@@ -174,6 +194,13 @@ const ViewPost = styled.button`
   font-size: 16px;
   font-weight: 700;
   color: var(--pink100);
+`;
+
+const PinkLink = styled(Link)`
+  color: var(--pink100);
+  justify-content: center;
+  display: flex;
+  gap: 5px;
 `;
 
 const LookyLabel = styled.p`

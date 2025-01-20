@@ -10,6 +10,8 @@ import { PinkBorderButton } from "./button";
 export default function Header() {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [selectedArticle, setSelectedArticle] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { isAuthenticated, user, restoreSession } = useAuthStore();
   const location = useLocation();
 
@@ -37,9 +39,6 @@ export default function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  const [selectedArticle, setSelectedArticle] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleOpenModal = () => {
     setSelectedArticle(true);

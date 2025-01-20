@@ -10,6 +10,7 @@ import {
   orderBy,
   updateDoc,
   increment,
+  limit,
 } from "firebase/firestore";
 
 export async function getArticles(
@@ -56,17 +57,6 @@ export async function getArticles(
   return articles;
 }
 
-export async function getRankingArticles(): Promise<Article[]> {
-  const productRef = collection(db, "articles");
-  const q = query(productRef, orderBy("createAt", "desc"));
-  const querySnapshot = await getDocs(q);
-
-  return querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...(doc.data() as Omit<Article, "id">),
-  }));
-}
-
 export async function postArticle(newArticle: PostArticle) {
   const productRef = collection(db, "articles");
   const docRef = await addDoc(productRef, newArticle);
@@ -101,6 +91,17 @@ export async function getLikedArticles(
 export async function getMyArticles(writerUid: string): Promise<Article[]> {
   const productRef = collection(db, "articles");
   const q = query(productRef, where("writer.uid", "==", writerUid));
+  const querySnapshot = await getDocs(q);
+
+  return querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...(doc.data() as Omit<Article, "id">),
+  }));
+}
+
+export async function getRankingArticles(): Promise<Article[]> {
+  const productRef = collection(db, "articles");
+  const q = query(productRef, orderBy("likeCount", "desc"), limit(7));
   const querySnapshot = await getDocs(q);
 
   return querySnapshot.docs.map((doc) => ({
