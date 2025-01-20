@@ -187,7 +187,8 @@ export const updateUserLikeStatus = async (
 
       login({
         ...user,
-        articleLike: user?.articleLike?.filter((id) => id !== articleId) || [],
+        articleLike:
+          user?.articleLike?.filter((id: string) => id !== articleId) || [],
         uid: user?.uid || "",
         email: user?.email || "",
         imageUrl: user?.imageUrl || "",
