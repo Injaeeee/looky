@@ -169,15 +169,27 @@ export default function ArticleModal({
               </Stack>
             </UserInfo>
             <Communication>
-              <LikeButton onClick={toggleLike} type="button">
-                <Icon
-                  as={liked ? TiHeartFullOutline : TiHeartOutline}
-                  w={10}
-                  h={10}
-                  color={"var(--pink400)"}
-                />
-                {likeCount}
-              </LikeButton>
+              {isAuthenticated ? (
+                <LikeButton onClick={toggleLike} type="button">
+                  <Icon
+                    as={liked ? TiHeartFullOutline : TiHeartOutline}
+                    w={10}
+                    h={10}
+                    color={"var(--pink400)"}
+                  />
+                  {likeCount}
+                </LikeButton>
+              ) : (
+                <LikeWrapper>
+                  <Icon
+                    as={TiHeartFullOutline}
+                    w={10}
+                    h={10}
+                    color={"var(--pink400)"}
+                  />
+                  {likeCount}
+                </LikeWrapper>
+              )}
             </Communication>
             <CommentListWrapper>
               {article.comments ? (
@@ -277,7 +289,12 @@ const Communication = styled.div`
 const LikeButton = styled.button`
   display: flex;
   flex-direction: column;
+  align-items: center;
+`;
 
+const LikeWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
   align-items: center;
 `;
 
