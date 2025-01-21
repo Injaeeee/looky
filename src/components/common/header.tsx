@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { Avatar, Image, useDisclosure } from "@chakra-ui/react";
+import {
+  Avatar,
+  Image,
+  Menu,
+  MenuButton,
+  MenuList,
+  useDisclosure,
+} from "@chakra-ui/react";
 import CreateModal from "../createModal";
 import { useAuthStore } from "../../store/authStore";
 import { logoutUser } from "../../util/user.api";
@@ -47,7 +54,7 @@ export default function Header() {
           </LeftWrapper>
         ) : (
           <LeftWrapper>
-            {isAuthenticated && user ? (
+            {isAuthenticated ? (
               <>
                 <UserWrapper to="/mypage">
                   <Avatar name={user?.name} src={user?.imageUrl || ""} />
@@ -75,16 +82,41 @@ export default function Header() {
         )}
         {isMobile ? (
           <RightWrapper>
-            {isAuthenticated && user ? (
+            {isAuthenticated ? (
               <>
-                <UserWrapper to="/mypage">
-                  <Avatar name={user.name} src={user.imageUrl || ""} />
-                  <UserName>{user.name}</UserName>
-                </UserWrapper>
-                |
-                <PinkBorderButton onClick={handleLogout}>
-                  Logout
-                </PinkBorderButton>
+                <CreateButton onClick={modalDisclosure.onOpen}>
+                  <Image src="/icon/create.svg" alt="create" />
+                  CREATE
+                </CreateButton>
+                <Menu>
+                  <MenuButton>
+                    <Avatar name={user?.name} src={user?.imageUrl} />
+                  </MenuButton>
+                  <MenuList backgroundColor="#262626" border="none">
+                    <UserItem>
+                      <Avatar name={user?.name} src={user?.imageUrl} />
+                      {user?.name}
+                    </UserItem>
+                    <Link to="/mypage">
+                      <MenuItem>
+                        <Image
+                          src="/icon/setting.svg"
+                          alt="setting"
+                          onClick={() => drawerDisclosure.onClose()}
+                        />
+                        settings
+                      </MenuItem>
+                    </Link>
+                    <MenuPinkItem onClick={handleLogout}>
+                      <Image
+                        src="/icon/logout.svg"
+                        alt="logout"
+                        onClick={() => drawerDisclosure.onClose()}
+                      />
+                      logout
+                    </MenuPinkItem>
+                  </MenuList>
+                </Menu>
               </>
             ) : (
               <>
@@ -97,7 +129,7 @@ export default function Header() {
           </RightWrapper>
         ) : (
           <RightWrapper>
-            {isAuthenticated && user && (
+            {isAuthenticated && (
               <CreateButton onClick={modalDisclosure.onOpen}>
                 <Image src="/icon/create.svg" alt="create" />
                 CREATE
@@ -118,10 +150,13 @@ export default function Header() {
         isOpen={drawerDisclosure.isOpen}
         onClose={drawerDisclosure.onClose}
       />
-      <CreateModal
-        isOpen={modalDisclosure.isOpen}
-        onClose={modalDisclosure.onClose}
-      />
+
+      {isAuthenticated && (
+        <CreateModal
+          isOpen={modalDisclosure.isOpen}
+          onClose={modalDisclosure.onClose}
+        />
+      )}
     </HeaderContainer>
   );
 }
@@ -188,6 +223,18 @@ const RouterButton = styled(Link)`
   color: var(--pink100);
 `;
 
+const UserItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  width: 100%;
+  color: white;
+  padding: 8px 16px;
+  border-bottom: solid var(--gray500) 1px;
+`;
+
 const MenuItem = styled.button`
   display: flex;
   align-items: center;
@@ -198,16 +245,12 @@ const MenuItem = styled.button`
   color: white;
   padding: 8px 16px;
   border: none;
-
-  cursor: pointer;
-
   &:hover {
-    background-color: var(--pink100); /* 호버 시 배경색 */
+    background-color: var(--pink100);
     color: white;
   }
-
   &:not(:last-child) {
-    margin-bottom: 8px; /* 아이템 간 여백 */
+    margin-bottom: 8px;
   }
 `;
 
