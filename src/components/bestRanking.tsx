@@ -3,6 +3,8 @@ import { getRankingArticles } from "../util/article.api";
 import { Avatar } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import styled from "styled-components";
+import { Image } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 interface RankType {
   id: number;
@@ -39,22 +41,46 @@ export default function BestRanking() {
     fetchArticles();
   }, []);
   return (
-    <RankListContainer>
-      {articles.slice(0, 5).map((article, index) => (
-        <Rank
-          key={article.id}
-          id={index}
-          rank={index + 1}
-          nickname={article.writer?.name || ""}
-          avatarSrc={article.imageURL || ""}
-          likes={article.likeCount}
-        />
-      ))}
-    </RankListContainer>
+    <RankingWrapper>
+      <RankingTitle>
+        <Image src="/icon/rankIcon.svg" alt="rank icon" />
+        LOOKY BEST RANKING
+      </RankingTitle>
+      <RankListWrapper>
+        {articles.slice(0, 5).map((article, index) => (
+          <Rank
+            key={article.id}
+            id={index}
+            rank={index + 1}
+            nickname={article.writer?.name || ""}
+            avatarSrc={article.imageURL || ""}
+            likes={article.likeCount}
+          />
+        ))}
+      </RankListWrapper>
+      <SeeMoreLink to="/ranking">SEE MORE {">"}</SeeMoreLink>
+    </RankingWrapper>
   );
 }
 
-const RankListContainer = styled.div`
+const RankingWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 380px;
+  border: 1px solid var(--gray700);
+  padding: 24px;
+  border-radius: 8px;
+  justify-content: flex-start;
+  gap: 20px;
+  @media (max-width: 768px) {
+    border: none;
+    padding: 3px;
+  }
+`;
+
+const RankListWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -75,6 +101,9 @@ const RankContainer = styled.div`
   padding-bottom: 5px;
   align-items: center;
   border-bottom: solid var(--gray500) 2px;
+  @media (max-width: 768px) {
+    border-bottom: solid var(--gray500) 1px;
+  }
 `;
 
 const RankingNumber = styled.p<{ $isTopThree: boolean }>`
@@ -96,4 +125,37 @@ const RankerLike = styled.p<{ $isTopThree: boolean }>`
   font-weight: 200;
   color: ${({ $isTopThree }) =>
     $isTopThree ? "var(--pink100)" : "var(--gray300)"};
+`;
+
+const RankingTitle = styled.p`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 800;
+  position: relative;
+
+  @media (min-width: 768px) {
+    padding-bottom: 10px;
+    &::after {
+      content: "";
+      display: block;
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-bottom: dashed var(--pink100) 1px;
+      width: 20%;
+    }
+  }
+`;
+
+const SeeMoreLink = styled(Link)`
+  color: var(--gray500);
+  align-self: flex-end;
+  font-size: 10px;
+  font-weight: 800;
+  &:hover {
+    color: var(--gray400);
+  }
 `;

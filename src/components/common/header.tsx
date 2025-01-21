@@ -6,14 +6,17 @@ import CreateModal from "../createModal";
 import { useAuthStore } from "../../store/authStore";
 import { logoutUser } from "../../util/user.api";
 import { PinkBorderButton } from "./button";
+import { useIsMobile } from "../../hooks/useIsMobile";
+import DrawerMenu from "./drawer";
 
 export default function Header() {
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [selectedArticle, setSelectedArticle] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const drawerDisclosure = useDisclosure();
+  const modalDisclosure = useDisclosure();
+
   const { isAuthenticated, user, restoreSession } = useAuthStore();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   const handleLogout = async () => {
     await logoutUser();
@@ -25,66 +28,100 @@ export default function Header() {
   }, [restoreSession]);
 
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth <= 768);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 0);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleOpenModal = () => {
-    setSelectedArticle(true);
-    onOpen();
-  };
-
-  if (isMobile) {
-    return null;
-  }
-
   return (
     <HeaderContainer $isScrolled={isScrolled}>
       <Navigation>
-        {isAuthenticated ? (
+        {isMobile ? (
           <LeftWrapper>
-            <UserWrapper to="/mypage">
-              <Avatar name={user?.name} src={user?.imageUrl} />
-              <UserName>{user?.name} </UserName>
-            </UserWrapper>
-            |<PinkBorderButton onClick={handleLogout}>Logout</PinkBorderButton>
+            <button onClick={drawerDisclosure.onOpen}>
+              <Image src="/icon/menu.svg" alt="menu" />
+            </button>
+            <LogoWrapper to="/">
+              <Image src="/image/smallLogo.png" alt="logo" />
+            </LogoWrapper>
           </LeftWrapper>
         ) : (
           <LeftWrapper>
-            <Link to="/login">
-              <PinkBorderButton>Login</PinkBorderButton>
-            </Link>
-            <RouterButton to="/signup">Sign Up</RouterButton>
+            {isAuthenticated && user ? (
+              <>
+                <UserWrapper to="/mypage">
+                  <Avatar name={user?.name} src={user?.imageUrl || ""} />
+                  <UserName>{user?.name}</UserName>
+                </UserWrapper>
+                |
+                <PinkBorderButton onClick={handleLogout}>
+                  Logout
+                </PinkBorderButton>
+              </>
+            ) : (
+              <>
+                <Link to="/login">
+                  <PinkBorderButton>Login</PinkBorderButton>
+                </Link>
+                <RouterButton to="/signup">Sign Up</RouterButton>
+              </>
+            )}
           </LeftWrapper>
         )}
-        <LogoWrapper to="/">
-          <Image src="/image/logo.png" alt="logo" />
-        </LogoWrapper>
-        <RouterWrapper>
-          {isAuthenticated && (
-            <CreateButton onClick={() => handleOpenModal()}>
-              <Image src="/icon/create.svg" alt="create" />
-              CREATE
-            </CreateButton>
-          )}
-          <RouterButton to="/list">
-            <Image src="/icon/article.svg" alt="article" />
-            게시물
-          </RouterButton>
-          <RouterButton to="/ranking">
-            <Image src="/icon/ranking.svg" alt="ranking" />
-            랭킹
-          </RouterButton>
-        </RouterWrapper>
+        {!isMobile && (
+          <LogoWrapper to="/">
+            <Image src="/image/logo.png" alt="logo" />
+          </LogoWrapper>
+        )}
+        {isMobile ? (
+          <RightWrapper>
+            {isAuthenticated && user ? (
+              <>
+                <UserWrapper to="/mypage">
+                  <Avatar name={user.name} src={user.imageUrl || ""} />
+                  <UserName>{user.name}</UserName>
+                </UserWrapper>
+                |
+                <PinkBorderButton onClick={handleLogout}>
+                  Logout
+                </PinkBorderButton>
+              </>
+            ) : (
+              <>
+                <Link to="/login">
+                  <PinkBorderButton>Login</PinkBorderButton>
+                </Link>
+                <RouterButton to="/signup">Sign Up</RouterButton>
+              </>
+            )}
+          </RightWrapper>
+        ) : (
+          <RightWrapper>
+            {isAuthenticated && user && (
+              <CreateButton onClick={modalDisclosure.onOpen}>
+                <Image src="/icon/create.svg" alt="create" />
+                CREATE
+              </CreateButton>
+            )}
+            <RouterButton to="/list">
+              <Image src="/icon/article.svg" alt="article" />
+              게시물
+            </RouterButton>
+            <RouterButton to="/ranking">
+              <Image src="/icon/ranking.svg" alt="ranking" />
+              랭킹
+            </RouterButton>
+          </RightWrapper>
+        )}
       </Navigation>
-      {selectedArticle && <CreateModal isOpen={isOpen} onClose={onClose} />}
+      <DrawerMenu
+        isOpen={drawerDisclosure.isOpen}
+        onClose={drawerDisclosure.onClose}
+      />
+      <CreateModal
+        isOpen={modalDisclosure.isOpen}
+        onClose={modalDisclosure.onClose}
+      />
     </HeaderContainer>
   );
 }
@@ -117,6 +154,7 @@ const Navigation = styled.nav`
     padding: 0 16px;
   }
 `;
+
 const LeftWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -135,8 +173,9 @@ const UserName = styled.p`
   color: white;
 `;
 
-const RouterWrapper = styled.div`
+const RightWrapper = styled.div`
   display: flex;
+  align-items: center;
   gap: 20px;
 `;
 
@@ -146,6 +185,33 @@ const RouterButton = styled(Link)`
   gap: 5px;
   font-size: 14px;
   font-weight: 600;
+  color: var(--pink100);
+`;
+
+const MenuItem = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  width: 100%;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+
+  cursor: pointer;
+
+  &:hover {
+    background-color: var(--pink100); /* 호버 시 배경색 */
+    color: white;
+  }
+
+  &:not(:last-child) {
+    margin-bottom: 8px; /* 아이템 간 여백 */
+  }
+`;
+
+const MenuPinkItem = styled(MenuItem)`
   color: var(--pink100);
 `;
 
@@ -165,4 +231,8 @@ const LogoWrapper = styled(Link)`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+
+  @media (max-width: 768px) {
+    position: relative;
+  }
 `;

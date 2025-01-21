@@ -23,9 +23,9 @@ const categories: CategoryType[] = [
   { id: 3, name: "PANTS", src: "../icon/pants.svg" },
   { id: 4, name: "NEAT", src: "../icon/neat.svg" },
   { id: 5, name: "JEANS", src: "../icon/jeans.svg" },
-  { id: 6, name: "CAP", src: "../icon/cap.svg" },
-  { id: 7, name: "SHOES", src: "../icon/shoes.svg" },
-  { id: 8, name: "BAG", src: "../icon/bag.svg" },
+  { id: 6, name: "SHOES", src: "../icon/shoes.svg" },
+  { id: 7, name: "BAG", src: "../icon/bag.svg" },
+  { id: 8, name: "ACC", src: "../icon/cap.svg" },
 ];
 
 function Category({ category, isSelected, onClick }: CategoryProps) {
@@ -98,6 +98,11 @@ const AvatarWrapper = styled.div<{ $isSelected: boolean }>`
 
   &:hover {
     border-color: pink;
+  }
+
+  @media (max-width: 1200px) {
+    width: 40px;
+    height: 40px;
   }
 `;
 
