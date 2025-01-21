@@ -152,10 +152,7 @@ export default function ArticleModal({
               boxSize={isMobile ? "350px" : undefined}
             />
             {article.tags.map((tag, i) => (
-              <TagWrapper
-                key={i}
-                style={{ top: tag.coordinates.y, left: tag.coordinates.x }}
-              >
+              <TagWrapper key={i} x={tag.coordinates.x} y={tag.coordinates.y}>
                 <BlurTag
                   category={tag.category}
                   price={tag.price}
@@ -273,9 +270,10 @@ const PictureContainer = styled.div`
   min-width: 650px;
   min-height: 650px;
   position: relative;
+
   @media (max-width: 768px) {
-    min-width: 300px;
-    min-height: 300px;
+    min-width: 350px;
+    min-height: 350px;
   }
 `;
 
@@ -371,6 +369,13 @@ const FixedInputWrapper = styled.div`
   padding-top: 3px;
 `;
 
-const TagWrapper = styled.div`
+const TagWrapper = styled.div<{ x: number; y: number }>`
   position: absolute;
+  top: ${({ y }) => y}%;
+  left: ${({ x }) => x}%;
+
+  @media (max-width: 768px) {
+    top: ${({ y }) => `${Math.min(Math.max(y, 0), 79)}%`};
+    left: ${({ x }) => `${Math.min(Math.max(x, 0), 78)}%`};
+  }
 `;

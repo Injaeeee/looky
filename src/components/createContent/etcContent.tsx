@@ -162,9 +162,12 @@ const InputWrapper = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-  position: absolute;
-  right: 0;
-  bottom: 0;
   display: flex;
   gap: 5px;
+  justify-content: space-between;
+  @media (min-width: 768px) {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
 `;

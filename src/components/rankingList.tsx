@@ -94,9 +94,9 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 48px;
-  margin: 150px auto;
+  margin: 150px auto 0;
   @media (max-width: 768px) {
-    margin: 100px auto;
+    margin: 100px auto 50px;
   }
 `;
 

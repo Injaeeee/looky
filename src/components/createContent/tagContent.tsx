@@ -135,7 +135,9 @@ const MakeTagButton = styled(PinkBorderButton)`
 `;
 
 const NextButton = styled(PinkButton)`
-  position: absolute;
-  right: 0;
-  bottom: 0;
+  @media (min-width: 768px) {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+  }
 `;
