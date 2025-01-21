@@ -23,9 +23,9 @@ const categories: CategoryType[] = [
   { id: 3, name: "PANTS", src: "../icon/pants.svg" },
   { id: 4, name: "NEAT", src: "../icon/neat.svg" },
   { id: 5, name: "JEANS", src: "../icon/jeans.svg" },
-  { id: 6, name: "CAP", src: "../icon/cap.svg" },
-  { id: 7, name: "SHOES", src: "../icon/shoes.svg" },
-  { id: 8, name: "BAG", src: "../icon/bag.svg" },
+  { id: 6, name: "SHOES", src: "../icon/shoes.svg" },
+  { id: 7, name: "BAG", src: "../icon/bag.svg" },
+  { id: 8, name: "ACC", src: "../icon/cap.svg" },
 ];
 
 function Category({ category, isSelected, onClick }: CategoryProps) {
@@ -75,6 +75,12 @@ export default function CategoryList({ onCategoryChange }: CategoryListProps) {
 const CategoryContainer = styled.div`
   display: flex;
   gap: 16px;
+
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 1px;
+  }
 `;
 
 const CategoryItem = styled.div`
@@ -99,6 +105,11 @@ const AvatarWrapper = styled.div<{ $isSelected: boolean }>`
   &:hover {
     border-color: pink;
   }
+
+  @media (max-width: 768px) {
+    width: 35px;
+    height: 35px;
+  }
 `;
 
 const CategoryAvatar = styled.img`
@@ -111,4 +122,7 @@ const CategoryName = styled.span<{ $isSelected: boolean }>`
   font-weight: bold;
   color: ${({ $isSelected }) => ($isSelected ? "var(--pink100)" : "White")};
   text-align: center;
+  @media (max-width: 768px) {
+    font-size: 8px;
+  }
 `;

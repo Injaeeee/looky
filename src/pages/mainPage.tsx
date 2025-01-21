@@ -7,11 +7,13 @@ import { Link } from "react-router-dom";
 import CreateModal from "../components/createModal";
 import { useState } from "react";
 import { useAuthStore } from "../store/authStore";
+import { useIsMobile } from "../hooks/useIsMobile";
 
 export default function MainPage() {
   const [selectedArticle, setSelectedArticle] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { isAuthenticated } = useAuthStore();
+  const isMobile = useIsMobile();
 
   const handleOpenModal = () => {
     setSelectedArticle(true);
@@ -22,20 +24,23 @@ export default function MainPage() {
       <FrontImage
         src="/image/main1.png"
         alt="background1"
-        top="35px"
+        top={isMobile ? "40px" : "35px"}
         left="25%"
+        boxSize={isMobile ? "100px" : undefined}
       />
       <BackgroundImage
         src="/image/main2.png"
         alt="background2"
-        top="400px"
+        top={isMobile ? "160px" : "400px"}
         left="20%"
+        boxSize={isMobile ? "100px" : undefined}
       />
       <BackgroundImage
         src="/image/main3.png"
         alt="background3"
-        top="800px"
+        top={isMobile ? "270px" : "800px"}
         left="25%"
+        boxSize={isMobile ? "100px" : undefined}
       />
       <Content>
         <MainContent>
@@ -52,11 +57,13 @@ export default function MainPage() {
                 alt="main"
                 height="500px"
                 objectFit="contain"
+                boxSize={isMobile ? "150px" : undefined}
               />
-
-              <ViewPost>
-                <PinkLink to="/list">VIEW POST {">"}</PinkLink>
-              </ViewPost>
+              {!isMobile && (
+                <ViewPost>
+                  <PinkLink to="/list">VIEW POST {">"}</PinkLink>
+                </ViewPost>
+              )}
             </ViewIntro>
           </MainWrapper>
           <LookyLabel>With Looky</LookyLabel>
@@ -74,28 +81,35 @@ export default function MainPage() {
               나만의 태그를 만들어 <br />
               자유롭게 사진에 태그해 보세요.
             </InfoLabel>
-            <TagInfoWrapper>
-              <TagInfoLabelWrapper>
-                <TagInfoLabel>필수정보 입력</TagInfoLabel>
-                <TagInfoSubLabel>(카테고리, 가격, 브랜드명)</TagInfoSubLabel>
-              </TagInfoLabelWrapper>
-              {">"}
-              <Button>
-                MAKE TAG
-                <Image src="/icon/tag.svg" alt="tag" />
-              </Button>
-              {">"}
-              <BlurTag category="SHOES" price={105000} name="나이키 에어포스" />
-              <BlurTag category="SHOES" price={105000} name="나이키 에어포스" />
-              <BlurTag category="SHOES" price={105000} name="나이키 에어포스" />
-              {">"}
-            </TagInfoWrapper>
+            {!isMobile && (
+              <TagInfoWrapper>
+                <TagInfoLabelWrapper>
+                  <TagInfoLabel>필수정보 입력</TagInfoLabel>
+                  <TagInfoSubLabel>(카테고리, 가격, 브랜드명)</TagInfoSubLabel>
+                </TagInfoLabelWrapper>
+                {">"}
+                <Button>
+                  MAKE TAG
+                  <Image src="/icon/tag.svg" alt="tag" />
+                </Button>
+                {">"}
+                <BlurTag
+                  category="SHOES"
+                  price={120000}
+                  name="나이키 에어포스"
+                />
+                <BlurTag category="TOP" price={67000} name="KIIMMER" />
+                <BlurTag category="ACC" price={100000} name="돌체 앤 가바나" />
+                {">"}
+              </TagInfoWrapper>
+            )}
           </InfoMessage>
           <Image
             src="/image/info1.png"
             alt="info"
             height="500px"
             objectFit="contain"
+            boxSize={isMobile ? "150px" : undefined}
           />
           {isAuthenticated && (
             <LeftButton onClick={() => handleOpenModal()}>
@@ -110,6 +124,7 @@ export default function MainPage() {
             alt="info"
             height="500px"
             objectFit="contain"
+            boxSize={isMobile ? "200px" : undefined}
           />
           <InfoLabel>
             스타일 게시물을 만들고 <br />
@@ -118,7 +133,7 @@ export default function MainPage() {
           <RightButton>
             <PinkLink to="/list">
               <Image src="/icon/article.svg" alt="article" />
-              게시판 바로가기
+              게시판 가기
             </PinkLink>
           </RightButton>
         </InfoContent>
@@ -126,10 +141,9 @@ export default function MainPage() {
       <Footer>
         <Image src="/image/logo.png" alt="logo" />
         <FooterLabel>
-          주식회사 루키이사 : 정인재 사업자번호 : 220-81-10886통신판매번호
-          제2010-경기성남-0834사업자 정보 확인호스팅 제공자 : 주식회사 루키
-          <br /> 주소 : 경기도 성남시 분당구 판교로228번길 15 판교세븐밴처밸리
-          1단지 2동 주식회사 숲(삼평동)FAX : 031-622-8008 mangoj425@gmail.com
+          주식회사 루키이사 : 정인재 | 정보 확인호스팅 | 제공자 : 주식회사 루키
+          |
+          <br /> EMAIL : qmffpdl0903@gmail.com
         </FooterLabel>
         <PlatformWrapper>
           <Image src="/icon/youtube.svg" alt="youtube" />
@@ -138,7 +152,7 @@ export default function MainPage() {
           <Image src="/icon/instagram.svg" alt="instagram" />
         </PlatformWrapper>
         <FooterPinkLabel>© 2025 LOOKY All rights reserved</FooterPinkLabel>
-      </Footer>{" "}
+      </Footer>
       {selectedArticle && <CreateModal isOpen={isOpen} onClose={onClose} />}
     </Container>
   );
@@ -168,6 +182,11 @@ const Content = styled.div`
   align-items: center;
   gap: 180px;
   margin: 0 auto 200px;
+
+  @media (max-width: 768px) {
+    gap: 30px;
+    margin: 0 auto 80px;
+  }
 `;
 
 const MainWrapper = styled.div`
@@ -176,6 +195,11 @@ const MainWrapper = styled.div`
   display: flex;
   gap: 100px;
   margin-top: 200px;
+
+  @media (max-width: 768px) {
+    margin-top: 100px;
+    gap: 30px;
+  }
 `;
 
 const ViewIntro = styled.div`
@@ -188,6 +212,15 @@ const MainIntro = styled.p`
   line-height: 132px;
   font-weight: 800;
   color: var(--white10);
+
+  @media (max-width: 1200px) {
+    font-size: 80px;
+    line-height: 80px;
+  }
+  @media (max-width: 768px) {
+    font-size: 28px;
+    line-height: 38px;
+  }
 `;
 
 const ViewPost = styled.button`
@@ -208,6 +241,10 @@ const LookyLabel = styled.p`
   font-weight: 400;
   color: var(--pink100);
   align-self: flex-start;
+
+  @media (max-width: 768px) {
+    font-size: 20px;
+  }
 `;
 
 const MainContent = styled.div`
@@ -219,6 +256,9 @@ const ShareContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+  @media (max-width: 768px) {
+    gap: 15px;
+  }
 `;
 
 const InfoContent = styled.div`
@@ -227,6 +267,9 @@ const InfoContent = styled.div`
   justify-content: center;
   align-items: center;
   position: relative;
+  @media (max-width: 768px) {
+    gap: 10px;
+  }
 `;
 
 const InfoMessage = styled.div`
@@ -238,6 +281,9 @@ const InfoMessage = styled.div`
 const InfoLabel = styled.p`
   font-size: 40px;
   font-weight: 800;
+  @media (max-width: 768px) {
+    font-size: 12px;
+  }
 `;
 
 const TagInfoWrapper = styled.div`
@@ -246,6 +292,10 @@ const TagInfoWrapper = styled.div`
   gap: 20px;
   font-size: 30px;
   font-weight: 400;
+  @media (max-width: 768px) {
+    font-size: 10px;
+    gap: 10px;
+  }
 `;
 
 const TagInfoLabelWrapper = styled.div`
@@ -274,6 +324,10 @@ const TitleWrapper = styled.div`
 const MainTitle = styled.p`
   font-size: 28px;
   font-weight: 800;
+
+  @media (max-width: 768px) {
+    font-size: 18px;
+  }
 `;
 
 const SubTitle = styled.p`

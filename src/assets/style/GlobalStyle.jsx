@@ -21,7 +21,6 @@ const GlobalStyle = createGlobalStyle`
 
 html {
   font-size: 62.5%; /* 단위 rem 사용 시 16px = 1.6rem으로 사용 가능 */
-  
 } 
 
 /* a 링크 초기화 */

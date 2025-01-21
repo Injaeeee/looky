@@ -109,6 +109,11 @@ const TopImage = styled(Image)`
 const Container = styled.div`
   display: flex;
   gap: 20px;
+
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const ArticleItem = styled.div`
@@ -116,6 +121,16 @@ const ArticleItem = styled.div`
   height: 355px;
   position: relative;
   border-radius: 4px;
+
+  @media (max-width: 1200px) {
+    width: 180px;
+    height: 230px;
+  }
+
+  @media (max-width: 768px) {
+    width: 150px;
+    height: 200px;
+  }
 `;
 
 const SplitArticles = styled.div`
@@ -183,19 +198,21 @@ const CardContent = styled.div`
   gap: 8px;
 `;
 
-const SplitArticle = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 305px;
-  height: 355px;
-  gap: 5px;
-`;
-
 const HalfArticle = styled.div`
   width: 305px;
   height: 175px;
   position: relative;
   border-radius: 4px;
+
+  @media (max-width: 1200px) {
+    width: 180px;
+    height: 110px;
+  }
+
+  @media (max-width: 768px) {
+    width: 150px;
+    height: 95px;
+  }
 `;
 
 const Button = styled.button`

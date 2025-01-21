@@ -60,6 +60,7 @@ const SearchButton = styled.button`
 const SearchCustomInput = styled.input`
   padding: 8px 20px 8px;
   border: 1px solid var(--gray800);
+  width: 100%;
   border-radius: 8px;
   font-weight: 600;
   font-size: 12px;

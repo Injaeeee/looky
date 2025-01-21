@@ -26,6 +26,8 @@ import { useForm } from "react-hook-form";
 import { PinkButton } from "./common/button";
 import { useAuthStore } from "../store/authStore";
 import { useArticleStore } from "../store/articleStore";
+import { useIsMobile } from "../hooks/useIsMobile";
+import { showToast } from "../components/common/toast";
 
 const articleSchema = z.object({
   title: z
@@ -53,7 +55,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
       imageURL: "",
     },
   });
-
+  const isMobile = useIsMobile();
   const [currentStep, setCurrentStep] = useState(1);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -103,13 +105,19 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
 
     const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
     if (!allowedTypes.includes(file.type)) {
-      alert("이미지 파일만 업로드 가능합니다.");
+      showToast({
+        title: "이미지 파일만 업로드 가능합니다.",
+        status: "error",
+      });
       return;
     }
 
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
-      alert("파일 크기는 5MB 이하로 업로드해야 합니다.");
+      showToast({
+        title: "파일 크기는 5MB 이하로 업로드해야 합니다.",
+        status: "error",
+      });
       return;
     }
     const imageUrl = URL.createObjectURL(file);
@@ -121,7 +129,10 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     const createdAt = new Date().toISOString();
 
     if (!file) {
-      alert("이미지를 업로드해주세요.");
+      showToast({
+        title: "이미지를 업로드해주세요.",
+        status: "error",
+      });
       return;
     }
 
@@ -164,7 +175,10 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
       .map((error: any) => error.message)
       .join("\n");
 
-    alert(errorMessages);
+    showToast({
+      title: errorMessages,
+      status: "error",
+    });
   };
 
   const goToNextStep = () => {
@@ -183,9 +197,9 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
 
   const handleAddTag = () => {
     if (containerRef.current) {
-      const rect = containerRef.current.getBoundingClientRect();
-      const randomX = Math.min(Math.random() * rect.width, rect.width - 100);
-      const randomY = Math.min(Math.random() * rect.height, rect.width - 100);
+      const randomX = Math.random() * 70 + 10;
+      const randomY = Math.random() * 70 + 10;
+
       const newTag: Tag = {
         id: Date.now(),
         category: tagInfo.category,
@@ -201,13 +215,16 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
   const handleMoveTag = (id: number, x: number, y: number) => {
     if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
-      const adjustedX = Math.min(Math.max(x - rect.left, 0), rect.width - 100);
-      const adjustedY = Math.min(Math.max(y - rect.top, 0), rect.height - 30);
+      const adjustedX = Math.min(Math.max(x - rect.left, 0), rect.width - 70);
+      const adjustedY = Math.min(Math.max(y - rect.top, 0), rect.height - 60);
+
+      const percentageX = (adjustedX / rect.width) * 100;
+      const percentageY = (adjustedY / rect.height) * 100;
 
       setTags((prevTags) =>
         prevTags.map((tag) =>
           tag.id === id
-            ? { ...tag, coordinates: { x: adjustedX, y: adjustedY } }
+            ? { ...tag, coordinates: { x: percentageX, y: percentageY } }
             : tag,
         ),
       );
@@ -219,7 +236,13 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
   };
 
   return (
-    <Modal isCentered isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isCentered
+      isOpen={isOpen}
+      onClose={onClose}
+      motionPreset={isMobile ? "slideInBottom" : undefined}
+      scrollBehavior={isMobile ? "inside" : undefined}
+    >
       <form onSubmit={handleSubmit(handleShare, handleError)}>
         <ModalOverlay
           bg="blackAlpha.300"
@@ -230,6 +253,9 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
           maxWidth="100%"
           bg="var(--gray900)"
           borderRadius="10px"
+          position={isMobile ? "fixed" : undefined}
+          bottom={0}
+          overflow="hidden"
         >
           <ModalHeader
             bg="var(--gray800)"
@@ -244,7 +270,11 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
               <PictureContainer ref={containerRef}>
                 {imageSrc ? (
                   <>
-                    <ImagePreview src={imageSrc} alt="Selected" />
+                    <ImagePreview
+                      src={imageSrc}
+                      alt="Selected"
+                      boxSize={isMobile ? "350px" : "650px"}
+                    />
                     <DeleteButton
                       onClick={() => {
                         setImageSrc(null);
@@ -312,6 +342,10 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
 const ArticleBody = styled(ModalBody)`
   display: flex;
   gap: 20px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 15px;
+  }
 `;
 
 const PictureContainer = styled.div`
@@ -324,14 +358,19 @@ const PictureContainer = styled.div`
   min-width: 650px;
   min-height: 650px;
   border: var(--gray600) dashed 3px;
+
+  @media (max-width: 768px) {
+    min-width: 350px;
+    min-height: 350px;
+  }
 `;
 
-const ImagePreview = styled.img`
+const ImagePreview = styled(Image)`
   position: absolute;
+  border-radius: 6px;
+  object-fit: cover;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  border-radius: 6px;
 `;
 
 const DeleteButton = styled.button`
@@ -345,7 +384,6 @@ const DeleteButton = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
-
   &:hover {
     background-color: rgba(0, 0, 0, 0.8);
   }
@@ -357,8 +395,9 @@ const DraggableTag: React.FC<{
   onDeleteTag: (id: number) => void;
 }> = ({ tag, onMoveTag, onDeleteTag }) => {
   const ref = useRef<HTMLDivElement | null>(null);
+  const isMobile = useIsMobile(); // 모바일 여부 확인
 
-  const [, drag] = useDrag(() => ({
+  const [{ isDragging }, drag] = useDrag(() => ({
     type: "TAG",
     item: { id: tag.id },
     end: (item, monitor) => {
@@ -367,14 +406,44 @@ const DraggableTag: React.FC<{
         onMoveTag(tag.id, offset.x, offset.y);
       }
     },
+    collect: (monitor) => ({
+      isDragging: monitor.isDragging(),
+    }),
   }));
 
+  // 모바일에서 touch 이벤트로 드래그 동작 처리
+  const handleTouchMove = (e: TouchEvent) => {
+    const touch = e.touches[0];
+    const offsetX = touch.clientX;
+    const offsetY = touch.clientY;
+    onMoveTag(tag.id, offsetX, offsetY);
+  };
+
+  // 모바일에서 터치 이벤트가 있을 때, 드래그 처리
+  useEffect(() => {
+    if (isMobile && ref.current) {
+      const element = ref.current;
+      element.addEventListener("touchmove", handleTouchMove as EventListener);
+
+      return () => {
+        element.removeEventListener(
+          "touchmove",
+          handleTouchMove as EventListener,
+        );
+      };
+    }
+  }, [isMobile]);
+
+  // 드래그 이벤트 연결
   drag(ref);
 
   return (
     <TagWrapper
       ref={ref}
-      style={{ top: tag.coordinates.y, left: tag.coordinates.x }}
+      style={{
+        top: `${tag.coordinates.y}%`,
+        left: `${tag.coordinates.x}%`,
+      }}
     >
       <BlurTag
         category={tag.category}
@@ -388,5 +457,5 @@ const DraggableTag: React.FC<{
 
 const TagWrapper = styled.div`
   position: absolute;
-  cursor: move;
+  cursor: grab; /* 드래그를 시작할 때 손 모양 */
 `;
