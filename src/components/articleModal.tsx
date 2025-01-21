@@ -27,6 +27,7 @@ import { PinkBorderButton } from "./common/button";
 import Dialog from "./common/dialog";
 import { deleteArticle } from "../util/article.api";
 import { useArticleStore } from "../store/articleStore";
+import { useIsMobile } from "../hooks/useIsMobile";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -48,6 +49,7 @@ export default function ArticleModal({
   const cancelRef = useRef<HTMLButtonElement>(null!);
   const handleDialogOpen = () => setIsDialogOpen(true);
   const handleDialogClose = () => setIsDialogOpen(false);
+  const isMobile = useIsMobile();
 
   const handleDialogConfirm = async () => {
     await deleteArticle(article.id);
@@ -115,7 +117,13 @@ export default function ArticleModal({
   };
 
   return (
-    <Modal isCentered isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isCentered
+      isOpen={isOpen}
+      onClose={onClose}
+      motionPreset={isMobile ? "slideInBottom" : undefined}
+      scrollBehavior={isMobile ? "inside" : undefined}
+    >
       <ModalOverlay
         bg="blackAlpha.300"
         backdropFilter="blur(10px) hue-rotate(90deg)"
@@ -125,6 +133,9 @@ export default function ArticleModal({
         maxWidth="100%"
         bg="var(--gray900)"
         borderRadius="10px"
+        position={isMobile ? "fixed" : undefined}
+        bottom={0}
+        overflow="hidden"
       >
         <ModalHeader
           bg="var(--gray800)"
@@ -136,7 +147,10 @@ export default function ArticleModal({
         <ModalCloseButton />
         <ArticleBody padding="20px">
           <PictureContainer>
-            <ImagePreview src={article.imageURL} />
+            <ImagePreview
+              src={article.imageURL}
+              boxSize={isMobile ? "350px" : undefined}
+            />
             {article.tags.map((tag, i) => (
               <TagWrapper
                 key={i}
@@ -249,15 +263,23 @@ export default function ArticleModal({
 const ArticleBody = styled(ModalBody)`
   display: flex;
   gap: 40px;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 80px;
+  }
 `;
 
 const PictureContainer = styled.div`
   min-width: 650px;
   min-height: 650px;
   position: relative;
+  @media (max-width: 768px) {
+    min-width: 300px;
+    min-height: 300px;
+  }
 `;
 
-const ImagePreview = styled.img`
+const ImagePreview = styled(Image)`
   position: absolute;
   width: 100%;
   height: 100%;
