@@ -205,7 +205,6 @@ const ArticleContent = styled.div`
   gap: 25px;
   width: 400px;
   padding: 30px;
-
   @media (max-width: 768px) {
     gap: 20px;
     width: 300px;

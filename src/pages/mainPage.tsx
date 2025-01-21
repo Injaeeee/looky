@@ -182,7 +182,7 @@ const Content = styled.div`
   align-items: center;
   gap: 180px;
   margin: 0 auto 200px;
-
+  
   @media (max-width: 768px) {
     gap: 30px;
     margin: 0 auto 80px;
@@ -195,7 +195,7 @@ const MainWrapper = styled.div`
   display: flex;
   gap: 100px;
   margin-top: 200px;
-
+  
   @media (max-width: 768px) {
     margin-top: 100px;
     gap: 30px;
@@ -256,6 +256,7 @@ const ShareContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 30px;
+
   @media (max-width: 768px) {
     gap: 15px;
   }
@@ -270,6 +271,7 @@ const InfoContent = styled.div`
   @media (max-width: 768px) {
     gap: 10px;
   }
+
 `;
 
 const InfoMessage = styled.div`

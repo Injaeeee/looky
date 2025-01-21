@@ -140,7 +140,7 @@ const ArticleListContainer = styled.div`
   grid-template-columns: repeat(4, 1fr);
   max-width: 1200px;
   gap: 48px;
-
+  
   @media (max-width: 768px) {
     grid-template-columns: repeat(1, 1fr);
     gap: 65px;

@@ -29,6 +29,7 @@ import { deleteArticle } from "../util/article.api";
 import { useArticleStore } from "../store/articleStore";
 import { useIsMobile } from "../hooks/useIsMobile";
 
+
 interface ArticleModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -50,6 +51,7 @@ export default function ArticleModal({
   const handleDialogOpen = () => setIsDialogOpen(true);
   const handleDialogClose = () => setIsDialogOpen(false);
   const isMobile = useIsMobile();
+
 
   const handleDialogConfirm = async () => {
     await deleteArticle(article.id);
@@ -117,6 +119,7 @@ export default function ArticleModal({
   };
 
   return (
+
     <Modal
       isCentered
       isOpen={isOpen}
@@ -147,6 +150,7 @@ export default function ArticleModal({
         <ModalCloseButton />
         <ArticleBody padding="20px">
           <PictureContainer>
+
             <ImagePreview
               src={article.imageURL}
               boxSize={isMobile ? "350px" : undefined}
@@ -270,7 +274,7 @@ const PictureContainer = styled.div`
   min-width: 650px;
   min-height: 650px;
   position: relative;
-
+  
   @media (max-width: 768px) {
     min-width: 350px;
     min-height: 350px;

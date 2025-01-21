@@ -20,10 +20,10 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const drawerDisclosure = useDisclosure();
   const modalDisclosure = useDisclosure();
-
   const { isAuthenticated, user, restoreSession } = useAuthStore();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
+
 
   const handleLogout = async () => {
     await logoutUser();
@@ -157,6 +157,7 @@ export default function Header() {
           onClose={modalDisclosure.onClose}
         />
       )}
+
     </HeaderContainer>
   );
 }

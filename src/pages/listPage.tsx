@@ -48,7 +48,6 @@ export default function ListPage() {
           <BestRanking />
         </Navigation>
       )}
-
       <ArticleList
         articles={articles}
         filters={filters}

@@ -75,7 +75,7 @@ export default function CategoryList({ onCategoryChange }: CategoryListProps) {
 const CategoryContainer = styled.div`
   display: flex;
   gap: 16px;
-
+    
   @media (max-width: 768px) {
     display: grid;
     grid-template-columns: repeat(8, 1fr);
@@ -110,6 +110,7 @@ const AvatarWrapper = styled.div<{ $isSelected: boolean }>`
     width: 35px;
     height: 35px;
   }
+
 `;
 
 const CategoryAvatar = styled.img`

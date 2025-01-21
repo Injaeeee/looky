@@ -55,6 +55,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
       imageURL: "",
     },
   });
+
   const isMobile = useIsMobile();
   const [currentStep, setCurrentStep] = useState(1);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
@@ -199,7 +200,6 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     if (containerRef.current) {
       const randomX = Math.random() * 70 + 10;
       const randomY = Math.random() * 70 + 10;
-
       const newTag: Tag = {
         id: Date.now(),
         category: tagInfo.category,
@@ -217,7 +217,6 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
       const rect = containerRef.current.getBoundingClientRect();
       const adjustedX = Math.min(Math.max(x - rect.left, 0), rect.width - 70);
       const adjustedY = Math.min(Math.max(y - rect.top, 0), rect.height - 60);
-
       const percentageX = (adjustedX / rect.width) * 100;
       const percentageY = (adjustedY / rect.height) * 100;
 
@@ -457,5 +456,5 @@ const DraggableTag: React.FC<{
 
 const TagWrapper = styled.div`
   position: absolute;
-  cursor: grab; /* 드래그를 시작할 때 손 모양 */
+  cursor: grab; 
 `;

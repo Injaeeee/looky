@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { Image } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
+
 interface RankType {
   id: number;
   rank: number;
@@ -81,6 +82,7 @@ const RankingWrapper = styled.div`
 `;
 
 const RankListWrapper = styled.div`
+
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -159,3 +161,4 @@ const SeeMoreLink = styled(Link)`
     color: var(--gray400);
   }
 `;
+
