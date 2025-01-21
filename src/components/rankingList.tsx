@@ -95,6 +95,9 @@ const Container = styled.div`
   flex-direction: column;
   gap: 48px;
   margin: 150px auto;
+  @media (max-width: 768px) {
+    margin: 100px auto;
+  }
 `;
 
 const RankingInfo = styled.div`
@@ -106,6 +109,11 @@ const RankingInfo = styled.div`
   border: solid 2px var(--gray900);
   border-radius: 5px;
   background: var(--black10);
+
+  @media (max-width: 768px) {
+    padding: 30px 0;
+    gap: 10px;
+  }
 `;
 
 const InfoTitle = styled.div`
@@ -132,6 +140,11 @@ const ArticleListContainer = styled.div`
   grid-template-columns: repeat(4, 1fr);
   max-width: 1200px;
   gap: 48px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 65px;
+  }
 `;
 
 const ArticleContainer = styled.div<{ $isHighlighted: boolean }>`
@@ -142,6 +155,14 @@ const ArticleContainer = styled.div<{ $isHighlighted: boolean }>`
   cursor: pointer;
   border: ${(props) =>
     props.$isHighlighted ? "2px solid var(--pink100)" : "none"};
+
+  @media (max-width: 1200px) {
+    height: 230px;
+  }
+
+  @media (max-width: 768px) {
+    height: 200px;
+  }
 `;
 
 const CardImage = styled.img`
@@ -168,6 +189,11 @@ const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
+
+  @media (max-width: 768px) {
+    gap: 1px;
+    padding: 10px;
+  }
 `;
 
 const HighlightedWrapper = styled.div`

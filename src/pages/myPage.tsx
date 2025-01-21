@@ -63,6 +63,10 @@ const Container = styled.div`
   gap: 70px;
   align-items: center;
   margin: 150px auto 0;
+  @media (max-width: 768px) {
+    gap: 20px;
+    margin: 100px auto 0;
+  }
 `;
 
 const UserWrapper = styled.div`

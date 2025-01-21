@@ -75,6 +75,12 @@ export default function CategoryList({ onCategoryChange }: CategoryListProps) {
 const CategoryContainer = styled.div`
   display: flex;
   gap: 16px;
+
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 1px;
+  }
 `;
 
 const CategoryItem = styled.div`
@@ -100,9 +106,9 @@ const AvatarWrapper = styled.div<{ $isSelected: boolean }>`
     border-color: pink;
   }
 
-  @media (max-width: 1200px) {
-    width: 40px;
-    height: 40px;
+  @media (max-width: 768px) {
+    width: 35px;
+    height: 35px;
   }
 `;
 
@@ -116,4 +122,7 @@ const CategoryName = styled.span<{ $isSelected: boolean }>`
   font-weight: bold;
   color: ${({ $isSelected }) => ($isSelected ? "var(--pink100)" : "White")};
   text-align: center;
+  @media (max-width: 768px) {
+    font-size: 8px;
+  }
 `;

@@ -182,11 +182,8 @@ const Navigation = styled.nav`
   height: 64px;
   margin: 0 auto;
 
-  @media (max-width: 1248px) {
+  @media (max-width: 1200px) {
     padding: 0 24px;
-  }
-  @media (max-width: 640px) {
-    padding: 0 16px;
   }
 `;
 
