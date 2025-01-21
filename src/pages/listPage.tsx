@@ -1,14 +1,14 @@
 import ArticleList from "../components/articleList";
 import styled from "styled-components";
-import { Avatar, Image } from "@chakra-ui/react";
+import { Avatar } from "@chakra-ui/react";
 import { SearchInput } from "../components/common/input";
 import BestRanking from "../components/bestRanking";
 import { useAuthStore } from "../store/authStore";
 import { useEffect, useState } from "react";
 import { getArticles } from "../util/article.api";
 import { Article, ArticleFilter } from "../types/article.types";
-import { Link } from "react-router-dom";
 import { useArticleStore } from "../store/articleStore";
+import { useIsTablet } from "../hooks/useIsMobile";
 
 export default function ListPage() {
   const { user } = useAuthStore();
@@ -17,6 +17,7 @@ export default function ListPage() {
   const [filters, setFilters] = useState<ArticleFilter>({});
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const ArticleId = useArticleStore((state) => state.ArticleId);
+  const isTablet = useIsTablet();
 
   const fetchArticles = async () => {
     const result = await getArticles(filters, selectedCategories, searchTerm);
@@ -29,34 +30,30 @@ export default function ListPage() {
 
   return (
     <Container>
-      <Navigation>
-        <UserWrapper>
-          <Avatar name={user?.name} src={user?.imageUrl} />
-          <UserInfo>
-            <UserName>{user?.name}</UserName>
-            <UserDetail>
-              {user?.height} · {user?.mood}
-            </UserDetail>
-          </UserInfo>
-        </UserWrapper>
-        <SearchWrapper>
-          <SearchTitle>검색</SearchTitle>
-          <SearchInput onSearch={setSearchTerm} />
-        </SearchWrapper>
-        <RankingWrapper>
-          <RankingTitle>
-            <Image src="/icon/rankIcon.svg" alt="rank icon" />
-            LOOKY BEST RANKING
-          </RankingTitle>
+      {!isTablet && (
+        <Navigation>
+          <UserWrapper>
+            <Avatar name={user?.name} src={user?.imageUrl} />
+            <UserInfo>
+              <UserName>{user?.name}</UserName>
+              <UserDetail>
+                {user?.height} · {user?.mood}
+              </UserDetail>
+            </UserInfo>
+          </UserWrapper>
+          <SearchWrapper>
+            <SearchTitle>검색</SearchTitle>
+            <SearchInput onSearch={setSearchTerm} />
+          </SearchWrapper>
           <BestRanking />
-          <SeeMoreLink to="/ranking">SEE MORE {">"}</SeeMoreLink>
-        </RankingWrapper>
-      </Navigation>
+        </Navigation>
+      )}
       <ArticleList
         articles={articles}
         filters={filters}
         onCategoryChange={setSelectedCategories}
         onFiltersChange={setFilters}
+        setSearchTerm={setSearchTerm}
       />
     </Container>
   );
@@ -76,12 +73,6 @@ const Navigation = styled.div`
   max-width: 270px;
   height: 64px;
   gap: 10px;
-  @media (max-width: 1248px) {
-    padding: 0 24px;
-  }
-  @media (max-width: 640px) {
-    padding: 0 16px;
-  }
 `;
 
 const UserWrapper = styled.div`
@@ -124,49 +115,4 @@ const SearchWrapper = styled.div`
 const SearchTitle = styled.p`
   font-size: 12px;
   font-weight: 600;
-`;
-
-const RankingWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: 380px;
-  border: 1px solid var(--gray700);
-  padding: 24px;
-  border-radius: 8px;
-  justify-content: flex-start;
-  gap: 20px;
-`;
-
-const RankingTitle = styled.p`
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 12px;
-  font-weight: 800;
-  position: relative;
-  padding-bottom: 10px;
-
-  &::after {
-    content: "";
-    display: block;
-    position: absolute;
-    bottom: -2px;
-    left: 50%;
-    transform: translateX(-50%);
-    border-bottom: dashed var(--pink100) 1px;
-    width: 20%;
-  }
-`;
-
-const SeeMoreLink = styled(Link)`
-  color: var(--gray500);
-  align-self: flex-end;
-  font-size: 10px;
-  font-weight: 800;
-
-  &:hover {
-    color: var(--gray400);
-  }
 `;

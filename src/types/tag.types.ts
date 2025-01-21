@@ -4,9 +4,9 @@ export enum Category {
   PANTS = "PANTS",
   NEAT = "NEAT",
   JEANS = "JEANS",
-  CAP = "CAP",
   SHOES = "SHOES",
   BAG = "BAG",
+  ACC = "ACC",
 }
 
 export type Coordinates = {

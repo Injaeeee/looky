@@ -19,7 +19,7 @@ const Container = styled.div`
 `;
 
 const Overlay = styled.div`
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   background-image: url("/image/rankingFrame.png");

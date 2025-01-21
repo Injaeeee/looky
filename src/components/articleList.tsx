@@ -6,20 +6,28 @@ import ArticleModal from "../components/articleModal";
 import CategoryList from "./category";
 import { SelectGroup } from "./common/select";
 import { Article, ArticleFilter } from "../types/article.types";
+import { SearchInput } from "./common/input";
+import { useIsTablet } from "../hooks/useIsMobile";
+
 
 export default function ArticleList({
   articles,
   filters,
   onCategoryChange,
   onFiltersChange,
+
+  setSearchTerm,
 }: {
   articles: Article[];
   filters: ArticleFilter;
   onCategoryChange: (categories: string[]) => void;
   onFiltersChange: (filters: ArticleFilter) => void;
+  setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedArticle, setSelectedArticle] = useState<Article>();
+  const isTablet = useIsTablet();
+
 
   const handleOpenModal = (article: Article) => {
     setSelectedArticle(article);
@@ -29,6 +37,8 @@ export default function ArticleList({
   return (
     <Container>
       <CategoryList onCategoryChange={onCategoryChange} />
+      {isTablet && <SearchInput onSearch={setSearchTerm} />}
+
       <SelectGroup
         onSelectChange={(key) => (event) => {
           const value = event.target.value;
@@ -91,6 +101,10 @@ const ArticleListContainer = styled.div`
   grid-template-columns: repeat(4, 1fr);
   max-width: 1200px;
   gap: 10px;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
 `;
 
 const ArticleContainer = styled.div`
@@ -100,6 +114,17 @@ const ArticleContainer = styled.div`
   overflow: hidden;
   border-radius: 5px;
   cursor: pointer;
+  
+  @media (max-width: 1200px) {
+    width: 180px;
+    height: 230px;
+  }
+
+  @media (max-width: 768px) {
+    width: 150px;
+    height: 200px;
+  }
+
 `;
 
 const CardImage = styled.img`

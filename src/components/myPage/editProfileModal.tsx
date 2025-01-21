@@ -17,6 +17,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateUserProfile } from "../../util/user.api";
 import { uploadImage } from "../../util/image.api";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -36,11 +37,11 @@ export default function EditProfileModal({
   onClose,
   user,
 }: ArticleModalProps) {
-  const [liked, setLiked] = useState(false);
   const [imageSrc, setImageSrc] = useState<string>(
     user?.imageUrl || "/icon/user.svg",
   );
   const [file, setFile] = useState<File | null>(null);
+  const isMobile = useIsMobile();
 
   const {
     handleSubmit,
@@ -98,7 +99,12 @@ export default function EditProfileModal({
   };
 
   return (
-    <Modal isCentered isOpen={isOpen} onClose={onClose}>
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      motionPreset={isMobile ? "slideInBottom" : undefined}
+      isCentered
+    >
       <ModalOverlay
         bg="blackAlpha.300"
         backdropFilter="blur(10px) hue-rotate(90deg)"
@@ -108,6 +114,8 @@ export default function EditProfileModal({
         maxWidth="100%"
         bg="var(--gray900)"
         borderRadius="10px"
+        position={isMobile ? "fixed" : undefined}
+        bottom={0}
       >
         <ModalHeader
           bg="var(--gray800)"
@@ -132,7 +140,7 @@ export default function EditProfileModal({
                   onClick={() => document.getElementById("file-input")?.click()}
                   type="button"
                 >
-                  upload new picture
+                  {isMobile ? <>새 프로필</> : <>upload new picture </>}
                 </BlackButton>
                 <WhiteButton type="button" onClick={handleDeleteImage}>
                   delete
@@ -197,6 +205,11 @@ const ArticleContent = styled.div`
   gap: 25px;
   width: 400px;
   padding: 30px;
+  @media (max-width: 768px) {
+    gap: 20px;
+    width: 300px;
+    padding: 30px;
+  }
 `;
 
 const UserSpec = styled.div`

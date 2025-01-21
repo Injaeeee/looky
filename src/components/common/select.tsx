@@ -132,6 +132,12 @@ const SelectGroup = ({
 const SelectContainer = styled.div`
   display: flex;
   gap: 5px;
+  
+  @media (max-width: 768px) {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
 `;
 
 const StyledChakraSelect = styled(ChakraSelect)`

@@ -100,6 +100,10 @@ const ArticleListContainer = styled.div`
   gap: 40px;
   border-top: solid 1px var(--gray800);
   padding-top: 50px;
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
 `;
 
 const ArticleContainer = styled.div`
@@ -109,6 +113,16 @@ const ArticleContainer = styled.div`
   overflow: hidden;
   border-radius: 5px;
   cursor: pointer;
+
+  @media (max-width: 1200px) {
+    width: 180px;
+    height: 230px;
+  }
+
+  @media (max-width: 768px) {
+    width: 150px;
+    height: 200px;
+  }
 `;
 
 const CardImage = styled.img`
