@@ -12,16 +12,23 @@ import {
   increment,
   limit,
   deleteDoc,
+  QueryDocumentSnapshot,
+  startAfter,
 } from "firebase/firestore";
 import { showToast } from "../components/common/toast";
 
 export async function getArticles(
   filters: ArticleFilter,
-  selectedCategories: string[],
+  selectedCategories: string[] = [],
   searchTerm: string = "",
-): Promise<Article[]> {
+  startAfterDoc?: QueryDocumentSnapshot, // 문서 스냅샷
+  pageSize: number = 8,
+): Promise<{
+  articles: Article[];
+  lastDoc: QueryDocumentSnapshot | undefined;
+}> {
   const productRef = collection(db, "articles");
-  let q = query(productRef);
+  let q = query(productRef, orderBy("createdAt", "desc"), limit(pageSize));
 
   // Firestore 필터 조건 추가
   Object.entries(filters).forEach(([key, value]) => {
@@ -33,30 +40,39 @@ export async function getArticles(
       }
     }
   });
-  const querySnapshot = await getDocs(q);
 
-  // Firestore에서 받아온 데이터를 변환
-  let articles = querySnapshot.docs.map((doc) => ({
+  // 페이지네이션 처리
+  if (startAfterDoc) {
+    q = query(q, startAfter(startAfterDoc));
+  }
+
+  const querySnapshot = await getDocs(q);
+  const articles = querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...(doc.data() as Omit<Article, "id">),
   }));
 
-  // 카테고리 필터 적용
-  if (selectedCategories.length > 0) {
-    articles = articles.filter((article) =>
-      article.tags.some((tag) => selectedCategories.includes(tag.category)),
-    );
-  }
+  // 카테고리 필터
+  const filteredArticles = selectedCategories.length
+    ? articles.filter((article) =>
+        article.tags.some((tag) => selectedCategories.includes(tag.category)),
+      )
+    : articles;
 
-  // 검색어 필터 적용
-  if (searchTerm.trim()) {
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    articles = articles.filter((article) =>
-      article.title.toLowerCase().includes(lowerSearchTerm),
-    );
-  }
+  // 검색어 필터
+  const searchedArticles = searchTerm.trim()
+    ? filteredArticles.filter((article) =>
+        article.title.toLowerCase().includes(searchTerm.toLowerCase()),
+      )
+    : filteredArticles;
 
-  return articles;
+  // 마지막 문서 스냅샷 반환
+  const lastDoc =
+    querySnapshot.docs.length > 0
+      ? querySnapshot.docs[querySnapshot.docs.length - 1]
+      : undefined;
+
+  return { articles: searchedArticles, lastDoc };
 }
 
 export async function postArticle(newArticle: PostArticle) {
