@@ -12,7 +12,7 @@ import { SearchInput } from "../components/common/input";
 import BestRanking from "../components/bestRanking";
 
 export default function ListPage() {
-  const { user } = useAuthStore();
+  const { user, isAuthenticated } = useAuthStore();
   const [articles, setArticles] = useState<Article[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [filters, setFilters] = useState<ArticleFilter>({});
@@ -75,15 +75,18 @@ export default function ListPage() {
       <Container>
         {!isTablet && (
           <Navigation>
-            <UserWrapper>
-              <Avatar name={user?.name} src={user?.imageUrl} />
-              <UserInfo>
-                <UserName>{user?.name}</UserName>
-                <UserDetail>
-                  {user?.height} · {user?.mood}
-                </UserDetail>
-              </UserInfo>
-            </UserWrapper>
+            {isAuthenticated && (
+              <UserWrapper>
+                <Avatar name={user?.name} src={user?.imageUrl} />
+                <UserInfo>
+                  <UserName>{user?.name}</UserName>
+                  <UserDetail>
+                    {user?.height} · {user?.mood}
+                  </UserDetail>
+                </UserInfo>
+              </UserWrapper>
+            )}
+
             <SearchWrapper>
               <SearchTitle>검색</SearchTitle>
               <SearchInput onSearch={setSearchTerm} />
