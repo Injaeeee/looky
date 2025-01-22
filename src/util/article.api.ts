@@ -12,92 +12,21 @@ import {
   increment,
   limit,
   deleteDoc,
-  Query,
+  QueryDocumentSnapshot,
+  startAfter,
 } from "firebase/firestore";
 import { showToast } from "../components/common/toast";
 
-// export function buildQuery(
-//   filters: ArticleFilter,
-//   selectedCategories: string[],
-//   searchTerm: string,
-// ): Query {
-//   let q = query(collection(db, "articles"));
-
-//   // Firestore 필터 조건 추가
-//   Object.entries(filters).forEach(([key, value]) => {
-//     if (value) {
-//       if (key === "height" || key === "gender") {
-//         q = query(q, where(`writer.${key}`, "==", value));
-//       } else {
-//         q = query(q, where(key, "==", value));
-//       }
-//     }
-//   });
-
-//   console.log(selectedCategories);
-
-//   // 검색어 필터 조건 추가
-//   if (searchTerm.trim()) {
-//     // 검색어가 있을 경우, 정확히 일치하는 글자가 포함된 데이터만 필터링
-//     q = query(q, where("title", ">=", searchTerm.toLowerCase()));
-//   }
-//   return q;
-// }
-
-// export async function getArticles(
-//   filters: ArticleFilter,
-//   selectedCategories: string[],
-//   searchTerm: string = "",
-// ): Promise<Article[]> {
-//   const q = buildQuery(filters, selectedCategories, searchTerm);
-//   const querySnapshot = await getDocs(q);
-
-//   // Firestore에서 받아온 데이터를 변환
-//   let articles = querySnapshot.docs.map((doc) => ({
-//     id: doc.id,
-//     ...(doc.data() as Omit<Article, "id">),
-//   }));
-
-//   if (selectedCategories.length > 0) {
-//     articles = articles.filter((article) => {
-//       // tags 배열의 각 tag 객체에 대해 category 속성이 selectedCategories에 포함되는지 확인
-//       return article.tags.some((tag: { category: string }) =>
-//         selectedCategories.includes(tag.category),
-//       );
-//     });
-//   }
-
-//   return articles;
-// }
-
-export function filterArticles(
-  articles: Article[],
-  selectedCategories: string[],
-  searchTerm: string,
-): Article[] {
-  if (selectedCategories.length > 0) {
-    articles = articles.filter((article) =>
-      article.tags.some((tag) => selectedCategories.includes(tag.category)),
-    );
-  }
-
-  if (searchTerm.trim()) {
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    articles = articles.filter((article) =>
-      article.title.toLowerCase().includes(lowerSearchTerm),
-    );
-  }
-
-  return articles;
-}
-
 export async function getArticles(
   filters: ArticleFilter,
-  selectedCategories: string[],
-  searchTerm: string = "",
-): Promise<Article[]> {
-  const productRef = collection(db, "articles");
-  let q = query(productRef);
+  startAfterDoc?: QueryDocumentSnapshot,
+  pageSize: number = 4,
+): Promise<{
+  articles: Article[];
+  lastDoc: QueryDocumentSnapshot | undefined;
+}> {
+  const articlesRef = collection(db, "articles");
+  let q = query(articlesRef, limit(pageSize));
 
   // Firestore 필터 조건 추가
   Object.entries(filters).forEach(([key, value]) => {
@@ -110,20 +39,49 @@ export async function getArticles(
     }
   });
 
-  const querySnapshot = await getDocs(q);
+  // 페이지네이션 처리
+  if (startAfterDoc) {
+    q = query(q, startAfter(startAfterDoc));
+  }
 
-  // Firestore에서 받아온 데이터를 변환
-  let articles = querySnapshot.docs.map((doc) => ({
+  const querySnapshot = await getDocs(q);
+  const articles = querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...(doc.data() as Omit<Article, "id">),
   }));
 
-  // 필터, 카테고리, 검색어 필터 적용
-  articles = filterArticles(articles, selectedCategories, searchTerm);
+  const lastDoc =
+    querySnapshot.docs.length > 0
+      ? querySnapshot.docs[querySnapshot.docs.length - 1]
+      : undefined;
 
-  return articles;
+  return { articles, lastDoc };
 }
 
+export function filterArticles(
+  articles: Article[],
+  selectedCategories: string[],
+  searchTerm: string,
+): Article[] {
+  let filteredArticles = [...articles];
+
+  // 카테고리 필터 적용
+  if (selectedCategories.length > 0) {
+    filteredArticles = filteredArticles.filter((article) =>
+      article.tags.some((tag) => selectedCategories.includes(tag.category)),
+    );
+  }
+
+  // 검색어 필터 적용
+  if (searchTerm.trim()) {
+    const lowerSearchTerm = searchTerm.toLowerCase();
+    filteredArticles = filteredArticles.filter((article) =>
+      article.title.toLowerCase().includes(lowerSearchTerm),
+    );
+  }
+
+  return filteredArticles;
+}
 export async function postArticle(newArticle: PostArticle) {
   try {
     const productRef = collection(db, "articles");
