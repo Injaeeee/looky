@@ -95,6 +95,10 @@ const Container = styled.form`
   width: 450px;
   align-items: center;
   margin: 150px auto 0;
+
+  @media (max-width: 768px) {
+    width: 350px;
+  }
 `;
 
 const InputWrapper = styled.div`
