@@ -12,16 +12,21 @@ import {
   increment,
   limit,
   deleteDoc,
+  QueryDocumentSnapshot,
+  startAfter,
 } from "firebase/firestore";
 import { showToast } from "../components/common/toast";
 
 export async function getArticles(
   filters: ArticleFilter,
-  selectedCategories: string[],
-  searchTerm: string = "",
-): Promise<Article[]> {
-  const productRef = collection(db, "articles");
-  let q = query(productRef);
+  startAfterDoc?: QueryDocumentSnapshot,
+  pageSize: number = 4,
+): Promise<{
+  articles: Article[];
+  lastDoc: QueryDocumentSnapshot | undefined;
+}> {
+  const articlesRef = collection(db, "articles");
+  let q = query(articlesRef, limit(pageSize));
 
   // Firestore 필터 조건 추가
   Object.entries(filters).forEach(([key, value]) => {
@@ -33,17 +38,36 @@ export async function getArticles(
       }
     }
   });
-  const querySnapshot = await getDocs(q);
 
-  // Firestore에서 받아온 데이터를 변환
-  let articles = querySnapshot.docs.map((doc) => ({
+  // 페이지네이션 처리
+  if (startAfterDoc) {
+    q = query(q, startAfter(startAfterDoc));
+  }
+
+  const querySnapshot = await getDocs(q);
+  const articles = querySnapshot.docs.map((doc) => ({
     id: doc.id,
     ...(doc.data() as Omit<Article, "id">),
   }));
 
+  const lastDoc =
+    querySnapshot.docs.length > 0
+      ? querySnapshot.docs[querySnapshot.docs.length - 1]
+      : undefined;
+
+  return { articles, lastDoc };
+}
+
+export function filterArticles(
+  articles: Article[],
+  selectedCategories: string[],
+  searchTerm: string,
+): Article[] {
+  let filteredArticles = [...articles];
+
   // 카테고리 필터 적용
   if (selectedCategories.length > 0) {
-    articles = articles.filter((article) =>
+    filteredArticles = filteredArticles.filter((article) =>
       article.tags.some((tag) => selectedCategories.includes(tag.category)),
     );
   }
@@ -51,14 +75,13 @@ export async function getArticles(
   // 검색어 필터 적용
   if (searchTerm.trim()) {
     const lowerSearchTerm = searchTerm.toLowerCase();
-    articles = articles.filter((article) =>
+    filteredArticles = filteredArticles.filter((article) =>
       article.title.toLowerCase().includes(lowerSearchTerm),
     );
   }
 
-  return articles;
+  return filteredArticles;
 }
-
 export async function postArticle(newArticle: PostArticle) {
   try {
     const productRef = collection(db, "articles");
