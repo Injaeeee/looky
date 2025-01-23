@@ -63,7 +63,7 @@ const SearchCustomInput = styled.input`
   width: 100%;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 12px;
+  font-size: 16px;
   line-height: 16px;
   background: transparent;
   transition: border-color 0.3s ease;
