@@ -104,6 +104,7 @@ const ArticleListContainer = styled.div`
   grid-template-columns: repeat(4, 1fr);
   width: 1100px;
   gap: 10px;
+  
   @media (max-width: 1200px) {
     width: 700px;
   }
@@ -136,7 +137,6 @@ const ArticleContainer = styled.div`
   overflow: hidden;
   border-radius: 5px;
   cursor: pointer;
-
   @media (max-width: 1200px) {
     width: 180px;
     height: 230px;

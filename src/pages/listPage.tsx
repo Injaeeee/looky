@@ -63,6 +63,7 @@ export default function ListPage() {
     [fetchArticles, hasMore],
   );
 
+
   useEffect(() => {
     setArticles([]); // 필터가 변경될 때마다 초기화
     setLastDoc(undefined);
@@ -173,3 +174,4 @@ const Loading = styled.div`
   display: flex;
   justify-content: center;
 `;
+
