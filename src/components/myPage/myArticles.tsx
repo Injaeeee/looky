@@ -6,6 +6,7 @@ import ArticleModal from "../articleModal";
 import { useAuthStore } from "../../store/authStore";
 import { getLikedArticles, getMyArticles } from "../../util/article.api";
 import { Article } from "../../types/article.types";
+import { useArticleStore } from "../../store/articleStore";
 
 interface MyArticlesProps {
   activeButton: string;
@@ -15,8 +16,8 @@ export default function MyArticles({ activeButton }: MyArticlesProps) {
   const [selectedArticle, setSelectedArticle] = useState<Article>();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useAuthStore();
-
   const [articles, setArticles] = useState<Article[]>([]);
+  const ArticleId = useArticleStore((state) => state.ArticleId);
 
   const fetchLikedArticles = async () => {
     if (!user?.articleLike || user.articleLike.length === 0) return;
@@ -36,7 +37,7 @@ export default function MyArticles({ activeButton }: MyArticlesProps) {
     } else if (activeButton === "내 게시물") {
       fetchUserArticles();
     }
-  }, [activeButton, user]);
+  }, [activeButton, user, ArticleId]);
 
   const handleOpenModal = (article: Article) => {
     setSelectedArticle(article);

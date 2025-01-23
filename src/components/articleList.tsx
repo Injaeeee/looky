@@ -9,7 +9,6 @@ import { Article, ArticleFilter } from "../types/article.types";
 import { SearchInput } from "./common/input";
 import { useIsTablet } from "../hooks/useIsMobile";
 
-
 export default function ArticleList({
   articles,
   filters,
@@ -27,7 +26,6 @@ export default function ArticleList({
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [selectedArticle, setSelectedArticle] = useState<Article>();
   const isTablet = useIsTablet();
-
 
   const handleOpenModal = (article: Article) => {
     setSelectedArticle(article);
@@ -48,35 +46,40 @@ export default function ArticleList({
           });
         }}
       />
-      <ArticleListContainer>
-        {articles.map((article, index) => (
-          <ArticleContainer
-            key={index}
-            onClick={() => handleOpenModal(article)}
-          >
-            <CardImage src={article.imageURL} alt="Background Image" />
-            <CardContent>
-              <Stack spacing="1">
-                <Header size="md" color="white">
-                  <Avatar
-                    name={article.writer?.name}
-                    src={article.writer?.imageUrl}
-                  />
-                  {article.writer?.name}
-                </Header>
-                <Text color="white">{article.title}</Text>
-                <Stack direction="row" spacing="2">
-                  {article.tags
-                    .filter((tag) => tag.productName)
-                    .map((tag, idx) => (
-                      <PinkTag key={idx} label={tag.productName} />
-                    ))}
+
+      {articles.length < 1 ? (
+        <NotArticle>관련 게시물이 없습니다.</NotArticle>
+      ) : (
+        <ArticleListContainer>
+          {articles.map((article, index) => (
+            <ArticleContainer
+              key={index}
+              onClick={() => handleOpenModal(article)}
+            >
+              <CardImage src={article.imageURL} alt="Background Image" />
+              <CardContent>
+                <Stack spacing="1">
+                  <Header size="md" color="white">
+                    <Avatar
+                      name={article.writer?.name}
+                      src={article.writer?.imageUrl}
+                    />
+                    {article.writer?.name}
+                  </Header>
+                  <Text color="white">{article.title}</Text>
+                  <Stack direction="row" spacing="2">
+                    {article.tags
+                      .filter((tag) => tag.productName)
+                      .map((tag, idx) => (
+                        <PinkTag key={idx} label={tag.productName} />
+                      ))}
+                  </Stack>
                 </Stack>
-              </Stack>
-            </CardContent>
-          </ArticleContainer>
-        ))}
-      </ArticleListContainer>
+              </CardContent>
+            </ArticleContainer>
+          ))}
+        </ArticleListContainer>
+      )}
 
       {selectedArticle && (
         <ArticleModal
@@ -99,12 +102,32 @@ const Container = styled.div`
 const ArticleListContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  max-width: 1200px;
+  width: 1100px;
   gap: 10px;
+  
+  @media (max-width: 1200px) {
+    width: 700px;
+  }
   @media (max-width: 768px) {
     grid-template-columns: repeat(2, 1fr);
+    width: 320px;
   }
+`;
 
+const NotArticle = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 1100px;
+  height: 100%;
+  @media (max-width: 1200px) {
+    width: 700px;
+  }
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+    width: 320px;
+  }
 `;
 
 const ArticleContainer = styled.div`
@@ -114,7 +137,6 @@ const ArticleContainer = styled.div`
   overflow: hidden;
   border-radius: 5px;
   cursor: pointer;
-  
   @media (max-width: 1200px) {
     width: 180px;
     height: 230px;
@@ -124,7 +146,6 @@ const ArticleContainer = styled.div`
     width: 150px;
     height: 200px;
   }
-
 `;
 
 const CardImage = styled.img`

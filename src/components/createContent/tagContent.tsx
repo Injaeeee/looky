@@ -84,8 +84,11 @@ const ArticleContent = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   width: 350px;
+  @media (max-width: 768px) {
+    gap: 9px;
+  }
 `;
 
 const UserSpec = styled.div`

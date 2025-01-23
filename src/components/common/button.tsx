@@ -30,6 +30,14 @@ const Button = styled.button<{ color: "white" | "black" }>`
   font-weight: 600;
   border-radius: 6px;
   padding: 7px 12px;
+
+  @media (max-width: 768px) {
+    font-size: 10px;
+    line-height: 18px;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 5px 10px;
+  }
 `;
 
 const BorderButton = styled.button`
@@ -40,4 +48,12 @@ const BorderButton = styled.button`
   border-radius: 6px;
   color: var(--pink100);
   padding: 7px 12px;
+
+  @media (max-width: 768px) {
+    font-size: 10px;
+    line-height: 18px;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 5px 10px;
+  }
 `;
