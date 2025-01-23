@@ -45,26 +45,65 @@ export default function EtcContent({
           value={articleInfo.title}
           {...register("title")}
           onChange={(e) => handleArticleInfoChange("title", e.target.value)}
+          style={{ fontSize: "16px" }}
         />
       </InputWrapper>
-      <InputWrapper>
-        <Title>계절</Title>
-        <Select
-          width="auto"
-          borderColor="white"
-          focusBorderColor="pink.100"
-          size="lg"
-          _hover={{ borderColor: "pink.200" }}
-          value={articleInfo.season}
-          onChange={(e) => handleArticleInfoChange("season", e.target.value)}
-        >
-          {Object.values(Season).map((Season) => (
-            <option key={Season} value={Season}>
-              {Season}
-            </option>
-          ))}
-        </Select>
-      </InputWrapper>
+      <SelectWrapper>
+        <InputWrapper>
+          <Title>계절</Title>
+          <Select
+            borderColor="white"
+            focusBorderColor="pink.100"
+            size="lg"
+            _hover={{ borderColor: "pink.200" }}
+            value={articleInfo.season}
+            onChange={(e) => handleArticleInfoChange("season", e.target.value)}
+            style={{ fontSize: "16px" }}
+          >
+            {Object.values(Season).map((Season) => (
+              <option key={Season} value={Season}>
+                {Season}
+              </option>
+            ))}
+          </Select>
+        </InputWrapper>
+        <InputWrapper>
+          <Title>TPO</Title>
+          <Select
+            borderColor="white"
+            focusBorderColor="pink.100"
+            size="lg"
+            _hover={{ borderColor: "pink.200" }}
+            value={articleInfo.tpo}
+            onChange={(e) => handleArticleInfoChange("tpo", e.target.value)}
+            style={{ fontSize: "16px" }}
+          >
+            {Object.values(TPO).map((TPO) => (
+              <option key={TPO} value={TPO}>
+                {TPO}
+              </option>
+            ))}
+          </Select>
+        </InputWrapper>
+        <InputWrapper>
+          <Title>MOOD</Title>
+          <Select
+            borderColor="white"
+            focusBorderColor="pink.100"
+            size="lg"
+            _hover={{ borderColor: "pink.200" }}
+            value={articleInfo.mood}
+            onChange={(e) => handleArticleInfoChange("mood", e.target.value)}
+            style={{ fontSize: "16px" }}
+          >
+            {Object.values(Mood).map((Mood) => (
+              <option key={Mood} value={Mood}>
+                {Mood}
+              </option>
+            ))}
+          </Select>
+        </InputWrapper>
+      </SelectWrapper>
       <InputWrapper>
         <Title>소개</Title>
         <Textarea
@@ -75,43 +114,8 @@ export default function EtcContent({
           value={articleInfo.content}
           {...register("content")}
           onChange={(e) => handleArticleInfoChange("content", e.target.value)}
+          style={{ fontSize: "16px" }}
         />
-      </InputWrapper>
-      <InputWrapper>
-        <Title>TPO</Title>
-        <Select
-          width="auto"
-          borderColor="white"
-          focusBorderColor="pink.100"
-          size="lg"
-          _hover={{ borderColor: "pink.200" }}
-          value={articleInfo.tpo}
-          onChange={(e) => handleArticleInfoChange("tpo", e.target.value)}
-        >
-          {Object.values(TPO).map((TPO) => (
-            <option key={TPO} value={TPO}>
-              {TPO}
-            </option>
-          ))}
-        </Select>
-      </InputWrapper>
-      <InputWrapper>
-        <Title>MOOD</Title>
-        <Select
-          width="auto"
-          borderColor="white"
-          focusBorderColor="pink.100"
-          size="lg"
-          _hover={{ borderColor: "pink.200" }}
-          value={articleInfo.mood}
-          onChange={(e) => handleArticleInfoChange("mood", e.target.value)}
-        >
-          {Object.values(Mood).map((Mood) => (
-            <option key={Mood} value={Mood}>
-              {Mood}
-            </option>
-          ))}
-        </Select>
       </InputWrapper>
       <ButtonWrapper>
         <PinkBorderButton onClick={goToPreviousStep}>이전으로</PinkBorderButton>
@@ -158,7 +162,21 @@ const Title = styled.p`
 const InputWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 10px;
+  @media (max-width: 768px) {
+    gap: 5px;
+  }
+`;
+
+const SelectWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  @media (max-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 5px;
+  }
 `;
 
 const ButtonWrapper = styled.div`
