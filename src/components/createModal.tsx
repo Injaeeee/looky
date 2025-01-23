@@ -137,6 +137,8 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
       return;
     }
 
+    onClose();
+
     const imageURL = await uploadImage(file);
 
     const newArticle: PostArticle = {
@@ -264,7 +266,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
             게시물
           </ModalHeader>
           <ModalCloseButton />
-          <ArticleBody padding="20px">
+          <ArticleBody>
             <DndProvider backend={HTML5Backend}>
               <PictureContainer ref={containerRef}>
                 {imageSrc ? (
@@ -272,7 +274,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
                     <ImagePreview
                       src={imageSrc}
                       alt="Selected"
-                      boxSize={isMobile ? "350px" : "650px"}
+                      boxSize={isMobile ? "300px" : "650px"}
                     />
                     <DeleteButton
                       onClick={() => {
@@ -359,8 +361,8 @@ const PictureContainer = styled.div`
   border: var(--gray600) dashed 3px;
 
   @media (max-width: 768px) {
-    min-width: 350px;
-    min-height: 350px;
+    min-width: 307px;
+    min-height: 307px;
   }
 `;
 

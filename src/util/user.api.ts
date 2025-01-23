@@ -98,7 +98,7 @@ export const loginUser = async (data: UserData): Promise<void> => {
   } catch (error) {
     showToast({
       title: "로그인 오류",
-      description: "오류가 발생했습니다.",
+      description: "사용자 데이터를 찾을 수 없습니다.",
       status: "error",
     });
   }

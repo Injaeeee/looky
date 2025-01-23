@@ -12,10 +12,10 @@ import { Image } from "@chakra-ui/react";
 import { useAuthStore } from "../store/authStore";
 
 const schema = z.object({
-  username: z
+  email: z
     .string()
-    .min(1, { message: "아이디는 필수 항목입니다." })
-    .max(20, { message: "아이디는 20자 이하로 입력해주세요." }),
+    .min(1, { message: "이메일은 필수 항목입니다." })
+    .max(20, { message: "이메일은 20자 이하로 입력해주세요." }),
   password: z
     .string()
     .min(6, { message: "비밀번호는 최소 6자 이상이어야 합니다." })
@@ -47,7 +47,7 @@ export default function Login() {
 
   const onSubmit = async (data: any) => {
     await loginUser({
-      email: data.username,
+      email: data.email,
       password: data.password,
     });
     navigate("/");
@@ -57,10 +57,10 @@ export default function Login() {
     <Container onSubmit={handleSubmit(onSubmit)}>
       <Image src="/image/loginLogo.png" alt="logo" />
       <InputWrapper>
-        <Title>아이디</Title>
-        <Input placeholder="아이디를 입력해주세요." {...register("username")} />
-        {errors.username && (
-          <ErrorText>{errors.username.message as string}</ErrorText>
+        <Title>이메일</Title>
+        <Input placeholder="이메일을 입력해주세요." {...register("email")} />
+        {errors.email && (
+          <ErrorText>{errors.email.message as string}</ErrorText>
         )}
       </InputWrapper>
       <InputWrapper>

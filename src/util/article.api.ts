@@ -63,25 +63,19 @@ export function filterArticles(
   selectedCategories: string[],
   searchTerm: string,
 ): Article[] {
-  let filteredArticles = [...articles];
+  return articles.filter((article) => {
+    const matchesCategory =
+      selectedCategories.length === 0 ||
+      article.tags.some((tag) => selectedCategories.includes(tag.category));
 
-  // 카테고리 필터 적용
-  if (selectedCategories.length > 0) {
-    filteredArticles = filteredArticles.filter((article) =>
-      article.tags.some((tag) => selectedCategories.includes(tag.category)),
-    );
-  }
+    const matchesSearchTerm =
+      !searchTerm.trim() ||
+      article.title.toLowerCase().includes(searchTerm.toLowerCase());
 
-  // 검색어 필터 적용
-  if (searchTerm.trim()) {
-    const lowerSearchTerm = searchTerm.toLowerCase();
-    filteredArticles = filteredArticles.filter((article) =>
-      article.title.toLowerCase().includes(lowerSearchTerm),
-    );
-  }
-
-  return filteredArticles;
+    return matchesCategory && matchesSearchTerm;
+  });
 }
+
 export async function postArticle(newArticle: PostArticle) {
   try {
     const productRef = collection(db, "articles");

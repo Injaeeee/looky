@@ -145,11 +145,11 @@ export default function ArticleModal({
           {article.title}
         </ModalHeader>
         <ModalCloseButton />
-        <ArticleBody padding="20px">
+        <ArticleBody>
           <PictureContainer>
             <ImagePreview
               src={article.imageURL}
-              boxSize={isMobile ? "350px" : undefined}
+              boxSize={isMobile ? "300px" : undefined}
             />
             {article.tags.map((tag, i) => (
               <TagWrapper key={i} x={tag.coordinates.x} y={tag.coordinates.y}>
@@ -238,7 +238,7 @@ export default function ArticleModal({
                   />
                   <InputRightElement>
                     <button onClick={handleAddComment}>
-                      <Image src="/icon/message.svg" width="15px" />
+                      <Image src="/icon/message.svg" width="20px" />
                     </button>
                   </InputRightElement>
                 </InputGroup>
@@ -273,8 +273,8 @@ const PictureContainer = styled.div`
   position: relative;
 
   @media (max-width: 768px) {
-    min-width: 350px;
-    min-height: 350px;
+    min-width: 307px;
+    min-height: 307px;
   }
 `;
 
@@ -290,7 +290,7 @@ const ArticleContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 350px;
+  width: 300px;
 `;
 
 const UserWrapper = styled.div`

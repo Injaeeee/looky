@@ -45,7 +45,7 @@ export default function EtcContent({
           value={articleInfo.title}
           {...register("title")}
           onChange={(e) => handleArticleInfoChange("title", e.target.value)}
-          style={{ fontSize: "16px" }}
+          style={{ fontSize: "17px" }}
         />
       </InputWrapper>
       <SelectWrapper>
@@ -58,7 +58,7 @@ export default function EtcContent({
             _hover={{ borderColor: "pink.200" }}
             value={articleInfo.season}
             onChange={(e) => handleArticleInfoChange("season", e.target.value)}
-            style={{ fontSize: "16px" }}
+            style={{ fontSize: "17px" }}
           >
             {Object.values(Season).map((Season) => (
               <option key={Season} value={Season}>
@@ -76,7 +76,7 @@ export default function EtcContent({
             _hover={{ borderColor: "pink.200" }}
             value={articleInfo.tpo}
             onChange={(e) => handleArticleInfoChange("tpo", e.target.value)}
-            style={{ fontSize: "16px" }}
+            style={{ fontSize: "17px" }}
           >
             {Object.values(TPO).map((TPO) => (
               <option key={TPO} value={TPO}>
@@ -94,7 +94,7 @@ export default function EtcContent({
             _hover={{ borderColor: "pink.200" }}
             value={articleInfo.mood}
             onChange={(e) => handleArticleInfoChange("mood", e.target.value)}
-            style={{ fontSize: "16px" }}
+            style={{ fontSize: "17px" }}
           >
             {Object.values(Mood).map((Mood) => (
               <option key={Mood} value={Mood}>
@@ -114,7 +114,7 @@ export default function EtcContent({
           value={articleInfo.content}
           {...register("content")}
           onChange={(e) => handleArticleInfoChange("content", e.target.value)}
-          style={{ fontSize: "16px" }}
+          style={{ fontSize: "17px" }}
         />
       </InputWrapper>
       <ButtonWrapper>
@@ -130,7 +130,7 @@ const ArticleContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 350px;
+  width: 310px;
 `;
 
 const UserSpec = styled.div`
@@ -183,7 +183,9 @@ const ButtonWrapper = styled.div`
   display: flex;
   gap: 5px;
   justify-content: space-between;
+  margin-bottom: 15px;
   @media (min-width: 768px) {
+    margin-bottom: 0;
     position: absolute;
     right: 0;
     bottom: 0;

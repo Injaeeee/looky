@@ -24,29 +24,41 @@ export default function ListPage() {
   const [isLoading, setIsLoading] = useState(false);
   const observer = useRef<IntersectionObserver | null>(null);
 
-  const fetchArticles = useCallback(async () => {
-    if (!hasMore || isLoading) return; // 중복 호출 방지
-    setIsLoading(true); // 로딩 시작
+  const fetchArticles = useCallback(
+    async (isFilterChanged = false) => {
+      if (isLoading) return;
 
-    try {
-      const { articles: fetchedArticles, lastDoc: newLastDoc } =
-        await getArticles(filters, lastDoc);
+      setIsLoading(true);
 
-      if (fetchedArticles.length > 0) {
-        setArticles((prev) => [
-          ...prev,
-          ...filterArticles(fetchedArticles, selectedCategories, searchTerm),
-        ]);
-        setLastDoc(newLastDoc);
-      } else {
-        setHasMore(false);
+      try {
+        const { articles: fetchedArticles, lastDoc: newLastDoc } =
+          await getArticles(filters, isFilterChanged ? undefined : lastDoc);
+
+        if (fetchedArticles.length > 0) {
+          setArticles((prev) =>
+            isFilterChanged
+              ? filterArticles(fetchedArticles, selectedCategories, searchTerm)
+              : [
+                  ...prev,
+                  ...filterArticles(
+                    fetchedArticles,
+                    selectedCategories,
+                    searchTerm,
+                  ),
+                ],
+          );
+          setLastDoc(newLastDoc);
+        } else {
+          setHasMore(false);
+        }
+      } catch (error) {
+        console.error("Error fetching articles:", error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching articles:", error);
-    } finally {
-      setIsLoading(false); // 로딩 종료
-    }
-  }, [filters, selectedCategories, searchTerm, lastDoc, hasMore, isLoading]);
+    },
+    [filters, selectedCategories, searchTerm, lastDoc, isLoading],
+  );
 
   const lastArticleRef = useCallback(
     (node: HTMLDivElement | null) => {
@@ -63,12 +75,11 @@ export default function ListPage() {
     [fetchArticles, hasMore],
   );
 
-
   useEffect(() => {
-    setArticles([]); // 필터가 변경될 때마다 초기화
-    setLastDoc(undefined);
     setHasMore(true);
-    fetchArticles();
+    setArticles([]);
+    setLastDoc(undefined);
+    fetchArticles(true);
   }, [filters, selectedCategories, searchTerm, ArticleId]);
 
   return (
@@ -119,7 +130,11 @@ const Container = styled.div`
   display: flex;
   gap: 5px;
   justify-content: center;
-  margin: 100px auto 0;
+  margin: 90px auto 30px;
+
+  @media (max-width: 768px) {
+    margin: 80px auto 30px;
+  }
 `;
 
 const Navigation = styled.div`
@@ -174,4 +189,3 @@ const Loading = styled.div`
   display: flex;
   justify-content: center;
 `;
-
