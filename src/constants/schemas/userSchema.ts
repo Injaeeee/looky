@@ -1,10 +1,6 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-  name: z
-    .string()
-    .min(1, { message: "이름을 입력해주세요." })
-    .max(20, { message: "10자 이하로 입력해주세요." }),
   email: z
     .string()
     .email({ message: "유효한 이메일 주소를 입력해주세요." })
