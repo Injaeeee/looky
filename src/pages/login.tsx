@@ -4,23 +4,12 @@ import styled from "styled-components";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../util/user.api";
 import { Image } from "@chakra-ui/react";
 import { useAuthStore } from "../store/authStore";
-
-const schema = z.object({
-  username: z
-    .string()
-    .min(1, { message: "아이디는 필수 항목입니다." })
-    .max(20, { message: "아이디는 20자 이하로 입력해주세요." }),
-  password: z
-    .string()
-    .min(6, { message: "비밀번호는 최소 6자 이상이어야 합니다." })
-    .max(20, { message: "비밀번호는 20자 이하로 입력해주세요." }),
-});
+import { loginSchema } from "../constants/schemas/userSchema";
 
 export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
@@ -42,12 +31,12 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(loginSchema),
   });
 
   const onSubmit = async (data: any) => {
     await loginUser({
-      email: data.username,
+      email: data.email,
       password: data.password,
     });
     navigate("/");
@@ -57,10 +46,10 @@ export default function Login() {
     <Container onSubmit={handleSubmit(onSubmit)}>
       <Image src="/image/loginLogo.png" alt="logo" />
       <InputWrapper>
-        <Title>아이디</Title>
-        <Input placeholder="아이디를 입력해주세요." {...register("username")} />
-        {errors.username && (
-          <ErrorText>{errors.username.message as string}</ErrorText>
+        <Title>이메일</Title>
+        <Input placeholder="이메일을 입력해주세요." {...register("email")} />
+        {errors.email && (
+          <ErrorText>{errors.email.message as string}</ErrorText>
         )}
       </InputWrapper>
       <InputWrapper>

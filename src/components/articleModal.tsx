@@ -72,9 +72,7 @@ export default function ArticleModal({
   }, [article.id, article.likeCount, user]);
 
   useEffect(() => {
-    if (isOpen) {
-      setComments(article.comments || []);
-    }
+    setComments(article.comments || []);
   }, [isOpen, article.comments]);
 
   const toggleLike = async () => {
@@ -141,15 +139,19 @@ export default function ArticleModal({
           bg="var(--gray800)"
           textAlign="center"
           borderTopRadius="10px"
+          sx={{
+            fontSize: "20px",
+            fontWeight: "bold",
+          }}
         >
           {article.title}
         </ModalHeader>
         <ModalCloseButton />
-        <ArticleBody padding="20px">
+        <ArticleBody>
           <PictureContainer>
             <ImagePreview
               src={article.imageURL}
-              boxSize={isMobile ? "350px" : undefined}
+              boxSize={isMobile ? "300px" : undefined}
             />
             {article.tags.map((tag, i) => (
               <TagWrapper key={i} x={tag.coordinates.x} y={tag.coordinates.y}>
@@ -218,10 +220,14 @@ export default function ArticleModal({
               )}
             </Communication>
             <CommentListWrapper>
-              {article.comments ? (
-                <CommentList comments={comments} />
+              {comments.length > 0 ? (
+                <CommentList
+                  comments={comments}
+                  article={article}
+                  setComments={setComments}
+                />
               ) : (
-                <>댓글이 없습니다.</>
+                <NotComment>댓글이 없습니다.</NotComment>
               )}
             </CommentListWrapper>
             {isAuthenticated && (
@@ -238,7 +244,7 @@ export default function ArticleModal({
                   />
                   <InputRightElement>
                     <button onClick={handleAddComment}>
-                      <Image src="/icon/message.svg" width="15px" />
+                      <Image src="/icon/message.svg" width="20px" />
                     </button>
                   </InputRightElement>
                 </InputGroup>
@@ -273,8 +279,8 @@ const PictureContainer = styled.div`
   position: relative;
 
   @media (max-width: 768px) {
-    min-width: 350px;
-    min-height: 350px;
+    min-width: 307px;
+    min-height: 307px;
   }
 `;
 
@@ -290,7 +296,7 @@ const ArticleContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 20px;
-  width: 350px;
+  width: 300px;
 `;
 
 const UserWrapper = styled.div`
@@ -379,4 +385,10 @@ const TagWrapper = styled.div<{ x: number; y: number }>`
     top: ${({ y }) => `${Math.min(Math.max(y, 0), 79)}%`};
     left: ${({ x }) => `${Math.min(Math.max(x, 0), 78)}%`};
   }
+`;
+
+const NotComment = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;

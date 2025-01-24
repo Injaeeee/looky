@@ -41,7 +41,7 @@ export default function TagContent({
           onChange={(e) =>
             handleTagInfoChange("category", e.target.value as Category)
           }
-          style={{ fontSize: "16px" }}
+          style={{ fontSize: "17px" }}
         >
           {Object.values(Category).map((category) => (
             <option key={category} value={category}>
@@ -57,8 +57,13 @@ export default function TagContent({
           size="lg"
           placeholder="가격을 입력해주세요."
           value={tagInfo.price === 0 ? "" : tagInfo.price}
-          onChange={(e) => handleTagInfoChange("price", e.target.value)}
-          style={{ fontSize: "16px" }}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (value.length <= 11) {
+              handleTagInfoChange("price", e.target.value);
+            }
+          }}
+          style={{ fontSize: "17px" }}
           type="number"
         />
       </InputWrapper>
@@ -70,7 +75,8 @@ export default function TagContent({
           placeholder="브랜드명을 입력해주세요."
           value={tagInfo.productName}
           onChange={(e) => handleTagInfoChange("productName", e.target.value)}
-          style={{ fontSize: "16px" }}
+          style={{ fontSize: "17px" }}
+          maxLength={15}
         />
       </InputWrapper>
       {tagCount < 5 && (
@@ -89,7 +95,10 @@ const ArticleContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  width: 350px;
+  width: 310px;
+  @media (max-width: 768px) {
+    gap: 9px;
+  }
 `;
 
 const UserSpec = styled.div`
@@ -139,7 +148,9 @@ const MakeTagButton = styled(PinkBorderButton)`
 `;
 
 const NextButton = styled(PinkButton)`
+  margin-bottom: 15px;
   @media (min-width: 768px) {
+    margin-bottom: 0;
     position: absolute;
     right: 0;
     bottom: 0;
