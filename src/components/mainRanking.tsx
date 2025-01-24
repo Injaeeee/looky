@@ -1,12 +1,20 @@
-import { Image } from "@chakra-ui/react";
+import { Image, useDisclosure } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { Article } from "../types/article.types";
 import styled from "styled-components";
 import { getRankingArticles } from "../util/article.api";
 import { Link } from "react-router-dom";
+import ArticleModal from "./articleModal";
 
 export default function MainRanking() {
   const [articles, setArticles] = useState<Article[]>([]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [selectedArticle, setSelectedArticle] = useState<Article>();
+
+  const handleOpenModal = (article: Article) => {
+    setSelectedArticle(article);
+    onOpen();
+  };
 
   const fetchArticles = async () => {
     try {
@@ -28,7 +36,10 @@ export default function MainRanking() {
       <Container>
         {articles.slice(0, 3).map((article, index) =>
           index === 0 ? (
-            <BestArticle key={article.id}>
+            <BestArticle
+              key={article.id}
+              onClick={() => handleOpenModal(article)}
+            >
               <CardImage
                 src={article.imageURL || "/placeholder.png"}
                 alt={`${article.title} Image`}
@@ -45,7 +56,10 @@ export default function MainRanking() {
               </CardContent>
             </BestArticle>
           ) : (
-            <ArticleItem key={article.id}>
+            <ArticleItem
+              key={article.id}
+              onClick={() => handleOpenModal(article)}
+            >
               <CardImage
                 src={article.imageURL || "/placeholder.png"}
                 alt={`${article.title} Image`}
@@ -66,7 +80,10 @@ export default function MainRanking() {
         {articles.length > 3 && (
           <SplitArticles>
             {articles.slice(3, 5).map((article, index) => (
-              <HalfArticle key={article.id}>
+              <HalfArticle
+                key={article.id}
+                onClick={() => handleOpenModal(article)}
+              >
                 <CardImage
                   src={article.imageURL || "/placeholder.png"}
                   alt={`${article.title} Image`}
@@ -92,6 +109,13 @@ export default function MainRanking() {
           랭킹 더 보기
         </Button>
       </Link>
+      {selectedArticle && (
+        <ArticleModal
+          isOpen={isOpen}
+          onClose={onClose}
+          article={selectedArticle}
+        />
+      )}
     </MainContainer>
   );
 }

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Tag as ChakraTag, TagLabel, TagCloseButton } from "@chakra-ui/react";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 interface TagProps {
   label: string;
@@ -30,6 +31,7 @@ export function PinkTag({ label }: TagProps) {
 }
 
 export function PinkBlurTag({ label }: TagProps) {
+  const isMobile = useIsMobile();
   return (
     <ChakraTag
       sx={{
@@ -38,7 +40,7 @@ export function PinkBlurTag({ label }: TagProps) {
         background: "var(--pink10)",
         borderRadius: "2px",
         height: "30px",
-        padding: "8px",
+        padding: isMobile ? "3px" : "8px",
       }}
     >
       <PinkLabel>{label}</PinkLabel>
@@ -46,6 +48,11 @@ export function PinkBlurTag({ label }: TagProps) {
   );
 }
 export function BlurTag({ category, price, name, onDelete }: PostTagProps) {
+  const isMobile = useIsMobile();
+
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat("ko-KR").format(price);
+
   return (
     <ChakraTag
       sx={{
@@ -53,7 +60,7 @@ export function BlurTag({ category, price, name, onDelete }: PostTagProps) {
         borderColor: "var(--gray500)",
         background: "var(--gray10)",
         borderRadius: "4px",
-        padding: "9px",
+        padding: isMobile ? "3px" : "9px",
         position: "relative",
       }}
     >
@@ -71,7 +78,7 @@ export function BlurTag({ category, price, name, onDelete }: PostTagProps) {
 
       <LabelWrapper>
         <GrayLabel>{category}</GrayLabel>
-        <GrayLabel>₩ {price}</GrayLabel>
+        <GrayLabel>₩ {formatPrice(price)}</GrayLabel>
         <PinkLabel>{name}</PinkLabel>
       </LabelWrapper>
     </ChakraTag>
@@ -90,6 +97,10 @@ const PinkLabel = styled(TagLabel)`
   font-size: 12px;
   font-weight: 600;
   line-height: 18px;
+  max-width: 100%;
+  @media (max-width: 768px) {
+    font-size: 10px;
+  }
 `;
 
 const GrayLabel = styled(TagLabel)`
@@ -97,4 +108,8 @@ const GrayLabel = styled(TagLabel)`
   font-size: 12px;
   font-weight: 600;
   line-height: 18px;
+  max-width: 100%;
+  @media (max-width: 768px) {
+    font-size: 10px;
+  }
 `;

@@ -94,10 +94,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   gap: 48px;
-  margin: 150px auto 0;
-  @media (max-width: 768px) {
-    margin: 100px auto 50px;
-  }
+  margin: 150px auto 50px;
 `;
 
 const RankingInfo = styled.div`
@@ -140,7 +137,7 @@ const ArticleListContainer = styled.div`
   grid-template-columns: repeat(4, 1fr);
   max-width: 1200px;
   gap: 48px;
-  
+
   @media (max-width: 768px) {
     grid-template-columns: repeat(1, 1fr);
     gap: 65px;
@@ -159,7 +156,6 @@ const ArticleContainer = styled.div<{ $isHighlighted: boolean }>`
   @media (max-width: 1200px) {
     height: 230px;
   }
-
   @media (max-width: 768px) {
     height: 200px;
   }
