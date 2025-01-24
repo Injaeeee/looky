@@ -18,6 +18,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { updateUserProfile } from "../../util/user.api";
 import { uploadImage } from "../../util/image.api";
 import { useIsMobile } from "../../hooks/useIsMobile";
+import { showToast } from "../../components/common/toast";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -64,13 +65,19 @@ export default function EditProfileModal({
 
     const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
     if (!allowedTypes.includes(file.type)) {
-      alert("이미지 파일만 업로드 가능합니다.");
+      showToast({
+        title: "이미지 파일만 업로드 가능합니다.",
+        status: "error",
+      });
       return;
     }
 
     const maxSize = 5 * 1024 * 1024;
     if (file.size > maxSize) {
-      alert("파일 크기는 5MB 이하로 업로드해야 합니다.");
+      showToast({
+        title: "파일 크기는 5MB 이하로 업로드해야 합니다.",
+        status: "error",
+      });
       return;
     }
 

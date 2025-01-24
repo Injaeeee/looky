@@ -20,7 +20,6 @@ import { PostArticle, ArticleInfo, Season, TPO } from "../types/article.types";
 import { Mood } from "../types/user.types";
 import { uploadImage } from "../util/image.api";
 import { postArticle } from "../util/article.api";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { PinkButton } from "./common/button";
@@ -28,14 +27,7 @@ import { useAuthStore } from "../store/authStore";
 import { useArticleStore } from "../store/articleStore";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { showToast } from "../components/common/toast";
-
-const articleSchema = z.object({
-  title: z
-    .string()
-    .min(1, "제목은 최소 1자 이상이어야 합니다.")
-    .max(10, "제목은 최대 10자 이하로 입력해주세요."),
-  content: z.string().max(30, "소개글은 최대 30자 이하로 입력해주세요."),
-});
+import { articleSchema } from "../constants/schemas/articleSchema";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -66,7 +58,6 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     price: 0,
     productName: "",
   });
-
   const { user } = useAuthStore();
   const { accessToken, refreshToken, ...writer } = user!;
 
