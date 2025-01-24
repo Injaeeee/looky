@@ -57,7 +57,12 @@ export default function TagContent({
           size="lg"
           placeholder="가격을 입력해주세요."
           value={tagInfo.price === 0 ? "" : tagInfo.price}
-          onChange={(e) => handleTagInfoChange("price", e.target.value)}
+          onChange={(e) => {
+            const value = e.target.value;
+            if (value.length <= 11) {
+              handleTagInfoChange("price", e.target.value);
+            }
+          }}
           style={{ fontSize: "17px" }}
           type="number"
         />
@@ -71,6 +76,7 @@ export default function TagContent({
           value={tagInfo.productName}
           onChange={(e) => handleTagInfoChange("productName", e.target.value)}
           style={{ fontSize: "17px" }}
+          maxLength={15}
         />
       </InputWrapper>
       {tagCount < 5 && (

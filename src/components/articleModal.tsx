@@ -72,9 +72,7 @@ export default function ArticleModal({
   }, [article.id, article.likeCount, user]);
 
   useEffect(() => {
-    if (isOpen) {
-      setComments(article.comments || []);
-    }
+    setComments(article.comments || []);
   }, [isOpen, article.comments]);
 
   const toggleLike = async () => {
@@ -141,6 +139,10 @@ export default function ArticleModal({
           bg="var(--gray800)"
           textAlign="center"
           borderTopRadius="10px"
+          sx={{
+            fontSize: "20px",
+            fontWeight: "bold",
+          }}
         >
           {article.title}
         </ModalHeader>
@@ -218,10 +220,14 @@ export default function ArticleModal({
               )}
             </Communication>
             <CommentListWrapper>
-              {article.comments ? (
-                <CommentList comments={comments} />
+              {comments.length > 0 ? (
+                <CommentList
+                  comments={comments}
+                  article={article}
+                  setComments={setComments}
+                />
               ) : (
-                <>댓글이 없습니다.</>
+                <NotComment>댓글이 없습니다.</NotComment>
               )}
             </CommentListWrapper>
             {isAuthenticated && (
@@ -379,4 +385,10 @@ const TagWrapper = styled.div<{ x: number; y: number }>`
     top: ${({ y }) => `${Math.min(Math.max(y, 0), 79)}%`};
     left: ${({ x }) => `${Math.min(Math.max(x, 0), 78)}%`};
   }
+`;
+
+const NotComment = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
