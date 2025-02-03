@@ -28,6 +28,8 @@ import { useArticleStore } from "../store/articleStore";
 import { useIsMobile } from "../hooks/useIsMobile";
 import { showToast } from "../components/common/toast";
 import { articleSchema } from "../constants/schemas/articleSchema";
+import { useImageValidation } from "../hooks/useImageValidation";
+import { useImageCompressor } from "../hooks/useImageCompressor";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -48,7 +50,6 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     },
   });
 
-  const isMobile = useIsMobile();
   const [currentStep, setCurrentStep] = useState(1);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -82,6 +83,9 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
   };
 
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const isMobile = useIsMobile();
+  const { validateImage } = useImageValidation();
+  const { compressImage } = useImageCompressor();
 
   const handleTagInfoChange = (field: keyof typeof tagInfo, value: string) => {
     setTagInfo((prev) => ({
@@ -90,31 +94,18 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     }));
   };
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const file = event.target.files?.[0];
 
     if (!file) return;
+    if (!validateImage(file)) return;
 
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    if (!allowedTypes.includes(file.type)) {
-      showToast({
-        title: "이미지 파일만 업로드 가능합니다.",
-        status: "error",
-      });
-      return;
-    }
-
-    const maxSize = 5 * 1024 * 1024;
-    if (file.size > maxSize) {
-      showToast({
-        title: "파일 크기는 5MB 이하로 업로드해야 합니다.",
-        status: "error",
-      });
-      return;
-    }
-    const imageUrl = URL.createObjectURL(file);
+    const compressedFile = await compressImage(file);
+    const imageUrl = URL.createObjectURL(compressedFile);
     setImageSrc(imageUrl);
-    setFile(file);
+    setFile(compressedFile);
   };
 
   const handleShare = async () => {
