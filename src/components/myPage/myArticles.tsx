@@ -20,13 +20,17 @@ export default function MyArticles({ activeButton }: MyArticlesProps) {
   const ArticleId = useArticleStore((state) => state.ArticleId);
 
   const fetchLikedArticles = async () => {
-    if (!user?.articleLike || user.articleLike.length === 0) return;
+    if (!user?.articleLike || user.articleLike.length === 0) {
+      setArticles([]);
+      return;
+    }
     const likedArticles = await getLikedArticles(user.articleLike);
     setArticles(likedArticles);
   };
 
   const fetchUserArticles = async () => {
     if (!user) return;
+    setArticles([]);
     const userArticles = await getMyArticles(user?.uid);
     setArticles(userArticles);
   };
@@ -52,7 +56,11 @@ export default function MyArticles({ activeButton }: MyArticlesProps) {
             key={index}
             onClick={() => handleOpenModal(article)}
           >
-            <CardImage src={article.imageURL} alt="Background Image" />
+            <CardImage
+              src={`${article.imageURL}?fit=crop`}
+              alt="Background Image"
+              loading="lazy"
+            />
             <CardContent>
               <Stack spacing="1">
                 <Header size="md" color="white">

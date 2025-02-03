@@ -4,7 +4,7 @@ export const useImageCompressor = () => {
   const compressImage = async (file: File) => {
     const options = {
       maxSizeMB: 1, // 1MB 이하로 압축
-      maxWidthOrHeight: 800, // 최대 800px로 조정
+      maxWidthOrHeight: 650, // 최대 px 조정
       useWebWorker: true,
       fileType: "image/webp", // webp로 변환
     };

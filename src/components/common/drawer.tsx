@@ -6,7 +6,6 @@ import {
   DrawerCloseButton,
   DrawerBody,
   DrawerFooter,
-  Image,
 } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
@@ -26,14 +25,14 @@ export default function DrawerMenu({ isOpen, onClose }: DrawerMenuProps) {
         <Body>
           <RouterWrapper>
             <RouterButton to="/">
-              <Image src="/icon/home.svg" boxSize="15px" alt="home" />홈
+              <img src="/icon/home.svg" alt="home" width="20px" />홈
             </RouterButton>
             <RouterButton to="/list">
-              <Image src="/icon/article.svg" boxSize="13px" alt="article" />
+              <img src="/icon/article.svg" alt="article" width="18px" />
               게시물
             </RouterButton>
             <RouterButton to="/ranking">
-              <Image src="/icon/ranking.svg" boxSize="15px" alt="ranking" />
+              <img src="/icon/ranking.svg" alt="ranking" width="23px" />
               랭킹
             </RouterButton>
           </RouterWrapper>
@@ -50,7 +49,7 @@ const RouterButton = styled(Link)`
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 14px;
+  font-size: 17px;
   font-weight: 600;
   color: var(--pink100);
 `;
