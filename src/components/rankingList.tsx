@@ -34,8 +34,8 @@ export default function RankingList() {
             <p>RANKING</p>
           </InfoTitle>
           <InfoLabel>
-            <p> 지난 일주일동안 가장 많은 좋아요를</p>
-            <p> 받은 게시물을 직접 확인해보세요</p>
+            <p> 가장 많은 좋아요를</p>
+            <p> 받은 게시물을 직접 확인해보세요!</p>
           </InfoLabel>
         </RankingInfo>
         {articles.map((article, index) => (

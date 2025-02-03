@@ -24,7 +24,6 @@ export default function Header() {
   const navigate = useNavigate();
   const isMobile = useIsMobile();
 
-
   const handleLogout = async () => {
     await logoutUser();
     navigate("/");
@@ -49,7 +48,7 @@ export default function Header() {
               <Image src="/icon/menu.svg" alt="menu" />
             </button>
             <LogoWrapper to="/">
-              <Image src="/image/smallLogo.png" alt="logo" />
+              <Image src="/image/smallLogo.webp" alt="logo" />
             </LogoWrapper>
           </LeftWrapper>
         ) : (
@@ -77,7 +76,7 @@ export default function Header() {
         )}
         {!isMobile && (
           <LogoWrapper to="/">
-            <Image src="/image/logo.png" alt="logo" />
+            <Image src="/image/logo.webp" alt="logo" />
           </LogoWrapper>
         )}
         {isMobile ? (
@@ -157,7 +156,6 @@ export default function Header() {
           onClose={modalDisclosure.onClose}
         />
       )}
-
     </HeaderContainer>
   );
 }

@@ -22,7 +22,7 @@ const Overlay = styled.div`
   position: fixed;
   width: 100%;
   height: 100%;
-  background-image: url("/image/rankingFrame.png");
+  background-image: url("/image/rankingFrame.webp");
   background-size: cover;
 `;
 
