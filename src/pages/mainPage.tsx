@@ -22,25 +22,28 @@ export default function MainPage() {
   return (
     <Container>
       <FrontImage
-        src="/image/main1.png"
+        src="/image/main1.webp"
         alt="background1"
         top={isMobile ? "40px" : "35px"}
         left="25%"
         boxSize={isMobile ? "100px" : undefined}
+        loading="lazy"
       />
       <BackgroundImage
-        src="/image/main2.png"
+        src="/image/main2.webp"
         alt="background2"
         top={isMobile ? "160px" : "400px"}
         left="20%"
         boxSize={isMobile ? "100px" : undefined}
+        loading="lazy"
       />
       <BackgroundImage
-        src="/image/main3.png"
+        src="/image/main3.webp"
         alt="background3"
         top={isMobile ? "270px" : "800px"}
         left="25%"
         boxSize={isMobile ? "100px" : undefined}
+        loading="lazy"
       />
       <Content>
         <MainContent>
@@ -53,11 +56,12 @@ export default function MainPage() {
             </MainIntro>
             <ViewIntro>
               <Image
-                src="/image/main.png"
+                src="/image/main.webp"
                 alt="main"
                 height="500px"
                 objectFit="contain"
                 boxSize={isMobile ? "150px" : undefined}
+                loading="lazy"
               />
               {!isMobile && (
                 <ViewPost>
@@ -105,11 +109,11 @@ export default function MainPage() {
             )}
           </InfoMessage>
           <Image
-            src="/image/info1.png"
+            src="/image/info1.webp"
             alt="info"
             height="500px"
             objectFit="contain"
-            boxSize={isMobile ? "150px" : undefined}
+            boxSize={isMobile ? "150px" : "500px"}
           />
           {isAuthenticated && (
             <LeftButton onClick={() => handleOpenModal()}>
@@ -120,11 +124,12 @@ export default function MainPage() {
         </InfoContent>
         <InfoContent>
           <Image
-            src="/image/info2.png"
+            src="/image/info2.webp"
             alt="info"
             height="500px"
             objectFit="contain"
-            boxSize={isMobile ? "200px" : undefined}
+            boxSize={isMobile ? "200px" : "700px"}
+            loading="lazy"
           />
           <InfoLabel>
             스타일 게시물을 만들고 <br />
@@ -139,7 +144,7 @@ export default function MainPage() {
         </InfoContent>
       </Content>
       <Footer>
-        <Image src="/image/logo.png" alt="logo" />
+        <Image src="/image/logo.webp" alt="logo" loading="lazy" />
         <FooterLabel>
           주식회사 루키이사 : 정인재 | 정보 확인호스팅 | 제공자 : 주식회사 루키
           |
@@ -167,12 +172,10 @@ const Container = styled.div`
 const FrontImage = styled(Image)`
   position: absolute;
   width: 300px;
-  height: auto;
 `;
 
 const BackgroundImage = styled(Image)`
   position: absolute;
-  height: auto;
   z-index: -1;
 `;
 
@@ -182,7 +185,7 @@ const Content = styled.div`
   align-items: center;
   gap: 180px;
   margin: 0 auto 200px;
-  
+
   @media (max-width: 768px) {
     gap: 30px;
     margin: 0 auto 80px;
@@ -195,7 +198,7 @@ const MainWrapper = styled.div`
   display: flex;
   gap: 100px;
   margin-top: 200px;
-  
+
   @media (max-width: 768px) {
     margin-top: 100px;
     gap: 30px;
@@ -271,7 +274,6 @@ const InfoContent = styled.div`
   @media (max-width: 768px) {
     gap: 10px;
   }
-
 `;
 
 const InfoMessage = styled.div`

@@ -173,7 +173,7 @@ export default function ArticleModal({
               </UserSpec>
               {article.writer?.uid === user?.uid && (
                 <PinkBorderButton onClick={handleDialogOpen}>
-                  삭제하기
+                  삭제
                 </PinkBorderButton>
               )}
             </UserWrapper>

@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {
   Avatar,
-  Image,
   Menu,
   MenuButton,
   MenuList,
@@ -23,7 +22,6 @@ export default function Header() {
   const { isAuthenticated, user, restoreSession } = useAuthStore();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
-
 
   const handleLogout = async () => {
     await logoutUser();
@@ -46,10 +44,10 @@ export default function Header() {
         {isMobile ? (
           <LeftWrapper>
             <button onClick={drawerDisclosure.onOpen}>
-              <Image src="/icon/menu.svg" alt="menu" />
+              <img src="/icon/menu.svg" alt="menu" width="18px" />
             </button>
             <LogoWrapper to="/">
-              <Image src="/image/smallLogo.png" alt="logo" />
+              <img src="/image/smallLogo.webp" alt="logo" width="90px" />
             </LogoWrapper>
           </LeftWrapper>
         ) : (
@@ -77,7 +75,7 @@ export default function Header() {
         )}
         {!isMobile && (
           <LogoWrapper to="/">
-            <Image src="/image/logo.png" alt="logo" />
+            <img src="/image/logo.webp" alt="logo" width="130px" />
           </LogoWrapper>
         )}
         {isMobile ? (
@@ -85,7 +83,7 @@ export default function Header() {
             {isAuthenticated ? (
               <>
                 <CreateButton onClick={modalDisclosure.onOpen}>
-                  <Image src="/icon/create.svg" alt="create" />
+                  <img src="/icon/create.svg" alt="create" />
                   CREATE
                 </CreateButton>
                 <Menu>
@@ -99,18 +97,20 @@ export default function Header() {
                     </UserItem>
                     <Link to="/mypage">
                       <MenuItem>
-                        <Image
+                        <img
                           src="/icon/setting.svg"
                           alt="setting"
+                          width="18px"
                           onClick={() => drawerDisclosure.onClose()}
                         />
                         settings
                       </MenuItem>
                     </Link>
                     <MenuPinkItem onClick={handleLogout}>
-                      <Image
+                      <img
                         src="/icon/logout.svg"
                         alt="logout"
+                        width="18px"
                         onClick={() => drawerDisclosure.onClose()}
                       />
                       logout
@@ -131,16 +131,16 @@ export default function Header() {
           <RightWrapper>
             {isAuthenticated && (
               <CreateButton onClick={modalDisclosure.onOpen}>
-                <Image src="/icon/create.svg" alt="create" />
+                <img src="/icon/create.svg" alt="create" width="17px" />
                 CREATE
               </CreateButton>
             )}
             <RouterButton to="/list">
-              <Image src="/icon/article.svg" alt="article" />
+              <img src="/icon/article.svg" alt="article" width="17px" />
               게시물
             </RouterButton>
             <RouterButton to="/ranking">
-              <Image src="/icon/ranking.svg" alt="ranking" />
+              <img src="/icon/ranking.svg" alt="ranking" width="20px" />
               랭킹
             </RouterButton>
           </RightWrapper>
@@ -157,7 +157,6 @@ export default function Header() {
           onClose={modalDisclosure.onClose}
         />
       )}
-
     </HeaderContainer>
   );
 }

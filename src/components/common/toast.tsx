@@ -22,5 +22,11 @@ export function showToast({
     status,
     duration,
     isClosable,
+    containerStyle: {
+      width: "400px",
+      maxWidth: "90%",
+      textAlign: "center",
+      fontSize: "20px",
+    },
   });
 }
