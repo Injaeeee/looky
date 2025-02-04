@@ -50,6 +50,8 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     },
   });
 
+  const { user } = useAuthStore();
+  const { accessToken, refreshToken, ...writer } = user!;
   const [currentStep, setCurrentStep] = useState(1);
   const [imageSrc, setImageSrc] = useState<string | null>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -59,9 +61,6 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     price: 0,
     productName: "",
   });
-  const { user } = useAuthStore();
-  const { accessToken, refreshToken, ...writer } = user!;
-
   const [articleInfo, setArticleInfo] = useState<ArticleInfo>({
     title: "",
     tpo: TPO.바다,
@@ -71,6 +70,16 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
     writer: writer,
     comments: [],
   });
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (isLoading) {
+      showToast({
+        title: "업로드 중입니다..",
+        status: "info",
+      });
+    }
+  }, [isLoading]);
 
   const handleArticleInfoChange = (
     field: keyof typeof articleInfo,
@@ -119,6 +128,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
       return;
     }
 
+    setIsLoading(true);
     onClose();
 
     const imageURL = await uploadImage(file);
@@ -150,8 +160,14 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
         onClose();
         useArticleStore.getState().setArticleId(articleId || "");
       })
-      .catch((error: any) => {
-        console.error("게시물 공유 중 오류 발생:", error);
+      .catch((error) => {
+        showToast({
+          title: "게시물 공유 중 오류 발생:",
+          status: "error",
+        });
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   };
 
