@@ -18,7 +18,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { updateUserProfile } from "../../util/user.api";
 import { uploadImage } from "../../util/image.api";
 import { useIsMobile } from "../../hooks/useIsMobile";
-import { showToast } from "../../components/common/toast";
+import { useImageValidation } from "../../hooks/useImageValidation";
+import { useImageCompressor } from "../../hooks/useImageCompressor";
 
 interface ArticleModalProps {
   isOpen: boolean;
@@ -42,6 +43,8 @@ export default function EditProfileModal({
     user?.imageUrl || "/icon/user.svg",
   );
   const [file, setFile] = useState<File | null>(null);
+  const { validateImage } = useImageValidation();
+  const { compressImage } = useImageCompressor();
   const isMobile = useIsMobile();
 
   const {
@@ -62,24 +65,7 @@ export default function EditProfileModal({
     const file = event.target.files?.[0];
 
     if (!file) return;
-
-    const allowedTypes = ["image/jpeg", "image/png", "image/gif"];
-    if (!allowedTypes.includes(file.type)) {
-      showToast({
-        title: "이미지 파일만 업로드 가능합니다.",
-        status: "error",
-      });
-      return;
-    }
-
-    const maxSize = 5 * 1024 * 1024;
-    if (file.size > maxSize) {
-      showToast({
-        title: "파일 크기는 5MB 이하로 업로드해야 합니다.",
-        status: "error",
-      });
-      return;
-    }
+    if (!validateImage(file)) return;
 
     const imageUrl = URL.createObjectURL(file);
     setImageSrc(imageUrl);
@@ -95,7 +81,8 @@ export default function EditProfileModal({
   const onSubmit = async (data: any) => {
     let imageUrl: string = imageSrc ?? "/icon/user.svg";
     if (file) {
-      const uploadedImageUrl = await uploadImage(file);
+      const compressedFile = await compressImage(file);
+      const uploadedImageUrl = await uploadImage(compressedFile);
       imageUrl = uploadedImageUrl ?? "/icon/user.svg";
     }
 

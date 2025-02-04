@@ -220,6 +220,10 @@ const CardContent = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 8px;
+
+  @media (max-width: 1200px) {
+    height: 30px;
+  }
 `;
 
 const HalfArticle = styled.div`
