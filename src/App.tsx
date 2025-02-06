@@ -9,6 +9,7 @@ import RankingPage from "./pages/rankingPage";
 import MyPage from "./pages/myPage";
 import Login from "./pages/login";
 import SignUp from "./pages/signUp";
+import GeminiChat from "./pages/testPage";
 
 const router = createBrowserRouter([
   {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
       {
         path: "signup",
         element: <SignUp />,
+      },
+      {
+        path: "test",
+        element: <GeminiChat />,
       },
     ],
   },
