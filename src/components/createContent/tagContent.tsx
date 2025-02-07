@@ -3,6 +3,22 @@ import styled from "styled-components";
 import { Category } from "../../types/tag.types";
 import { PinkBorderButton, PinkButton } from "../common/button";
 import { useAuthStore } from "../../store/authStore";
+import FashionAi from "./fashionAi";
+
+interface TagInfo {
+  category: Category;
+  price: number;
+  productName: string;
+}
+
+interface TagContentProps {
+  tagCount: number;
+  goToNextStep: () => void;
+  handleAddTag: () => void;
+  tagInfo: TagInfo;
+  handleTagInfoChange: (field: keyof TagInfo, value: string) => void;
+  file: File | null;
+}
 
 export default function TagContent({
   tagCount,
@@ -10,13 +26,8 @@ export default function TagContent({
   handleAddTag,
   tagInfo,
   handleTagInfoChange,
-}: {
-  tagCount: number;
-  goToNextStep: () => void;
-  handleAddTag: () => void;
-  tagInfo: { category: Category; price: number; productName: string };
-  handleTagInfoChange: (field: keyof typeof tagInfo, value: string) => void;
-}) {
+  file,
+}: TagContentProps) {
   const { user } = useAuthStore();
   return (
     <ArticleContent>
@@ -26,6 +37,7 @@ export default function TagContent({
           #{user?.gender} #{user?.height}
         </UserDetail>
       </UserSpec>
+      <FashionAi image={file} />
       <Explanation>태그 생성을 위한 필수 정보를 입력해주세요</Explanation>
       <InputWrapper>
         <Title>
@@ -85,6 +97,7 @@ export default function TagContent({
           <Image src="/icon/tag.svg" alt="tag" />
         </MakeTagButton>
       )}
+
       <NextButton onClick={goToNextStep}>다음 단계</NextButton>
     </ArticleContent>
   );

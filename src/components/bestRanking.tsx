@@ -6,7 +6,6 @@ import styled from "styled-components";
 import { Image } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 
-
 interface RankType {
   id: number;
   rank: number;
@@ -82,7 +81,6 @@ const RankingWrapper = styled.div`
 `;
 
 const RankListWrapper = styled.div`
-
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -120,6 +118,14 @@ const RankerNickName = styled.p<{ $isTopThree: boolean }>`
   font-weight: 700;
   color: ${({ $isTopThree }) =>
     $isTopThree ? "var(--pink100)" : "var(--gray300)"};
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    width: 55px;
+  }
 `;
 
 const RankerLike = styled.p<{ $isTopThree: boolean }>`
@@ -161,4 +167,3 @@ const SeeMoreLink = styled(Link)`
     color: var(--gray400);
   }
 `;
-

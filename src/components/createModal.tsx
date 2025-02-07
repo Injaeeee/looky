@@ -321,6 +321,7 @@ export default function CreateModal({ isOpen, onClose }: ArticleModalProps) {
                 handleAddTag={handleAddTag}
                 tagInfo={tagInfo}
                 handleTagInfoChange={handleTagInfoChange}
+                file={file}
               />
             )}
             {currentStep === 2 && (
