@@ -25,9 +25,9 @@ export async function fetchGeminiResponse(prompt: string) {
 }
 
 export async function analyzeImage(imageFile: File): Promise<string> {
-  //   if (!apiKey) {
-  //     throw new Error("API 키가 설정되지 않았습니다.");
-  //   }
+  if (!apiKey) {
+    throw new Error("API 키가 설정되지 않았습니다.");
+  }
 
   const reader = new FileReader();
 
@@ -52,7 +52,7 @@ export async function analyzeImage(imageFile: File): Promise<string> {
                     },
                   },
                   {
-                    text: "이 이미지의 패션 스타일을 아메카지, 미니멀, 러블리, 캐주얼, 시티보이 중 하나를 한마디로 말해줘",
+                    text: "패션 스타일을 미니멀,캐주얼,아메카지,시티보이,스트릿,스포티,유니크,러블리,레트로 중 하나를 따옴표로 말해주고 그 이유를 설명해줘 ",
                   },
                 ],
               },
