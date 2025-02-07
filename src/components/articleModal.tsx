@@ -173,6 +173,7 @@ export default function ArticleModal({
               </UserSpec>
               {article.writer?.uid === user?.uid && (
                 <DeleteButton onClick={handleDialogOpen}>삭제</DeleteButton>
+
               )}
             </UserWrapper>
             <UserInfo>
