@@ -188,11 +188,24 @@ const RankingNumber = styled.p`
 
 const BestNumber = styled(RankingNumber)`
   color: var(--pink100);
+  white-space: nowrap;
 `;
 
 const RankingName = styled.p`
   font-size: 16px;
   font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 150px;
+
+  @media (max-width: 1200px) {
+    width: 90px;
+  }
+
+  @media (max-width: 768px) {
+    width: 65px;
+  }
 `;
 
 const BestName = styled(RankingName)`

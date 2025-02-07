@@ -34,6 +34,7 @@ export default function EtcContent({
           #{user?.gender} #{user?.height}
         </UserDetail>
       </UserSpec>
+
       <InputWrapper>
         <Title>
           제목<span>*</span>

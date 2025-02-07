@@ -172,9 +172,8 @@ export default function ArticleModal({
                 </UserDetail>
               </UserSpec>
               {article.writer?.uid === user?.uid && (
-                <PinkBorderButton onClick={handleDialogOpen}>
-                  삭제
-                </PinkBorderButton>
+                <DeleteButton onClick={handleDialogOpen}>삭제</DeleteButton>
+
               )}
             </UserWrapper>
             <UserInfo>
@@ -301,7 +300,7 @@ const ArticleContent = styled.div`
 
 const UserWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
 `;
 
 const UserTitle = styled.p`
@@ -321,6 +320,12 @@ const Info = styled.div`
   gap: 15px;
   padding-bottom: 18px;
   border-bottom: 2px solid var(--gray700);
+`;
+
+const DeleteButton = styled(PinkBorderButton)`
+  width: 50px;
+  padding: 3px;
+  margin-left: auto;
 `;
 
 const UserSpec = styled.div`
