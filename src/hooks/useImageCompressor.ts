@@ -10,9 +10,21 @@ export const useImageCompressor = () => {
     };
 
     try {
-      return await imageCompression(file, options);
+      const compressedFile = await imageCompression(file, options);
+
+      // 새로운 파일 객체를 만들어 확장자를 .webp로 설정
+      const webpFile = new File(
+        [compressedFile],
+        `${file.name.replace(/\.[^/.]+$/, "")}.webp`,
+        {
+          type: "image/webp",
+        },
+      );
+
+      return webpFile;
     } catch (error) {
-      return file;
+      console.error("이미지 압축 중 오류 발생:", error);
+      return file; // 에러 발생 시 원본 파일 반환
     }
   };
 
